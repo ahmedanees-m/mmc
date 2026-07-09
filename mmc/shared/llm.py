@@ -109,7 +109,9 @@ def _emit(user: str, *, attempts: int = 2) -> tuple[ModelSpec, str]:
     prompt = user
     last = ""
     for _ in range(attempts):
-        out = reason(_SYSTEM, prompt, effort="high")
+        # a large structure JSON plus adaptive thinking needs headroom, or the JSON
+        # truncates mid-object and fails to parse.
+        out = reason(_SYSTEM, prompt, effort="high", max_tokens=20000)
         try:
             return ModelSpec.from_json(_json_block(out)), _rationale(out)
         except Exception as e:  # invalid schema or JSON; return the reason and retry

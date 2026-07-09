@@ -11,7 +11,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from ..data import module_extract
-from ..fit.diagnose import diagnose
 from ..shared.trace import Step, Trace
 from . import propose as propose_mod
 from . import repair as repair_mod
@@ -51,10 +50,16 @@ class LoopResult:
 
 
 def discover(module: str, condition: str, context: str | None = None, *,
-             perts: list[str] | None = None, start_spec=None,
-             max_iters: int = 4, n_starts: int = 8, max_iter: int = 60,
+             perts: list[str] | None = None, start_spec=None, backend: str = "structural",
+             max_iters: int = 4, n_starts: int = 8, max_iter: int = 300,
              ensemble_k: int = 5, ensemble_margin: float = 0.2,
              trace: Trace | None = None) -> LoopResult:
+    # The structural steady-state backend (v3) is the default; the ODE backend is kept
+    # for the earlier experiments and the tests.
+    if backend == "structural":
+        from ..fit import fit_structural as fitmod
+    else:
+        from ..fit import diagnose as fitmod
     trace = trace or Trace(module=f"{module}:{condition}")
     context = context or DEFAULT_CONTEXT.get(module, f"Module {module} in CD4+ T cells.")
     observed = module_extract.observed_deltas(module, condition)   # training state only
@@ -77,9 +82,10 @@ def discover(module: str, condition: str, context: str | None = None, *,
     else:
         spec, _ = propose_mod.propose(genes, context, trace=trace)
     for it in range(max_iters):
-        best, labels, stats = diagnose(spec, observed, n_starts=n_starts, max_iter=max_iter)
+        best, labels, stats = fitmod.diagnose(spec, observed, n_starts=n_starts, max_iter=max_iter)
         ens.add(spec, best["loss"], best["params"])
-        items = residuals.structural_items(spec, best, labels, observed)
+        items = residuals.structural_items(spec, best, labels, observed,
+                                           residuals_fn=fitmod.residuals)
         trace.log(Step(kind="fit", model_hash=model_hash(spec),
                        rationale=f"{len(items)} structural residual(s)",
                        edit=None, train_score=best["loss"]))

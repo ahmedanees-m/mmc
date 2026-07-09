@@ -24,9 +24,10 @@ def _pattern(pred: float, obs: float) -> str:
 
 
 def structural_items(spec, best_fit: dict, labels: dict, observed: dict,
-                     top: int = 12) -> list[dict]:
-    """The largest structural residuals, each with its failure pattern."""
-    res = diag.residuals(spec, best_fit["params"], observed)
+                     top: int = 12, residuals_fn=None) -> list[dict]:
+    """The largest structural residuals, each with its failure pattern. residuals_fn
+    selects the backend that recomputes predictions (defaults to the ODE backend)."""
+    res = (residuals_fn or diag.residuals)(spec, best_fit["params"], observed)
     items = []
     for key, (pred, obs) in res.items():
         if labels.get(key) != "structural":
