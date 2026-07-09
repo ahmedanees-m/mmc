@@ -58,7 +58,7 @@ def make_backend():
         observed = {p: {spec.genes[j]: float(train_obs[i, j])
                         for j in range(len(spec.genes)) if spec.genes[j] != p}
                     for i, p in enumerate(train_perts)}
-        fits = fit_structural.multi_fit(spec, observed, n_starts=4, max_iter=250)
+        fits = fit_structural.multi_fit(spec, observed, n_starts=3, max_iter=150)
         return {"spec": spec, "params": fits[0]["params"]}
 
     def predict_fn(model, pert):
@@ -84,7 +84,7 @@ def main():
     dark = set(d["dark"])
 
     print("=== CP-A2: discovery loop on the cytokine module ===")
-    result = discover(MODULE, COND, backend="structural", max_iters=4, n_starts=6, max_iter=250)
+    result = discover(MODULE, COND, backend="structural", max_iters=3, n_starts=4, max_iter=150)
     frozen = result.ensemble.best()
     for h in result.history:
         print(f"  fit {h['hash']} loss {h['loss']:.4f} structural residuals {h['n_structural']}")

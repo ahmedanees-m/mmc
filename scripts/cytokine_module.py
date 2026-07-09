@@ -94,8 +94,9 @@ KNOWN_SIGNALING = {
 
 FDR_THRESH = 0.10
 MIN_DE_ENTRIES = 40     # power precondition: total significant (reg x cytokine) LOO entries
-MODULE_MAX_DARK = 15    # top dark candidates to include (tractability vs discovery room)
-MODULE_MAX_BACKBONE = 18  # strongest known regulators kept as scaffold (loop tractability)
+MODULE_MAX_DARK = 12    # top dark candidates to include (tractability vs discovery room)
+MODULE_MAX_BACKBONE = 6   # strongest known regulators kept as scaffold (loop tractability)
+MODULE_MAX_READOUT = 10   # most-regulated cytokines kept as readouts (loop tractability)
 MIN_BREADTH = 50        # a real knockdown moves at least this many genes; below is noise
                         # (a failed guide whose few hits happen to include cytokines)
 
@@ -205,8 +206,10 @@ def main():
     g, backbone, dark, dark_all, total = build_module(hits, query_breadth())
     report(g, backbone, dark, dark_all, total)
     import json
+    readouts = list(hits.groupby("cytokine")["perturbation"].nunique()
+                    .sort_values(ascending=False).head(MODULE_MAX_READOUT).index)
     regs = sorted(set(backbone["perturbation"]) | set(dark["perturbation"]))
-    genes = sorted(set(CYTOKINE_PANEL) | set(regs))
+    genes = sorted(set(readouts) | set(regs))
     # persist the module definition (regulators are the perturbations; targets are the
     # cytokine readouts plus the regulators, so regulator-to-regulator scaffold edges and
     # regulator-to-cytokine edges are both representable) for the discovery run.

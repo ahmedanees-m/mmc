@@ -77,8 +77,11 @@ _SYSTEM = (
     "T-cell gene regulation. Given a module gene list and biological context, express a "
     "gene-regulatory circuit as a ModelSpec: genes, signed edges (regulator, target, sign "
     "+1 or -1), and rules (a bounded sum of product-terms over sigmoid gates for each "
-    "target). Default each rule to a single additive term; use a product-term gate only "
-    "when non-monotone logic is required. You set structure and logic form only; an "
+    "target). A rule has AT MOST 3 terms, and each term has AT MOST 3 regulators, so a "
+    "target has at most 9 regulators; if a target has more candidate regulators than that, "
+    "include only the most important. Default each rule to a single additive term; use a "
+    "product-term gate only when non-monotone logic is required. You set structure and "
+    "logic form only; an "
     "optimizer sets all magnitudes, so do not emit parameter values. Every regulator named "
     "in a rule term must have a corresponding edge into that target. A term's regulators "
     "is a list of gene-name strings; put any per-term gate sign in an optional signs "
@@ -105,7 +108,7 @@ def _rationale(text: str) -> str:
     return m.group(1).strip() if m else ""
 
 
-def _emit(user: str, *, attempts: int = 2) -> tuple[ModelSpec, str]:
+def _emit(user: str, *, attempts: int = 3) -> tuple[ModelSpec, str]:
     prompt = user
     last = ""
     for _ in range(attempts):
