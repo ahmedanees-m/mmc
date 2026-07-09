@@ -101,7 +101,25 @@ def fit(spec: ModelSpec, observed: dict, seed: int = 0,
             "x": xbest, "seed": seed}
 
 
-def multi_fit(spec: ModelSpec, observed: dict, n_starts: int = 16, **kw) -> list[dict]:
-    """Fit from n_starts starts, returned sorted by loss (best first)."""
-    fits = [fit(spec, observed, seed=s, **kw) for s in range(n_starts)]
+def multi_fit(spec: ModelSpec, observed: dict, n_starts: int = 16,
+              n_jobs: int | None = None, **kw) -> list[dict]:
+    """Fit from n_starts starts, returned sorted by loss (best first).
+
+    The starts are independent, so they run across processes. n_jobs defaults to one
+    per available core, capped at n_starts. Each start is a separate CMA-ES run on a
+    small integration, so process-level parallelism turns the multi-start wall time from
+    the sum of the starts into roughly one start, which is what makes the full module
+    tractable inside the loop.
+    """
+    import os
+
+    if n_jobs is None:
+        n_jobs = min(n_starts, max(1, (os.cpu_count() or 2) - 1))
+    if n_jobs <= 1:
+        fits = [fit(spec, observed, seed=s, **kw) for s in range(n_starts)]
+    else:
+        from concurrent.futures import ProcessPoolExecutor
+        with ProcessPoolExecutor(max_workers=n_jobs) as ex:
+            futures = [ex.submit(fit, spec, observed, seed=s, **kw) for s in range(n_starts)]
+            fits = [f.result() for f in futures]
     return sorted(fits, key=lambda f: f["loss"])
