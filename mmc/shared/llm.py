@@ -121,7 +121,14 @@ def _emit(user: str, *, attempts: int = 2) -> tuple[ModelSpec, str]:
 
 def propose_structure(module_genes: list[str], context: str) -> tuple[ModelSpec, str]:
     """Propose an initial executable model. Returns (spec, rationale)."""
-    user = f"Module genes: {module_genes}\n\nBiological context:\n{context}\n"
+    user = (
+        f"Module genes: {module_genes}\n\nBiological context:\n{context}\n\n"
+        "Each of these genes is knocked down in the data and the model must predict every "
+        "knockdown's effect, so the structure has to span the module: give every gene at "
+        "least one regulator, and give every gene that acts as a regulator outgoing edges "
+        "to the genes it controls. Prefer a connected circuit that covers the whole module "
+        "over a sparse chain, while keeping each rule within the grammar bounds."
+    )
     return _emit(user)
 
 

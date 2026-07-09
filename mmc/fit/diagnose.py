@@ -40,15 +40,22 @@ def diagnose(spec: ModelSpec, observed: dict, n_starts: int = 16,
     best = fits[0]
     per_seed = [residuals(spec, f["params"], observed) for f in fits]
 
+    # A residual is structural when the fit the loop actually uses (the best seed) gets a
+    # differentially expressed gene's direction wrong and most seeds agree on that error.
+    # Judging recoverability off the best fit, not off any single seed, is deliberate: the
+    # earlier rule (parametric if any one seed recovered it) masked the best fit's
+    # consistent errors when different seeds happened to recover different residuals, so
+    # the loop saw zero structural residuals on a poor fit and never revised the structure.
+    de_tol = 0.5
+    n = len(per_seed)
     labels: dict[tuple[str, str], str] = {}
     for key in per_seed[0]:
-        recoverable = False
-        for res in per_seed:
-            pred, obs = res[key]
-            if (pred > 0) == (obs > 0) or abs(pred - obs) < tol:
-                recoverable = True
-                break
-        labels[key] = "parametric" if recoverable else "structural"
+        best_pred, obs = per_seed[0][key]
+        is_de = abs(obs) >= de_tol
+        best_ok = (best_pred > 0) == (obs > 0) or abs(best_pred - obs) < tol
+        wrong = sum(1 for res in per_seed if (res[key][0] > 0) != (obs > 0))
+        structural = is_de and (not best_ok) and wrong >= 0.5 * n
+        labels[key] = "structural" if structural else "parametric"
 
     losses = [f["loss"] for f in fits]
     stats = {
