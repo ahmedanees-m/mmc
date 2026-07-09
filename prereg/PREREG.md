@@ -1,58 +1,106 @@
 # MMC pre-registration
 
-Commit this, filled in, before any modeling code exists. Pre-registration is what
-makes the result a specification rather than a fit. Nothing below may change after
-the loop is built without a dated, justified amendment in this file.
+Pre-registration is what makes the result a specification rather than a fit. Nothing
+below may change after the loop is built without a dated, justified amendment at the
+end of this file. The module, direction, splits, thresholds, and the conserved and
+rewired scaffold are fixed here, before any modeling code exists.
 
-**Committed:** FILL date. **Commit:** FILL hash. **Author:** Anees Ahmed Mahaboob Ali.
+**Committed:** 2026-07-09 (this commit). **Author:** Anees Ahmed Mahaboob Ali.
 
-## 1. Module (from the Stage-0 precondition test)
-- Primary module: Th2 and GATA3.
-  - Targets (program genes): FILL (for example IL4, IL5, IL13).
-  - Candidate regulators: GATA3, STAT6, TBX21, FILL.
-- Second module (Stage-3 anti-cherry-pick): TCR signalosome (Stim8hr to Stim48hr)
-  or Th1 and TBX21. FILL.
-- Zhu coverage confirmed: every module gene in the 10,282 measured genes. FILL yes
-  or list gaps.
+The module and direction were selected by the Stage-0 precondition test
+(`mmc/data/precondition.py`, run with `scripts/run_precondition.py`) against the Zhu
+store, not chosen by hand. Thresholds: FDR below 0.10; a perturbation is active
+(well-powered) when its knockdown moved at least 20 downstream genes; a module and
+direction pass when conservation is at least 0.50, rewiring is above 0, and there are
+at least 8 conserved-plus-rewired edges.
+
+## 1. Module (selected by the precondition test)
+
+- **Primary module: TCR signalosome.** It is the only candidate that passes the
+  precondition. Direction Stim8hr to Stim48hr.
+  - Candidate regulators (perturbed): CD3E, ZAP70, LAT, LCP2, PLCG1, PRKCQ.
+  - Target genes (measured): ZAP70, LAT, LCP2, PLCG1, PRKCQ, IL2, NFKB1, RELA, FOS,
+    JUN.
+  - Zhu coverage: all 11 genes present in the 10,282 measured genes.
+- **Second module (Stage-3 anti-cherry-pick): Th2 and GATA3**, direction Stim8hr to
+  Stim48hr. It has a conserved GATA3-to-cytokine core (GATA3 to IL5, IL13, STAT4) but
+  edge-level conservation of 0.30, so it is a rewiring-rich counterpart rather than a
+  second pass. Th1 and TBX21 is the alternative second module if a higher-conservation
+  counterpart is wanted; its precondition will be run before it is used.
 
 ## 2. Transfer direction (chosen by where signal exists)
-- Primary direction: FILL (for example Rest to Stim8hr for Th2 and GATA3, since
-  GATA3 carries Rest signal).
-- Rationale and the precondition numbers observed:
-  - conservation fraction: FILL. rewiring fraction: FILL. testable edges: FILL.
+
+- Primary direction: Stim8hr to Stim48hr. Both states are stimulated, so the
+  signalosome is active in both (activity in the thousands of downstream genes), which
+  gives a testable conserved core and a temporal early-to-late rewiring.
+- The Rest to Stim directions were rejected by the data: the signalosome is off at
+  Rest (activity 2 to 82 downstream genes), so every Rest to Stim edge is untestable
+  or rewired, and a Rest-trained model would have no signal to learn from.
+- Precondition numbers observed for the primary (TCR signalosome, Stim8hr to
+  Stim48hr): conservation fraction 0.52, rewiring fraction 0.48, 33 conserved-plus-
+  rewired edges (17 conserved, 16 rewired, 13 no-effect, 9 untestable).
 
 ## 3. Conserved and rewired scaffold (ground truth for Step 6)
-The per-edge classification from the precondition test (conserved, rewired,
-untestable), recorded here as the scaffold against which Step 6's predicted map is
-scored.
-- FILL table: edge, train-condition effect (sign, FDR, r), test-condition effect,
-  class.
+
+The per-edge classification from the precondition test for the primary module and
+direction, recorded as the scaffold against which Step 6's predicted map is scored.
+Effect is log2 fold change; activity is the count of downstream genes the knockdown
+moved in that state.
+
+Conserved edges (significant, same sign, both states active):
+- CD3E to LCP2, CD3E to PLCG1, CD3E to PRKCQ, CD3E to RELA
+- ZAP70 to LCP2, ZAP70 to PLCG1, ZAP70 to PRKCQ
+- LAT to LCP2, LAT to PLCG1, LAT to PRKCQ, LAT to RELA
+- LCP2 to PLCG1, LCP2 to PRKCQ
+- PLCG1 to LAT, PLCG1 to LCP2, PLCG1 to PRKCQ, PLCG1 to IL2
+
+Rewired edges (present in one state, opposite or absent in the other):
+- CD3E to ZAP70, CD3E to IL2, CD3E to NFKB1
+- ZAP70 to IL2, ZAP70 to RELA, ZAP70 to JUN
+- LAT to ZAP70, LAT to IL2, LAT to NFKB1
+- LCP2 to ZAP70, LCP2 to IL2, LCP2 to NFKB1, LCP2 to RELA, LCP2 to FOS
+- PLCG1 to ZAP70, PLCG1 to RELA
+
+Interpretation: the conserved core is the signalosome internal cross-regulation
+(kinase and adaptor co-dependence), significant and same-sign in both states. The
+rewiring is the effector output, the IL2, AP-1 (FOS and JUN), and NF-kB edges, which
+follow the early-to-late activation shift; IL2 in particular is an early response that
+is largely resolved by 48hr, so several IL2 edges lose significance at Stim48hr.
 
 ## 4. Splits (the leakage rule, enforced by construction)
-- Train: training-state perturbations; train and in-context-held-out split = FILL.
-- Tier A (strict transfer): the entire test-state perturbation set, predicted from
-  the WT test state only. The reasoning step and the fitter see zero test-state
-  perturbations.
+
+Training state Stim8hr, test state Stim48hr. Perturbations are the six regulators.
+- Train: the Stim8hr regulator knockdowns. In-context held-out for the Step-5 gate:
+  LCP2 and PLCG1 at Stim8hr; the loop trains structure on CD3E, ZAP70, LAT, PRKCQ at
+  Stim8hr.
+- Tier A (strict transfer): the entire Stim48hr regulator perturbation set, predicted
+  from the Stim8hr-frozen structure and the WT Stim48hr state only. The loop and the
+  fitter see zero Stim48hr perturbations.
 - Tier B (few-shot rewiring discovery):
-  - discovery subset (visible to the reasoning step): FILL genes and size.
-  - held-out test subset (never seen, the scored set): FILL genes and size,
+  - discovery subset, visible to the loop: CD3E, ZAP70, LAT at Stim48hr.
+  - held-out test subset, never seen, the scored set: LCP2, PLCG1, PRKCQ at Stim48hr,
     disjoint from the discovery subset.
+
+This module has six perturbations, so the splits are thin. If Step 1 shows the splits
+are underpowered, the module may be enriched with additional signalosome and
+downstream activation genes, recorded as a dated amendment below, before the ensemble
+is frozen.
 
 ## 5. Baselines
 - Mean of training perturbations. Regularized linear map. Arc State (best available
-  setting for this context, identical split). MechPert-style consensus (Tier B
-  only).
+  setting for this context, identical split). MechPert-style consensus (Tier B only).
 
 ## 6. Metrics and controls (never reward predicting the mean)
-- Metrics: per-perturbation sign accuracy over DE genes (absolute delta above
-  FILL); Pearson and Spearman of predicted versus observed delta (all module genes
-  plus the DE subset); DE-overlap (precision at k, Jaccard); bootstrap CIs.
+- Metrics: per-perturbation sign accuracy over DE genes (absolute delta above a
+  threshold fixed at first use); Pearson and Spearman of predicted versus observed
+  delta (all module genes plus the DE subset); DE-overlap (precision at k, Jaccard);
+  bootstrap CIs.
 - Controls: shuffled-perturbation negative (near 0); WT versus WT positive.
-- Metric-sensitivity check across the calibrated set: FILL.
+- Metric-sensitivity check across the calibrated set.
 
 ## 7. Go and no-go thresholds
 - Stage 1 (in-context gate): the frozen ensemble is at least the linear baseline on
-  in-context held-out perturbations (target at least R near 0.39, the Zhu
+  the in-context held-out perturbations (target at least R near 0.39, the Zhu
   in-context reconstruction) and clearly beats the mean baseline.
 - Stage 2 (decisive): read Tier A and Tier B against mean, linear, Arc State, and
   consensus with CIs, only after freezing. Verdict against the win conditions:
@@ -66,5 +114,9 @@ scored.
 - Freeze the ensemble before reading any Tier A or Tier B result.
 - The leakage audit (Tier A zero-leak, Tier B held-out isolation) is a committed
   deliverable.
-- Report the trace as a record of how the model reasoned, never as evidence in
-  place of the number.
+- Report the trace as a record of how the model reasoned, never as evidence in place
+  of the number.
+- Score the predicted conserved and rewired map against the scaffold in section 3.
+
+## Amendments
+(None yet. Any change after the loop is built is dated and justified here.)

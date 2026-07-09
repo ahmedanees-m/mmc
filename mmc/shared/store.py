@@ -26,7 +26,8 @@ import duckdb
 import pandas as pd
 
 CONDITIONS = ("Rest", "Stim8hr", "Stim48hr")
-_EFFECT_COLS = ["perturbation", "target_gene", "effect_size", "fdr", "crossguide_r"]
+_EFFECT_COLS = ["perturbation", "target_gene", "effect_size", "fdr",
+                "crossguide_r", "n_downstream"]
 
 
 def store_path() -> str:
@@ -97,15 +98,17 @@ def module_effects(regulators: list[str], targets: list[str],
         f"SELECT pert_code, gene_code, log_fc, adj_p_value FROM zhu_de "
         f"WHERE pert_code IN ({pph}) AND gene_code IN ({gph})"
     ).df()
-    xg = _con().execute(
-        f"SELECT pert_code, guide_correlation_signif FROM zhu_pert "
+    meta = _con().execute(
+        f"SELECT pert_code, guide_correlation_signif, n_downstream FROM zhu_pert "
         f"WHERE pert_code IN ({pph})"
     ).df()
-    xg_map = dict(zip(xg["pert_code"].astype(int), xg["guide_correlation_signif"]))
+    xg_map = dict(zip(meta["pert_code"].astype(int), meta["guide_correlation_signif"]))
+    nd_map = dict(zip(meta["pert_code"].astype(int), meta["n_downstream"]))
 
     de["perturbation"] = de["pert_code"].astype(int).map(pcodes)
     de["target_gene"] = de["gene_code"].astype(int).map(gcodes)
     de["crossguide_r"] = de["pert_code"].astype(int).map(xg_map)
+    de["n_downstream"] = de["pert_code"].astype(int).map(nd_map)
     de = de.rename(columns={"log_fc": "effect_size", "adj_p_value": "fdr"})
     return de[_EFFECT_COLS]
 
