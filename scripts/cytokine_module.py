@@ -95,6 +95,7 @@ KNOWN_SIGNALING = {
 FDR_THRESH = 0.10
 MIN_DE_ENTRIES = 40     # power precondition: total significant (reg x cytokine) LOO entries
 MODULE_MAX_DARK = 15    # top dark candidates to include (tractability vs discovery room)
+MODULE_MAX_BACKBONE = 18  # strongest known regulators kept as scaffold (loop tractability)
 MIN_BREADTH = 50        # a real knockdown moves at least this many genes; below is noise
                         # (a failed guide whose few hits happen to include cytokines)
 
@@ -160,7 +161,9 @@ def build_module(hits: pd.DataFrame, breadth: dict):
              g["perturbation"].isin(CANONICAL_REGULATORS),
              g["perturbation"].isin(KNOWN_SIGNALING)]
     g["class"] = np.select(conds, ["zhu_named", "canonical", "signaling"], default="dark")
-    backbone = g[g["class"].isin(["canonical", "signaling"])]
+    backbone = (g[g["class"].isin(["canonical", "signaling"])]
+                .sort_values(["n_cyto", "mean_abs_eff"], ascending=False)
+                .head(MODULE_MAX_BACKBONE))                       # strongest scaffold, capped
 
     # Breadth window: floor removes noise (a failed knockdown with a few cytokine hits and
     # near-zero breadth scores hyper-specific but is an artefact), ceiling (top decile among
