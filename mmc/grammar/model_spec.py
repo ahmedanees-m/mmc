@@ -32,8 +32,16 @@ class Edge(BaseModel):
 
 
 class Term(BaseModel):
-    """One product-of-sigmoids gate over a small set of regulators."""
+    """One product-of-sigmoids gate over a small set of regulators.
+
+    signs gives the gate's logical sign for a regulator in this term (+1 activating,
+    -1 repressing). A regulator absent from signs uses the edge's overall sign. Per-
+    term signs let a regulator activate in one term and repress in another, which is
+    what makes non-monotone logic (for example XOR) representable. A single additive
+    term with edge signs is the monotone default.
+    """
     regulators: list[str]
+    signs: dict[str, int] = {}
 
     @field_validator("regulators")
     @classmethod
@@ -41,6 +49,15 @@ class Term(BaseModel):
         if not (1 <= len(v) <= MAX_REGS_PER_TERM):
             raise ValueError(f"term needs 1..{MAX_REGS_PER_TERM} regulators")
         return v
+
+    @model_validator(mode="after")
+    def _signs(self) -> "Term":
+        for reg, s in self.signs.items():
+            if reg not in self.regulators:
+                raise ValueError(f"term sign for {reg}, which is not a term regulator")
+            if s not in (1, -1):
+                raise ValueError("term sign must be +1 or -1")
+        return self
 
 
 class Rule(BaseModel):

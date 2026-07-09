@@ -1,10 +1,16 @@
 """Compile a ModelSpec + params into a logistic-additive ODE right-hand side.
 
 dx_i/dt = basal_i + production_i(x) - decay_i * x_i
-production_i = sum_k prod_ik * PROD_{j in term_k} logistic(sign_ij * w_ikj * x_j - theta_ik)
+production_i = sum_k prod_ik * PROD_{j in term_k} logistic(s_ikj * w_ikj * x_j - theta)
 
-Logistic (not Hill) for numerical reliability / to avoid the absorbing off-state
-(cf. Belgacem 2026, arXiv:2605.01056).
+s is the gate sign for regulator j in term k (the term's own sign when set, otherwise
+the edge sign). theta is per gate (a per-regulator dict) for full AND, OR, and NOT
+logic, or a scalar shared across the term for the monotone additive default. State x
+is treated as log-expression, so a predicted knockdown delta compares to an observed
+log2 fold change.
+
+Logistic (not Hill) for numerical reliability and to avoid the absorbing off-state
+(Belgacem 2026, arXiv:2605.01056).
 """
 from __future__ import annotations
 import numpy as np
@@ -26,15 +32,18 @@ def build_rhs(spec: ModelSpec, params: Params):
 
     def production(x: np.ndarray) -> np.ndarray:
         p = np.zeros(n)
-        for tgt, terms in term_params.items():
+        for tgt, param_terms in term_params.items():
             i = idx[tgt]
+            spec_terms = spec.rules[tgt].terms if tgt in spec.rules else []
             total = 0.0
-            for t in terms:
+            for st, pt in zip(spec_terms, param_terms):
                 gate = 1.0
-                for reg, w in t["w"].items():
-                    s = spec.edge_sign(reg, tgt) or 1
-                    gate *= logistic(s * w * x[idx[reg]] - t["theta"])
-                total += t["prod"] * gate
+                theta = pt["theta"]  # scalar (shared) or a per-regulator dict
+                for reg, w in pt["w"].items():
+                    s = st.signs.get(reg) or spec.edge_sign(reg, tgt) or 1
+                    th = theta[reg] if isinstance(theta, dict) else theta
+                    gate *= logistic(s * w * x[idx[reg]] - th)
+                total += pt["prod"] * gate
             p[i] = total
         return p
 
