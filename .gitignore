@@ -1,0 +1,26 @@
+# data and large artifacts. MMC queries the existing store; it does not duplicate it.
+*.h5ad
+*.h5mu
+*.parquet
+*.duckdb
+data_store/
+# keep any small committed test fixture
+!tests/fixtures/*.parquet
+# secrets
+.env
+*.key
+.mmc.env
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+# results scratch (keep dirs, ignore contents)
+results/**/*
+!results/**/.gitkeep
+.DS_Store
+.ipynb_checkpoints/

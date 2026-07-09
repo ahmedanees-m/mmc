@@ -1,0 +1,35 @@
+[project]
+name = "mmc"
+version = "0.1.0"
+description = "A Claude-native mechanistic discovery loop that writes falsifiable models of T-cell gene regulation and maps what is conserved vs. rewired across cell states."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "duckdb>=1.0",
+    "polars>=1.0",
+    "pandas>=2.0",
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "pydantic>=2.6",
+    "cma>=3.3",
+    "anthropic>=0.116",
+    "matplotlib>=3.8",
+]
+
+[project.optional-dependencies]
+diffrax = ["diffrax>=0.5", "jax>=0.4", "optax>=0.2"]
+dev = ["pytest>=8.0", "ruff>=0.4"]
+# Arc State foundation baseline installs from its own repo (non-commercial license):
+#   github.com/ArcInstitute/state  ->  `state tx`
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["mmc*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
