@@ -56,7 +56,24 @@ _MEDIATOR = {
     "MED30", "MED31", "CCNC", "CDK8", "CDK19",
 }
 _VALIDATED = {"ATP2A2", "CYB5R4", "ELOB", "MEN1", "KDM1A"}
-ZHU_NAMED_REGULATORS = _SAGA | _MEDIATOR | _VALIDATED
+
+
+def _load_program_regulators() -> set:
+    """Regulators Zhu named for any program (polarization, aging), from the top decile of
+    the analysis-repo coefficient tables. A discovery is void if Zhu named it for any
+    program, not just cytokine production, so these extend the exclusion beyond cytokines."""
+    import os
+    import mmc
+    path = os.path.join(os.path.dirname(mmc.__file__), "data", "zhu_program_regulators.txt")
+    try:
+        with open(path) as f:
+            return {ln.strip() for ln in f if ln.strip()}
+    except FileNotFoundError:
+        return set()
+
+
+ZHU_PROGRAM_REGULATORS = _load_program_regulators()
+ZHU_NAMED_REGULATORS = _SAGA | _MEDIATOR | _VALIDATED | ZHU_PROGRAM_REGULATORS
 
 # Textbook TCR signalosome, costimulation, and cytokine/interleukin receptors. Knocking
 # these down lowers cytokine production because they are upstream of activation, so they
@@ -69,6 +86,7 @@ KNOWN_SIGNALING = {
     "SOS1", "SOS2", "WAS", "WIPF1", "NCK1", "NCK2", "RLTPR", "CARMIL2", "DEF6",
     "CARD11", "MALT1", "BCL10", "CD28", "ICOS", "PDPK1", "PRKCB", "MAP3K7", "CHUK",
     "IKBKB", "IKBKG", "LCP1", "FYB1", "SKAP1", "INPP5D", "PTPN6", "PTPN22", "CSK",
+    "CD2", "CD5", "CD6", "CD7", "SLAMF6", "TNFRSF9", "TNFRSF4", "CD27", "CD40LG", "CD8A",
     "IL2RA", "IL2RB", "IL2RG", "IL4R", "IL6R", "IL6ST", "IL7R", "IL10RA", "IL10RB",
     "IL12RB1", "IL12RB2", "IL18R1", "IL18RAP", "IL21R", "IL23R", "IFNGR1", "IFNGR2",
     "TNFRSF1A", "TNFRSF1B", "IL1R1", "CSF2RB", "IL9R", "IL13RA1", "IL15RA",
@@ -77,6 +95,8 @@ KNOWN_SIGNALING = {
 FDR_THRESH = 0.10
 MIN_DE_ENTRIES = 40     # power precondition: total significant (reg x cytokine) LOO entries
 MODULE_MAX_DARK = 15    # top dark candidates to include (tractability vs discovery room)
+MIN_BREADTH = 50        # a real knockdown moves at least this many genes; below is noise
+                        # (a failed guide whose few hits happen to include cytokines)
 
 
 # ----------------------------- store query --------------------------------
@@ -107,50 +127,80 @@ def query_cytokine_hits(conditions=("Rest", "Stim8hr", "Stim48hr")) -> pd.DataFr
     return df
 
 
+def query_breadth() -> dict:
+    """Per-perturbation effect breadth (max downstream genes moved over conditions). A
+    broadly-acting knockdown injects a global-stress signature that confounds the fit, so
+    breadth is used to exclude pleiotropic candidates and to weight specificity."""
+    from mmc.shared.store import _con
+    df = _con().execute(
+        "SELECT perturbation, MAX(n_downstream) AS breadth FROM zhu_pert GROUP BY perturbation"
+    ).df()
+    return dict(zip(df["perturbation"], df["breadth"].astype(float)))
+
+
 # ----------------------- partition + power + assembly ---------------------
-def build_module(hits: pd.DataFrame):
-    """From significant cytokine hits, rank regulators and split known vs dark."""
+def build_module(hits: pd.DataFrame, breadth: dict):
+    """Rank regulators by breadth times specificity, split known vs dark, and drop the
+    top decile of breadth among dark candidates (the pleiotropy / viability confound)."""
     sig = hits.copy()
     sig["abs_eff"] = sig["effect_size"].abs()
     g = (sig.groupby("perturbation")
             .agg(n_cyto=("cytokine", "nunique"),
                  n_entries=("cytokine", "size"),
                  mean_abs_eff=("abs_eff", "mean"))
-            .reset_index()
-            .sort_values(["n_cyto", "mean_abs_eff"], ascending=False))
-    # Zhu-named is checked first (exclusion takes priority), then canonical TFs, then
-    # textbook signalling/receptors; anything else with a cytokine effect is dark.
+            .reset_index())
+    bmax = max(breadth.values()) if breadth else 1.0
+    g["breadth"] = g["perturbation"].map(breadth).fillna(bmax)
+    # specificity: fraction of the knockdown's downstream effect that lands on cytokines;
+    # score rewards hitting many cytokines with a cytokine-concentrated (not global) effect.
+    g["specificity"] = g["n_entries"] / g["breadth"].clip(lower=1.0)
+    g["score"] = g["n_cyto"] * g["specificity"]
+
     conds = [g["perturbation"].isin(ZHU_NAMED_REGULATORS),
              g["perturbation"].isin(CANONICAL_REGULATORS),
              g["perturbation"].isin(KNOWN_SIGNALING)]
     g["class"] = np.select(conds, ["zhu_named", "canonical", "signaling"], default="dark")
     backbone = g[g["class"].isin(["canonical", "signaling"])]
-    dark = g[g["class"] == "dark"].head(MODULE_MAX_DARK)
+
+    # Breadth window: floor removes noise (a failed knockdown with a few cytokine hits and
+    # near-zero breadth scores hyper-specific but is an artefact), ceiling (top decile among
+    # real-breadth candidates) removes the global-stress / viability confound. The Zhu
+    # program exclusion already dropped most housekeeping genes; this catches the rest.
+    dark_all = g[g["class"] == "dark"].copy()
+    real = dark_all[dark_all["breadth"] >= MIN_BREADTH]
+    if len(real) >= 10:
+        real = real[real["breadth"] < real["breadth"].quantile(0.90)]
+    # rank by cytokine-regulatory power (breadth of cytokines hit), then effect size.
+    dark = real.sort_values(["n_cyto", "mean_abs_eff"], ascending=False).head(MODULE_MAX_DARK)
+
     module_regs = pd.concat([backbone, dark])
     total_entries = int(module_regs["n_entries"].sum())
-    return g, backbone, dark, total_entries
+    return g, backbone, dark, dark_all, total_entries
 
 
-def report(g, backbone, dark, total_entries):
+def report(g, backbone, dark, dark_all, total_entries):
+    cols = ["perturbation", "n_cyto", "n_entries", "mean_abs_eff", "breadth", "specificity", "score"]
     print(f"cytokine panel: {len(CYTOKINE_PANEL)} readout genes")
     print(f"regulators with significant cytokine effects: {len(g)}")
     print(f"  canonical TFs: {(g['class']=='canonical').sum()} | signalling/receptors: "
-          f"{(g['class']=='signaling').sum()} | dark candidates: {(g['class']=='dark').sum()} "
+          f"{(g['class']=='signaling').sum()} | dark (pre-filter): {len(dark_all)} "
           f"| zhu_named (excluded): {(g['class']=='zhu_named').sum()}")
     print(f"\nPOWER PRECONDITION: {total_entries} total DE entries (need >= {MIN_DE_ENTRIES}) "
           f"-> {'PASS' if total_entries>=MIN_DE_ENTRIES else 'FAIL: widen panel / add regulators'}")
-    print("\nTop DARK discovery candidates (data-supported, not canonical, not Zhu-named):")
-    print(dark[["perturbation", "n_cyto", "n_entries", "mean_abs_eff"]].to_string(index=False))
-    zn = g[g["class"] == "zhu_named"]
+    print("\nTop DARK candidates (not canonical/signalling/Zhu-named; top-decile-breadth "
+          "dropped; ranked by breadth x specificity):")
+    print(dark[cols].round(4).to_string(index=False))
+    zn = g[g["class"] == "zhu_named"].sort_values("n_cyto", ascending=False)
     if len(zn):
-        print("\nExcluded because Zhu named them (would be re-derivation):")
-        print(zn[["perturbation", "n_cyto", "n_entries", "mean_abs_eff"]].head(15).to_string(index=False))
+        print("\nExcluded because Zhu named them (cytokine or program; would be re-derivation):")
+        print(zn[["perturbation", "n_cyto", "n_entries", "mean_abs_eff"]].head(12).to_string(index=False))
 
 
 def main():
+    print(f"loaded {len(ZHU_PROGRAM_REGULATORS)} Zhu program-named regulators to exclude")
     hits = query_cytokine_hits()
-    g, backbone, dark, total = build_module(hits)
-    report(g, backbone, dark, total)
+    g, backbone, dark, dark_all, total = build_module(hits, query_breadth())
+    report(g, backbone, dark, dark_all, total)
     module_genes = sorted(set(CYTOKINE_PANEL) | set(backbone["perturbation"]) | set(dark["perturbation"]))
     pd.Series(module_genes).to_csv("/app/cytokine_module_genes.csv", index=False, header=["gene"])
     print(f"\nwrote {len(module_genes)} module genes -> cytokine_module_genes.csv")
@@ -175,12 +225,15 @@ def selftest():
     add("DARK3", ["IL10"], -0.9)                        # dark
     add("DARK4", ["CSF2", "IL9"], -1.1)                 # dark
     hits = pd.DataFrame(rows, columns=["perturbation", "cytokine", "condition", "effect_size", "fdr"])
-    g, backbone, dark, total = build_module(hits)
-    report(g, backbone, dark, total)
-    assert set(dark["perturbation"]).issubset({"DARK1", "DARK2", "DARK3", "DARK4"})
+    breadth = {"GATA3": 1200, "STAT6": 900, "BATF": 800, "TADA2B": 700, "USP22": 600,
+               "CYB5R4": 500, "DARK1": 120, "DARK2": 80, "DARK3": 60, "DARK4": 5}  # DARK4 breadth 5 = noise
+    g, backbone, dark, dark_all, total = build_module(hits, breadth)
+    report(g, backbone, dark, dark_all, total)
+    assert set(dark["perturbation"]).issubset({"DARK1", "DARK2", "DARK3"})
     assert "TADA2B" not in set(dark["perturbation"]) and "CYB5R4" not in set(dark["perturbation"])
-    assert dark.iloc[0]["perturbation"] == "DARK1"
-    print("\n[selftest] partition + ranking + Zhu-exclusion correct.")
+    assert "DARK4" not in set(dark["perturbation"])       # breadth 5 < MIN_BREADTH -> noise, dropped
+    assert dark.iloc[0]["perturbation"] == "DARK1"        # highest cytokine breadth ranks first
+    print("\n[selftest] partition + breadth window + power ranking + Zhu-exclusion correct.")
 
 
 if __name__ == "__main__":
