@@ -204,9 +204,17 @@ def main():
     hits = query_cytokine_hits()
     g, backbone, dark, dark_all, total = build_module(hits, query_breadth())
     report(g, backbone, dark, dark_all, total)
-    module_genes = sorted(set(CYTOKINE_PANEL) | set(backbone["perturbation"]) | set(dark["perturbation"]))
-    pd.Series(module_genes).to_csv("/app/cytokine_module_genes.csv", index=False, header=["gene"])
-    print(f"\nwrote {len(module_genes)} module genes -> cytokine_module_genes.csv")
+    import json
+    regs = sorted(set(backbone["perturbation"]) | set(dark["perturbation"]))
+    genes = sorted(set(CYTOKINE_PANEL) | set(regs))
+    # persist the module definition (regulators are the perturbations; targets are the
+    # cytokine readouts plus the regulators, so regulator-to-regulator scaffold edges and
+    # regulator-to-cytokine edges are both representable) for the discovery run.
+    with open("/app/cytokine_module_def.json", "w") as f:
+        json.dump({"module": "Cytokine_production", "regulators": regs, "targets": genes,
+                   "dark": list(dark["perturbation"])}, f, indent=2)
+    print(f"\nwrote module definition ({len(regs)} regulators, {len(genes)} genes) "
+          f"-> cytokine_module_def.json")
 
 
 # ------------------------------- self test --------------------------------

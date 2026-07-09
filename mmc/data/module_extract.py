@@ -11,10 +11,23 @@ from __future__ import annotations
 from ..shared import store
 from .precondition import MODULES
 
+# Modules assembled at runtime (for example the data-derived cytokine module from
+# scripts/cytokine_module.py) register here so the loop can run on them by name without
+# hardcoding a data-derived gene list into the pre-registered MODULES.
+_DYNAMIC: dict[str, dict[str, list[str]]] = {}
+
+
+def register_module(name: str, regulators: list[str], targets: list[str]) -> None:
+    _DYNAMIC[name] = {"regulators": list(regulators), "targets": list(targets)}
+
+
+def _spec(module: str) -> dict:
+    return _DYNAMIC.get(module) or MODULES[module]
+
 
 def model_genes(module: str) -> list[str]:
     """The genes in the model: the union of regulators and targets, order-stable."""
-    m = MODULES[module]
+    m = _spec(module)
     seen: set[str] = set()
     out: list[str] = []
     for g in list(m["regulators"]) + list(m["targets"]):
@@ -25,7 +38,7 @@ def model_genes(module: str) -> list[str]:
 
 
 def regulators(module: str) -> list[str]:
-    return list(MODULES[module]["regulators"])
+    return list(_spec(module)["regulators"])
 
 
 def observed_deltas(module: str, condition: str) -> dict[str, dict[str, float]]:
