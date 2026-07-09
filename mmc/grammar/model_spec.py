@@ -43,6 +43,28 @@ class Term(BaseModel):
     regulators: list[str]
     signs: dict[str, int] = {}
 
+    @model_validator(mode="before")
+    @classmethod
+    def _accept_signed_regulators(cls, data):
+        """Accept regulators given as [{'regulator': g, 'sign': s}] and split them
+        into a name list plus a signs map, so the natural shape validates too."""
+        if not (isinstance(data, dict) and isinstance(data.get("regulators"), list)):
+            return data
+        regs = data["regulators"]
+        if not (regs and isinstance(regs[0], dict)):
+            return data
+        names: list[str] = []
+        signs: dict[str, int] = dict(data.get("signs") or {})
+        for r in regs:
+            if isinstance(r, dict) and "regulator" in r:
+                names.append(r["regulator"])
+                if "sign" in r:
+                    try:
+                        signs.setdefault(r["regulator"], int(r["sign"]))
+                    except (TypeError, ValueError):
+                        pass
+        return {**data, "regulators": names, "signs": signs}
+
     @field_validator("regulators")
     @classmethod
     def _size(cls, v: list[str]) -> list[str]:

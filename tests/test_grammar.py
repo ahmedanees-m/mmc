@@ -34,3 +34,15 @@ def test_rule_without_edge_rejected():
 def test_bad_sign_rejected():
     with pytest.raises(Exception):
         Edge(regulator="A", target="B", sign=0)
+
+
+def test_signed_regulator_form_is_normalized():
+    # a term's regulators given as objects with signs is split into names plus a signs map
+    spec = ModelSpec(
+        genes=["A", "B"],
+        edges=[Edge(regulator="A", target="B", sign=1)],
+        rules={"B": {"terms": [{"regulators": [{"regulator": "A", "sign": -1}]}]}},
+    )
+    term = spec.rules["B"].terms[0]
+    assert term.regulators == ["A"]
+    assert term.signs == {"A": -1}

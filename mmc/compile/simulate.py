@@ -6,10 +6,14 @@ from .to_ode import build_rhs
 from ..grammar.model_spec import ModelSpec
 
 
-def steady_state(spec: ModelSpec, params: dict, x0=None, T: float = 200.0) -> np.ndarray:
+def steady_state(spec: ModelSpec, params: dict, x0=None, T: float = 80.0) -> np.ndarray:
+    """Integrate to steady state. Production is bounded (logistic gates) and decay is
+    linear, so the system settles on the decay timescale; T well past that with LSODA
+    reaches the fixed point. Tolerances are set for a smooth non-stiff right-hand side
+    and to keep the fit inner loop affordable."""
     rhs, _ = build_rhs(spec, params)
     n = len(spec.genes)
     if x0 is None:
         x0 = np.full(n, 0.1)
-    sol = solve_ivp(rhs, (0.0, T), x0, method="LSODA", rtol=1e-6, atol=1e-8)
+    sol = solve_ivp(rhs, (0.0, T), x0, method="LSODA", rtol=1e-5, atol=1e-7)
     return sol.y[:, -1]

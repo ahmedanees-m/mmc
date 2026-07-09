@@ -43,6 +43,14 @@ MODULES: dict[str, dict[str, list[str]]] = {
         "targets": ["ZAP70", "LAT", "LCP2", "PLCG1", "PRKCQ",
                     "IL2", "NFKB1", "RELA", "FOS", "JUN"],
     },
+    # The proximal signalosome core: the five-gene cascade ZAP70 -> LAT ->
+    # LCP2 / PLCG1 with PRKCQ, taken as both regulators and targets. It is a
+    # self-contained sub-circuit of TCR_signalosome, small enough to fit and
+    # read in full, and is the module the discovery loop runs on.
+    "TCR_core": {
+        "regulators": ["ZAP70", "LAT", "LCP2", "PLCG1", "PRKCQ"],
+        "targets": ["ZAP70", "LAT", "LCP2", "PLCG1", "PRKCQ"],
+    },
 }
 
 DIRECTIONS: list[tuple[str, str]] = [

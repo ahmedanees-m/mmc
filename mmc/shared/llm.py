@@ -80,8 +80,16 @@ _SYSTEM = (
     "target). Default each rule to a single additive term; use a product-term gate only "
     "when non-monotone logic is required. You set structure and logic form only; an "
     "optimizer sets all magnitudes, so do not emit parameter values. Every regulator named "
-    "in a rule term must have a corresponding edge into that target. Emit only the "
-    "ModelSpec as one JSON object inside a single fenced json block, with no prose."
+    "in a rule term must have a corresponding edge into that target. A term's regulators "
+    "is a list of gene-name strings; put any per-term gate sign in an optional signs "
+    "object mapping a regulator to +1 or -1. Example: "
+    '{"genes": ["A", "B", "C"], '
+    '"edges": [{"regulator": "A", "target": "C", "sign": 1}, '
+    '{"regulator": "B", "target": "C", "sign": -1}], '
+    '"rules": {"C": {"terms": [{"regulators": ["A", "B"], "signs": {"B": -1}}]}}}. '
+    "Begin with a single line starting 'Rationale:' giving one sentence on the key "
+    "structural choice, then emit the ModelSpec as one JSON object inside a single fenced "
+    "json block and nothing else."
 )
 
 
@@ -92,13 +100,18 @@ def _json_block(text: str) -> str:
     return m.group(1)
 
 
-def _emit(user: str, *, attempts: int = 2) -> ModelSpec:
+def _rationale(text: str) -> str:
+    m = re.search(r"Rationale:\s*(.+)", text)
+    return m.group(1).strip() if m else ""
+
+
+def _emit(user: str, *, attempts: int = 2) -> tuple[ModelSpec, str]:
     prompt = user
     last = ""
     for _ in range(attempts):
         out = reason(_SYSTEM, prompt, effort="high")
         try:
-            return ModelSpec.from_json(_json_block(out))
+            return ModelSpec.from_json(_json_block(out)), _rationale(out)
         except Exception as e:  # invalid schema or JSON; return the reason and retry
             last = str(e)
             prompt = user + (f"\n\nYour previous output was rejected: {last}. "
@@ -106,14 +119,15 @@ def _emit(user: str, *, attempts: int = 2) -> ModelSpec:
     raise RuntimeError(f"structure not valid after {attempts} attempts: {last}")
 
 
-def propose_structure(module_genes: list[str], context: str) -> ModelSpec:
-    """Propose an initial executable model for the module."""
+def propose_structure(module_genes: list[str], context: str) -> tuple[ModelSpec, str]:
+    """Propose an initial executable model. Returns (spec, rationale)."""
     user = f"Module genes: {module_genes}\n\nBiological context:\n{context}\n"
     return _emit(user)
 
 
-def repair_structure(current: ModelSpec, context: str, residual_summary: str) -> ModelSpec:
-    """Revise the structure to address the structural residuals."""
+def repair_structure(current: ModelSpec, context: str,
+                     residual_summary: str) -> tuple[ModelSpec, str]:
+    """Revise the structure to address the structural residuals. Returns (spec, rationale)."""
     user = (
         f"Module genes: {current.genes}\n\nBiological context:\n{context}\n\n"
         f"Current model (ModelSpec JSON):\n{current.to_json()}\n\n"
