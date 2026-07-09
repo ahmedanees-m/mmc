@@ -20,6 +20,17 @@ from .ensemble import Ensemble
 from .propose import model_hash
 
 DEFAULT_CONTEXT = {
+    "CD4_lineage_TFs": (
+        "These genes are the lineage-defining transcription factors of CD4+ T-helper "
+        "differentiation and their cytokine output in stimulated primary human CD4+ T "
+        "cells. GATA3 (Th2), TBX21 (Th1), RORC (Th17), FOXP3 (Treg), BCL6 (Tfh), and the "
+        "STATs upstream of them cross-regulate: GATA3 and TBX21 are mutually antagonistic, "
+        "STAT6 drives GATA3, STAT4 and STAT1 drive TBX21, STAT3 drives RORC. Their output "
+        "is the cytokines IL4, IL5, IL13 (Th2), IFNG (Th1), IL17A, IL17F (Th17), IL10, IL21, "
+        "and IL2. Unlike a single signaling cascade, these regulators do different things "
+        "when knocked down, some activating and some repressing their targets. Knockdown "
+        "effects are log2 fold changes at 8 hours of stimulation."
+    ),
     "TCR_signalosome": (
         "These genes are the T-cell-receptor signalosome and its immediate transcriptional "
         "output in stimulated primary human CD4+ T cells. CD3E, ZAP70, LAT, LCP2, PLCG1, and "

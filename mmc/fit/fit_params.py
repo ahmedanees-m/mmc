@@ -55,6 +55,15 @@ def _gene_index(spec: ModelSpec) -> dict[str, int]:
     return {g: i for i, g in enumerate(spec.genes)}
 
 
+# The objective targets what the model is judged on: the differentially expressed genes
+# and their direction, not the near-zero bulk that a plain mean-squared error rewards
+# (PREREG amendment 2026-07-09). DE gene-perturbation pairs are up-weighted, and a hinge
+# penalises predicting the wrong direction on a DE pair.
+DE_THRESHOLD = 0.5
+DE_WEIGHT = 4.0
+SIGN_PENALTY = 0.5
+
+
 def _loss(spec: ModelSpec, x: np.ndarray, observed: dict, gene_index: dict) -> float:
     params = _unpack(spec, x)
     try:
@@ -63,7 +72,7 @@ def _loss(spec: ModelSpec, x: np.ndarray, observed: dict, gene_index: dict) -> f
             return 1e6
     except Exception:
         return 1e6
-    total, count = 0.0, 0
+    werr, wsum, sign_pen, n_de = 0.0, 0.0, 0.0, 0
     for pert, deltas in observed.items():
         if pert not in gene_index:
             continue
@@ -74,10 +83,23 @@ def _loss(spec: ModelSpec, x: np.ndarray, observed: dict, gene_index: dict) -> f
         if not np.all(np.isfinite(d)):
             return 1e6
         for gene, obs in deltas.items():
-            if gene in gene_index:
-                total += (float(d[gene_index[gene]]) - float(obs)) ** 2
-                count += 1
-    return total / count if count else 1e6
+            if gene not in gene_index:
+                continue
+            pred = float(d[gene_index[gene]])
+            obs = float(obs)
+            is_de = abs(obs) >= DE_THRESHOLD
+            w = 1.0 + (DE_WEIGHT if is_de else 0.0)
+            werr += w * (pred - obs) ** 2
+            wsum += w
+            if is_de:
+                sign_pen += max(0.0, -np.sign(obs) * pred)   # >0 only on a wrong-direction prediction
+                n_de += 1
+    if wsum == 0:
+        return 1e6
+    loss = werr / wsum
+    if n_de:
+        loss += SIGN_PENALTY * (sign_pen / n_de)
+    return loss
 
 
 def fit(spec: ModelSpec, observed: dict, seed: int = 0,

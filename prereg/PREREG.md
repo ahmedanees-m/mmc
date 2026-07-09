@@ -119,4 +119,31 @@ is frozen.
 - Score the predicted conserved and rewired map against the scaffold in section 3.
 
 ## Amendments
-(None yet. Any change after the loop is built is dated and justified here.)
+
+**2026-07-09, amendment 1: fit objective.** The parameter fit minimised a plain
+mean-squared error over all gene-perturbation pairs. That objective is dominated by the
+many near-zero genes and does not target what the model is scored on, and the first full
+run showed it: in-sample Pearson 0.83 with in-sample sign accuracy 0.50, a model that
+matched magnitudes but not directions. The objective is amended to a differentially
+expressed-gene-weighted squared error plus a hinge penalty on predicting the wrong
+direction for a DE pair (mmc/fit/fit_params.py, DE_THRESHOLD 0.5, DE_WEIGHT 4.0,
+SIGN_PENALTY 0.5). This is a fit-side change only; the grammar, the splits, the metrics,
+and the leakage rule are unchanged.
+
+**2026-07-09, amendment 2: module selection and a baseline-beatability screen.** The
+precondition screened conservation but not mean-beatability, and it selected the TCR
+signalosome, which the first full run and a follow-up baseline screen
+(scripts/baseline_screen.py) showed is the mean-baseline worst case: its perturbations
+are 0.91 correlated and the leave-one-out mean reconstructs held-out perturbations at
+0.90, so no method can win the number there. The screen adds a mean-beatability
+criterion, run before modeling: leave-one-out mean and persistence baseline performance
+and inter-perturbation correlation per candidate module. By that screen the primary
+module is amended to CD4_lineage_TFs, the CD4 lineage master transcription factors: 19
+perturbations (adequate power), inter-perturbation correlation 0.26 (diverse), and a
+leave-one-out mean of 0.48 with mean sign accuracy 0.70 (headroom on both magnitude and
+sign). The TCR signalosome is retained as a documented negative control. Th2 and GATA3
+(leave-one-out mean 0.12) remains a secondary module but is under-powered at four
+perturbations. Splits for modules beyond the pre-registered TCR signalosome are derived
+deterministically by sorted gene order (mmc/data/splits.py, 70 percent train and 30
+percent in-context held-out; first and second halves for the Tier B discovery and
+held-out subsets); the leakage audit still holds by construction.

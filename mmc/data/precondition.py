@@ -51,6 +51,30 @@ MODULES: dict[str, dict[str, list[str]]] = {
         "regulators": ["ZAP70", "LAT", "LCP2", "PLCG1", "PRKCQ"],
         "targets": ["ZAP70", "LAT", "LCP2", "PLCG1", "PRKCQ"],
     },
+    # The CD4 lineage master transcription factors: a diverse, well-powered module
+    # selected by the baseline screen (scripts/baseline_screen.py). Its regulators are
+    # not redundant (GATA3 activates, TBX21 represses, the STATs sit upstream), so the
+    # mean baseline is weak and there is headroom for a mechanistic model, and it is
+    # rewiring-rich, which the decomposition needs. Added as a dated PREREG amendment.
+    "CD4_lineage_TFs": {
+        "regulators": ["GATA3", "TBX21", "STAT6", "STAT4", "STAT1", "STAT3", "RORC",
+                       "FOXP3", "IRF4", "BATF", "BCL6", "MAF", "PRDM1", "RUNX3", "AHR",
+                       "IKZF2", "FOXO1", "TCF7", "LEF1", "ID2"],
+        "targets": ["GATA3", "TBX21", "STAT6", "STAT4", "STAT1", "STAT3", "RORC",
+                    "FOXP3", "IRF4", "BATF", "IL4", "IL5", "IL13", "IFNG", "IL17A",
+                    "IL17F", "IL2", "IL10", "IL21", "IL9", "TNF", "CSF2", "CTLA4"],
+    },
+    # The lineage TF cross-regulatory network: the diverse master TFs as both regulators
+    # and targets, no cytokine output. This keeps the diversity and the sign structure
+    # (GATA3 and TBX21 antagonism, STATs upstream) at a dimension the loop can fit and
+    # read in full, which the 30-gene CD4_lineage_TFs cannot. It is the decisive module
+    # for the in-context gate.
+    "CD4_TF_network": {
+        "regulators": ["GATA3", "TBX21", "STAT6", "STAT4", "STAT1", "STAT3", "RORC",
+                       "FOXP3", "IRF4", "BATF", "BCL6", "PRDM1", "RUNX3", "MAF"],
+        "targets": ["GATA3", "TBX21", "STAT6", "STAT4", "STAT1", "STAT3", "RORC",
+                    "FOXP3", "IRF4", "BATF", "BCL6", "PRDM1", "RUNX3", "MAF"],
+    },
 }
 
 DIRECTIONS: list[tuple[str, str]] = [

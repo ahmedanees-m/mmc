@@ -62,15 +62,39 @@ class Splits:
 
 
 def build(module: str = "TCR_signalosome") -> Splits:
+    if module == "TCR_signalosome":
+        return Splits(
+            module=module,
+            train_state=TRAIN_STATE,
+            test_state=TEST_STATE,
+            train_perts=_TRAIN_PERTS,
+            incontext_heldout=_INCONTEXT_HELDOUT,
+            tierA_perts=_TIER_A,
+            tierB_discovery=_TIER_B_DISCOVERY,
+            tierB_heldout=_TIER_B_HELDOUT,
+        )
+    return _generic(module)
+
+
+def _generic(module: str) -> Splits:
+    """Derive a leakage-safe split for a module from the perturbations measured in both
+    states. Deterministic by sorted gene order: the first 70 percent train structure and
+    the rest are the in-context held-out set; the first and second halves are the Tier B
+    discovery and held-out subsets. Added as a dated PREREG amendment for modules beyond
+    the pre-registered TCR signalosome."""
+    from . import module_extract
+
+    tr = set(module_extract.observed_deltas(module, TRAIN_STATE))
+    te = set(module_extract.observed_deltas(module, TEST_STATE))
+    regs = sorted(tr & te)
+    n = len(regs)
+    n_train = max(1, round(0.7 * n))
+    half = max(1, n // 2)
     return Splits(
-        module=module,
-        train_state=TRAIN_STATE,
-        test_state=TEST_STATE,
-        train_perts=_TRAIN_PERTS,
-        incontext_heldout=_INCONTEXT_HELDOUT,
-        tierA_perts=_TIER_A,
-        tierB_discovery=_TIER_B_DISCOVERY,
-        tierB_heldout=_TIER_B_HELDOUT,
+        module=module, train_state=TRAIN_STATE, test_state=TEST_STATE,
+        train_perts=tuple(regs[:n_train]), incontext_heldout=tuple(regs[n_train:]),
+        tierA_perts=tuple(regs), tierB_discovery=tuple(regs[:half]),
+        tierB_heldout=tuple(regs[half:]),
     )
 
 
