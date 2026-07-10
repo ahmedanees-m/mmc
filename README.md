@@ -78,7 +78,7 @@ The project is an honest sequence of reframes, each forced by the data:
    cytokine module, the model predicts *worse* than a linear baseline held-out (DE-overlap
    0.18 vs 0.45, separated CIs). Decisive, not confounded: mechanism fits but does not
    predict single-knockdown steady-state data. The engineer's proposal (STK11) was logged as
-   proposed-but-unvalidated — the discipline working.
+   proposed-but-unvalidated, the discipline working.
 
 Each step walked back an earlier overclaim rather than defend it. That is the craft.
 
