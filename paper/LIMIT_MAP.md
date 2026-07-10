@@ -19,10 +19,10 @@ beat baselines only in a specific, characterizable regime, and nowhere else.
 
 Two axes decide whether a mechanistic or AI model beats a simple baseline on held-out data:
 
-1. **In-sample fittability** — can the model class even represent the responses? Low
+1. **In-sample fittability**: can the model class even represent the responses? Low
    fittability is a data ceiling (the specific signal is swamped by the bulk response); it is
    necessary but not sufficient.
-2. **Held-out advantage over the best simple baseline (mean, linear)** — the only thing that
+2. **Held-out advantage over the best simple baseline (mean, linear)**: the only thing that
    matters. This is what the map plots (`mmc_limit_map.png`).
 
 The measured regimes, held-out DE-overlap (leave-one-perturbation-out), model versus the best
@@ -33,7 +33,7 @@ simple baseline:
 | Redundant cascade | TCR signalosome | yes | no (mean unbeatable) | perturbations 0.91 correlated; the mean already is the answer, no headroom |
 | Weak specific signal | CD4 TF network | no (~0.2) | no | the specific TF-to-TF signal is swamped by the bulk response; a data ceiling |
 | Strong fit, no prediction | Th2/GATA3; cytokine module | yes (in-sample 0.93) | **no** (model 0.18 < linear 0.45, separated CIs) | fitting is not predicting; capacity does not compose to held-out generalization |
-| Non-additive (combinatorial) | Norman K562 (independent) | — | headroom exists in principle | logic gates represent epistasis additive models cannot; but the field's data shows most dual effects are still linear, so headroom is thin |
+| Non-additive (combinatorial) | Norman K562 (independent) | n/a | headroom exists in principle | logic gates represent epistasis additive models cannot; but the field's data shows most dual effects are still linear, so headroom is thin |
 
 The figure encodes provenance honestly: filled markers are measured held-out DE-overlap on
 this atlas, open markers are other-metric or qualitative placements, and the star is the
@@ -45,12 +45,12 @@ cannot reach.
 A mechanistic or AI model beats a simple baseline on held-out prediction only where all three
 hold, and each is often violated:
 
-- **(a) The specific signal is strong** — not swamped by the bulk, non-specific response. On
+- **(a) The specific signal is strong**: not swamped by the bulk, non-specific response. On
   single-knockdown steady-state data this frequently fails (the CD4 TF network), and even
   when it holds (Th2/GATA3, the cytokine module) the model still fits without predicting.
-- **(b) There is non-redundancy** — headroom over the mean. Functionally redundant modules
+- **(b) There is non-redundancy**: headroom over the mean. Functionally redundant modules
   (the TCR signalosome) leave none: the mean already is the answer.
-- **(c) There is non-additivity** — the distinctive feature of mechanism (logic gates, the
+- **(c) There is non-additivity**: the distinctive feature of mechanism (logic gates, the
   sum-of-products) is only needed for epistasis. But the field's combinatorial benchmarks
   show most dual effects are close to additive, so even this regime's headroom is thin.
 
