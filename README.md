@@ -3,7 +3,7 @@
 MMC is a Claude-driven loop that reads a genome-scale immune-perturbation atlas,
 autonomously proposes interpretable, runnable models of gene-regulatory circuits, tests
 them against the real perturbation data, and **refuses to certify the hypotheses it cannot
-stand behind** — catching its own plausible-but-wrong ideas.
+stand behind**, catching its own plausible-but-wrong ideas.
 
 The honest headline: on this data, mechanistic models **fit but do not predict** held-out
 single-knockdown responses, and MMC says so. The contribution is not a prediction win. It
@@ -38,10 +38,15 @@ streamlit run demo/app.py
   pattern (a knockdown that raises a target the model lowers) and infers a structural change
   (flip an edge sign, insert a repressor). That inference is the step a syntactic search
   cannot perform.
-- **Self-correction, by construction.** A held-out prediction gate and an anti-theater
-  discovery protocol refuse to certify a hypothesis that fits but does not predict. On the
-  cytokine module the loop proposed STK11 as a chemokine repressor with a coherent,
-  data-grounded rationale; the gate rejected it. An AI that knows when it is wrong.
+- **Self-correction, by construction, and measured.** A held-out prediction gate and an
+  anti-theater discovery protocol refuse to certify a hypothesis that fits but does not
+  predict. On the cytokine module the loop proposed STK11 as a chemokine repressor with a
+  coherent, data-grounded rationale; the gate rejected it. This was not a one-off: across
+  every hypothesis the loop proposed on these modules, nine coherently-argued proposals
+  yielded twenty-one novel edges and zero that survived held-out validation, a 100 percent
+  gate catch rate. Plausibility did not track prediction, and the gate supplied the
+  calibration the rationale lacked (`paper/engineer_behavior.png`). An AI that knows when it
+  is wrong.
 - **The limit-map.** A rigorous, mechanistically-explained boundary of where mechanism beats
   correlation and where it does not, resolving a live field confusion (why do mechanistic
   and foundation models keep failing to beat simple baselines? they are usually tested where

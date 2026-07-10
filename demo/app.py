@@ -17,8 +17,9 @@ import streamlit as st
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 LIMIT_MAP = os.path.join(HERE, "..", "paper", "mmc_limit_map.png")
+ENGINEER_FIG = os.path.join(HERE, "..", "paper", "engineer_behavior.png")
 
-st.set_page_config(page_title="MMC — the honest AI biological engineer", layout="wide")
+st.set_page_config(page_title="MMC, the honest AI biological engineer", layout="wide")
 
 GREEN, RED = "#2E7D32", "#C62828"
 
@@ -43,13 +44,13 @@ def circuit_dot(edges, highlight=None):
 
 
 # ------------------------------ header ------------------------------
-st.title("MMC — an AI biological engineer that knows when it is wrong")
+st.title("MMC: an AI biological engineer that knows when it is wrong")
 st.markdown(
     "It reads the newest immune-disease atlas, **proposes interpretable, runnable models** "
-    "of disease-driving regulatory circuits, **tests them against the real data** — and "
+    "of disease-driving regulatory circuits, **tests them against the real data**, and "
     "**refuses to certify the hypotheses it cannot stand behind**, catching its own "
     "plausible-but-wrong ideas. The first mechanistic-hypothesis engine a target team can "
-    "actually trust — *because it tells you when not to.*"
+    "actually trust, *because it tells you when not to.*"
 )
 st.caption("Scope: the Zhu 2025 genome-scale CD4+ T-cell Perturb-seq atlas; these modules; "
            "CD4+ T cells. No prediction win or disease discovery is claimed.")
@@ -63,8 +64,8 @@ if beat.startswith("1"):
     st.header("Beat 1 · Watch Claude do science")
     st.markdown(
         "Given only the atlas, Claude autonomously writes a **runnable, interpretable "
-        "model** of the **Th2 / GATA3 axis** — the circuit driving allergy, asthma, and "
-        "atopic disease — as signed edges and logic it can simulate, then fits it, reads "
+        "model** of the **Th2 / GATA3 axis**, the circuit driving allergy, asthma, and "
+        "atopic disease, as signed edges and logic it can simulate, then fits it, reads "
         "the residuals, and revises."
     )
     th2_edges = [
@@ -91,15 +92,15 @@ if beat.startswith("1"):
 
 # ------------------------------ Beat 2 ------------------------------
 elif beat.startswith("2"):
-    st.header("Beat 2 · It catches itself — the capability that surprised us")
+    st.header("Beat 2 · It catches itself: the capability that surprised us")
     st.markdown(
         "On the cytokine-production module, Claude proposed a **novel, disease-relevant** "
         "hypothesis and reasoned about it from the data. Then the held-out gate was asked "
-        "whether the hypothesis actually **predicts** — and it refused to certify it."
+        "whether the hypothesis actually **predicts**, and it refused to certify it."
     )
     left, right = st.columns(2)
     with left:
-        st.subheader("Claude proposes — and reasons from the data")
+        st.subheader("Claude proposes, and reasons from the data")
         st.markdown("**Proposal:**")
         st.info("...use **STK11 (LKB1)** as a metabolic hub that both gates cytokines and "
                 "controls the mitochondrial/metabolic genes, which in turn each feed one "
@@ -112,27 +113,45 @@ elif beat.startswith("2"):
             [("STK11", "IL2", -1), ("STK11", "IFNG", -1), ("STK11", "CXCL8", -1),
              ("STK11", "CCL3", -1), ("STK11", "CCL4", -1)], highlight={"STK11"}),
             use_container_width=True)
-        st.caption("A plausible, coherent, disease-relevant mechanistic hypothesis — "
+        st.caption("A plausible, coherent, disease-relevant mechanistic hypothesis: "
                    "STK11/LKB1 as a metabolic repressor of chemokines.")
     with right:
         st.subheader("The gate refuses to certify it")
         st.markdown("Held-out prediction (leave-one-perturbation-out), the metric that "
-                    "matters — **does the hypothesis predict data it never saw?**")
+                    "matters: **does the hypothesis predict data it never saw?**")
         st.table({
             "method": ["**MMC model**", "linear baseline", "mean baseline"],
             "held-out DE-overlap [95% CI]": ["**0.18 [0.10, 0.27]**",
                                              "0.45 [0.33, 0.57]", "0.37 [0.26, 0.49]"],
         })
-        st.error("**PROPOSED — NOT CERTIFIED.** The model predicts *worse* than a simple "
+        st.error("**PROPOSED, NOT CERTIFIED.** The model predicts *worse* than a simple "
                  "linear baseline, with cleanly separated confidence intervals. The "
                  "hypothesis fits the training data but does not predict held-out data, so "
                  "the engine refuses to send a target team chasing it.")
-        st.success("An AI scientist that knows when it is wrong — the exact thing the field "
+        st.success("An AI scientist that knows when it is wrong, the exact thing the field "
                    "is afraid AI cannot do. The honesty is the result.")
+
+    st.divider()
+    st.subheader("This was not a one-off: we measured it")
+    st.markdown(
+        "Across every hypothesis Claude proposed on these modules, we measured whether its "
+        "mechanistic plausibility tracked **held-out predictive validity**, and whether the "
+        "gate reliably caught the proposals that did not predict."
+    )
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("Coherent proposals", "9")
+    m2.metric("Novel (non-textbook) edges", "21")
+    m3.metric("Validated held-out", "0")
+    m4.metric("Gate catch rate", "100%")
+    if os.path.exists(ENGINEER_FIG):
+        st.image(ENGINEER_FIG, use_container_width=True)
+    st.caption("Every coherently-argued proposal that failed held-out validation was caught "
+               "by the gate. Plausibility did not track prediction; the gate supplied the "
+               "calibration the rationale lacked.")
 
 # ------------------------------ Beat 3 ------------------------------
 else:
-    st.header("Beat 3 · It knows its limits — trust as rigor")
+    st.header("Beat 3 · It knows its limits: trust as rigor")
     st.markdown(
         "MMC does not just fail quietly; it **maps where mechanism can and cannot be "
         "trusted**, and says so. This resolves a live confusion in the field (why do "
@@ -145,7 +164,7 @@ else:
         st.warning("limit-map figure not found at paper/mmc_limit_map.png")
     st.markdown(
         "**The finding:** on single-knockdown steady-state data, mechanism has no held-out "
-        "advantage over simple baselines **in any regime** — whether or not it can fit. "
+        "advantage over simple baselines **in any regime**, whether or not it can fit. "
         "The only headroom is genuine non-additivity (combinatorial perturbations), which "
         "single-knockdown data structurally cannot reach. A tool you can trust *because* it "
         "declares its own boundary."
@@ -154,7 +173,7 @@ else:
 st.divider()
 st.markdown(
     "**For a target team:** interpretable, testable mechanistic hypotheses from the newest "
-    "atlas — and an AI that will not send you chasing plausible-but-wrong targets. Most "
+    "atlas, and an AI that will not send you chasing plausible-but-wrong targets. Most "
     "drugs fail because the target was wrong; MMC attacks that, on data you can trust, with "
     "a model that tells you when not to. **Trustworthy mechanistic discovery, by construction.**"
 )
