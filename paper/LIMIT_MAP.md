@@ -15,6 +15,13 @@ beats foundation models on most double perturbations, because most dual effects 
 linear. Yet mechanistic models clearly help somewhere. The map below reconciles this: models
 beat baselines only in a specific, characterizable regime, and nowhere else.
 
+Scope note: the measurements here compare mechanistic models against simple baselines (mean,
+linear) on this atlas. The foundation-model results (Ahlmann-Eltze, and the advantages claimed
+for models such as Arc State) are cited from the literature on other data and tasks; no
+foundation model was run on this atlas here. Our findings are consistent with those reports,
+not a replacement for them, and testing a foundation model such as State on this atlas is future
+work.
+
 ## The map (measured on the atlas)
 
 Two axes decide whether a mechanistic or AI model beats a simple baseline on held-out data:

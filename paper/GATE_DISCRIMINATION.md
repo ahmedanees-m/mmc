@@ -3,6 +3,16 @@
 *A control for the engineer-behavior calibration claim, measured on the Zhu 2025 CD4+ T-cell
 atlas. Scope: this atlas, these edges.*
 
+**The finding.** The failure mode of AI-driven mechanistic discovery here is not hallucination.
+The loop's novel hypotheses are individually grounded and pass edge-level necessity and ablation
+exactly like textbook biology; what they fail is composing into a model that beats a strong
+baseline held-out. Grounded-but-non-predictive hypotheses pass the interpretability checks
+(necessity, ablation) that most validation relies on, and the only safeguard that catches them
+is held-out predictive advantage over a strong baseline. This control establishes both halves:
+the module-level gate discriminates (it says yes to a true structure and ranks an over-connected
+one below it), and the novel edges pass edge-level necessity yet the model still does not beat
+the baseline.
+
 ## Why this control
 
 The engineer-behavior result is that the loop's plausible novel hypotheses do not make the
@@ -65,7 +75,21 @@ into predictive advantage, and the module-level held-out gate is what reveals th
 a more precise claim than "the AI's plausible ideas are wrong," and it is the one the data
 supports.
 
+## The module-level gate is a verified discriminator, not a uniform rejecter
+
+The corrected claim rests on the module-level held-out-advantage test, so we verified that test
+can fire positive rather than rejecting everything. On synthetic ground truth (data generated
+from a known sparse structure with additive noise, `scripts/gate_synthetic_control.py`), the
+true structure clears the held-out bar cleanly: leave-one-perturbation-out DE-overlap 0.90
+(95% CI [0.70, 1.00]) and ACC_DEG 1.0, against the mean baseline's 0.17 and 0.37. A
+fully-connected over-connected structure over-fits and drops to DE-overlap 0.63 and ACC_DEG
+0.77, well below the true model. So the test certifies a true structure and ranks an
+over-connected one materially lower. On every real module it rejects, including the grounded
+STK11 model, it does so because none beats a strong linear baseline, not because it rejects
+everything. Edge-level necessity is the weaker bar that the grounded edges pass.
+
 ## Reproduce
 
 `scripts/gate_discrimination.py` builds the hand-specified module, queries the store, and runs
-the edge-ablation gate; result in `paper/gate_discrimination.json`.
+the edge-ablation gate (`paper/gate_discrimination.json`). `scripts/gate_synthetic_control.py`
+runs the synthetic discriminator control (`paper/gate_synthetic_control.json`).
