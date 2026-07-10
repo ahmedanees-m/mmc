@@ -1,9 +1,11 @@
 """Integrate a compiled model to steady state (WT and perturbed)."""
 from __future__ import annotations
+
 import numpy as np
 from scipy.integrate import solve_ivp
-from .to_ode import build_rhs
+
 from ..grammar.model_spec import ModelSpec
+from .to_ode import build_rhs
 
 
 def steady_state(spec: ModelSpec, params: dict, x0=None, T: float = 80.0) -> np.ndarray:

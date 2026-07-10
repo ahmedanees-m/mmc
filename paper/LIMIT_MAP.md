@@ -18,7 +18,7 @@ beat baselines only in a specific, characterizable regime, and nowhere else.
 Scope note: the measurements here compare mechanistic models against simple baselines (mean,
 linear) on this atlas. The foundation-model results (Ahlmann-Eltze, and the advantages claimed
 for models such as Arc State) are cited from the literature on other data and tasks; no
-foundation model was run on this atlas here. Our findings are consistent with those reports,
+foundation model was run on this atlas here. These findings are consistent with those reports,
 not a replacement for them, and testing a foundation model such as State on this atlas is future
 work.
 
@@ -42,7 +42,7 @@ simple baseline:
 | Strong fit, no prediction | Th2/GATA3; cytokine module | yes (in-sample 0.93) | **no** (model 0.18 < linear 0.45, separated CIs) | fitting is not predicting; capacity does not compose to held-out generalization |
 | Non-additive (combinatorial) | Norman K562 (independent, measured) | yes (represents epistasis) | **no** (model 0.35 vs additive 0.37 on held-out doubles, non-additive pairs) | the interaction is unidentifiable from singles: a logic-gate model fit on the singles predicts doubles no better than additive even where non-additivity is large (0.77) |
 
-The figure encodes provenance honestly: filled markers are measured held-out DE-overlap on
+The figure encodes provenance explicitly: filled markers are measured held-out DE-overlap on
 this atlas, open markers are other-metric or qualitative placements, and the star marks the
 Norman combinatorial regime. That regime is now measured directly (`NORMAN_RESULT.md`): a
 structural model fit on the singles does not beat additive on the held-out doubles, so even
@@ -60,8 +60,8 @@ hold, and each is often violated:
   (the TCR signalosome) leave none: the mean already is the answer.
 - **(c) There is non-additivity**: the distinctive feature of mechanism (logic gates, the
   sum-of-products) is only needed for epistasis. The field's combinatorial benchmarks show
-  most dual effects are close to additive, so the headroom is thin; and on the Norman atlas we
-  measured that even where non-additivity is large, a logic-gate model fit on the singles does
+  most dual effects are close to additive, so the headroom is thin; and on the Norman atlas,
+  even where non-additivity is large, a logic-gate model fit on the singles does
   not beat additive on the held-out doubles, because the interaction is unidentifiable from the
   single-perturbation marginals.
 

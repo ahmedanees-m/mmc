@@ -1,8 +1,9 @@
 """Simulator core: WT steady state and knockdown direction."""
 import numpy as np
-from mmc.grammar.model_spec import ModelSpec, Edge, Rule, Term
-from mmc.compile.simulate import steady_state
+
 from mmc.compile.perturb import knockdown
+from mmc.compile.simulate import steady_state
+from mmc.grammar.model_spec import Edge, ModelSpec, Rule, Term
 
 
 def _model():

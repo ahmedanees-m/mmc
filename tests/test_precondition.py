@@ -1,7 +1,7 @@
 """Precondition edge-classification logic, tested offline with synthetic effects
 (no store access). Each tuple is (effect_size, fdr, crossguide_r, n_downstream);
 the activity n_downstream is the power gate."""
-from mmc.data.precondition import _label, ACTIVE_MIN
+from mmc.data.precondition import ACTIVE_MIN, _label
 
 HI = ACTIVE_MIN + 500   # clearly active
 LO = ACTIVE_MIN - 1     # inactive

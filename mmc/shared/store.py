@@ -1,7 +1,7 @@
-"""Accessor over the existing VERDICT Zhu differential-expression store.
+"""Accessor over the Zhu differential-expression store.
 
-MMC does not re-ingest the atlas. It queries the DuckDB and Parquet store already
-built for VERDICT, pointed at by MMC_ZHU_STORE (the directory holding
+MMC does not re-ingest the atlas. It queries a prebuilt DuckDB and Parquet store,
+pointed at by the MMC_ZHU_STORE environment variable (the directory holding
 perturbation.parquet, gene.parquet, and de.parquet).
 
 Store schema:

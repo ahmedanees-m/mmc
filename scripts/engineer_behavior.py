@@ -11,7 +11,7 @@ not in a module that beats the linear baseline; it is NOT evidence that the gate
 true edges from false ones. The positive control in scripts/gate_discrimination.py
 (paper/GATE_DISCRIMINATION.md) shows the edge-ablation gate flags both textbook and novel edges
 as held-out-necessary, so the novel hypotheses are individually grounded, not hallucinated. The
-corrected, airtight claim is that plausible, edge-grounded mechanism does not compose into a
+corrected claim is that plausible, edge-grounded mechanism does not compose into a
 model that beats a linear baseline held-out, and the module-level gate is the calibration. Do
 not cite catch_rate as a calibration result.
 

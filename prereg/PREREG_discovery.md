@@ -27,7 +27,7 @@ the immune positive's last module. After it:
 adding mechanistic structure beyond Zhu's correlational DE (a signed edge, an intermediate,
 a context-specificity), that is held-out-required, seed-stable, and orthogonally validated.
 **H0:** every held-out-required edge is canonical or Zhu-named, or no dark edge is
-held-out-required, or none validates. H0 is a reportable, honest outcome.
+held-out-required, or none validates. H0 is a reportable outcome.
 
 ## 2. Module (scripts/cytokine_module.py)
 
@@ -98,8 +98,8 @@ gate; if no win despite power, invoke section 0 and pivot to Norman. If a win, e
 held-out-required dark edges and run each through the five criteria; prefer clean-mechanism
 candidates (a kinase such as STK11 or SIK3, a TF cofactor such as CBFB) over chromatin
 candidates, which are conceptually close to Zhu's SAGA and Mediator theme and are held to a
-higher bar. A candidate clearing all five is the centerpiece; none clearing all five is the
-honest null plus the behavior log.
+higher bar. A candidate clearing all five is the primary result; none clearing all five is a
+null result plus the behavior log.
 
 ## 8. Anti-theater guardrails
 

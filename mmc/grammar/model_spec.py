@@ -8,10 +8,11 @@ Rules are a bounded sum-of-products over sigmoid gates (interpretable DNF):
     production_i = sum_k prod_ik * PROD_{j in term_k} sigma(sign*w_ikj * x_j - theta_ik)
 A single additive term = the monotone default. Product of sigmoids = AND.
 Sum of terms = OR. Negative weight = NOT. OR-of-ANDs = XOR / non-monotone logic.
-Bounded (<=3 terms/target, <=3 regulators/term) to preserve interpretability
-and identifiability -- NOT arbitrary MLPs.
+Bounded (at most 3 terms per target, at most 3 regulators per term) to preserve
+interpretability and identifiability, not arbitrary MLPs.
 """
 from __future__ import annotations
+
 from pydantic import BaseModel, field_validator, model_validator
 
 MAX_TERMS = 3
@@ -73,7 +74,7 @@ class Term(BaseModel):
         return v
 
     @model_validator(mode="after")
-    def _signs(self) -> "Term":
+    def _signs(self) -> Term:
         for reg, s in self.signs.items():
             if reg not in self.regulators:
                 raise ValueError(f"term sign for {reg}, which is not a term regulator")
@@ -104,7 +105,7 @@ class ModelSpec(BaseModel):
     rules: dict[str, Rule]  # keyed by target gene
 
     @model_validator(mode="after")
-    def _coherent(self) -> "ModelSpec":
+    def _coherent(self) -> ModelSpec:
         gs = set(self.genes)
         if len(gs) != len(self.genes):
             raise ValueError("duplicate genes")
@@ -130,7 +131,7 @@ class ModelSpec(BaseModel):
         return self.model_dump_json()
 
     @classmethod
-    def from_json(cls, s: str) -> "ModelSpec":
+    def from_json(cls, s: str) -> ModelSpec:
         return cls.model_validate_json(s)
 
     def edge_sign(self, regulator: str, target: str) -> int | None:

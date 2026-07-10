@@ -1,7 +1,7 @@
 """The mean and linear baselines."""
 import numpy as np
 
-from mmc.baselines import mean, linear, consensus
+from mmc.baselines import consensus, linear, mean
 
 TRAIN = {"A": {"X": 1.0, "Y": -2.0}, "B": {"X": 3.0, "Y": 0.0}}
 GENES = ["X", "Y", "Z"]

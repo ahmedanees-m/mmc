@@ -3,11 +3,15 @@
 The receipt records the store computation behind every atlas-derived number that
 enters the loop, so no fitted or observed value is untraceable. The gate enforces
 the actor and tool boundary: the model sets structure, and every magnitude carries
-a receipt from the fitter or the store. The pattern is carried over from VERDICT.
+a receipt from the fitter or the store.
 """
 from __future__ import annotations
-import hmac, hashlib, os
-from datetime import datetime, timezone
+
+import hashlib
+import hmac
+import os
+from datetime import UTC, datetime
+
 from pydantic import BaseModel, Field
 
 
@@ -16,7 +20,7 @@ class Receipt(BaseModel):
     source: str            # 'Zhu2025' | 'fit' | 'simulate' | 'Moonen2026'
     computation: str       # e.g. 'log_fc of GATA3 knockdown on IL13, Stim8hr'
     query: str
-    retrieved_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    retrieved_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     sig: str | None = None
 
 

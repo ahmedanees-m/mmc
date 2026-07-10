@@ -20,9 +20,13 @@ import numpy as np
 
 from mmc.baselines import linear as linear_bl
 from mmc.compile import structural
-from mmc.data import module_extract
-from mmc.eval.holdout import (ModuleData, edge_ablation_holdout, loo_evaluate,
-                              print_report, seed_stability)
+from mmc.eval.holdout import (
+    ModuleData,
+    edge_ablation_holdout,
+    loo_evaluate,
+    print_report,
+    seed_stability,
+)
 from mmc.fit import fit_structural
 from mmc.loop.run import discover
 from mmc.shared import store

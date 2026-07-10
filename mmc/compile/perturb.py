@@ -1,9 +1,12 @@
 """CRISPRi knockdown operator: drive a gene's production to zero, re-simulate."""
 from __future__ import annotations
+
 import copy
+
 import numpy as np
-from .simulate import steady_state
+
 from ..grammar.model_spec import ModelSpec
+from .simulate import steady_state
 
 
 def knockdown(spec: ModelSpec, params: dict, gene: str, wt=None) -> np.ndarray:

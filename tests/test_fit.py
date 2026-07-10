@@ -5,11 +5,11 @@ import pytest
 
 pytest.importorskip("cma")
 
-from mmc.grammar.model_spec import ModelSpec, Edge, Rule, Term
-from mmc.compile.simulate import steady_state
 from mmc.compile.perturb import knockdown
-from mmc.fit.fit_params import multi_fit, _gene_index
+from mmc.compile.simulate import steady_state
 from mmc.fit.diagnose import diagnose
+from mmc.fit.fit_params import _gene_index, multi_fit
+from mmc.grammar.model_spec import Edge, ModelSpec, Rule, Term
 
 
 def _chain():

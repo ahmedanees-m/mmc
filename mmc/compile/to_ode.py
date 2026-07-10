@@ -13,7 +13,9 @@ Logistic (not Hill) for numerical reliability and to avoid the absorbing off-sta
 (Belgacem 2026, arXiv:2605.01056).
 """
 from __future__ import annotations
+
 import numpy as np
+
 from ..grammar.model_spec import ModelSpec
 
 Params = dict  # {'basal': arr, 'decay': arr, 'terms': {target: [{'prod','w':{reg:val},'theta'}]}}
