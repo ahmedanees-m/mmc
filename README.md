@@ -50,7 +50,10 @@ streamlit run demo/app.py
 - **The limit-map.** A rigorous, mechanistically-explained boundary of where mechanism beats
   correlation and where it does not, resolving a live field confusion (why do mechanistic
   and foundation models keep failing to beat simple baselines? they are usually tested where
-  nothing can, and fitting is not predicting).
+  nothing can, and fitting is not predicting). The boundary spans both regimes: single
+  perturbation (the immune modules) and combinatorial (the Norman K562 compose test,
+  `paper/NORMAN_RESULT.md`), where a model fit on the singles still does not predict held-out
+  doubles, because the interaction is unidentifiable from the single-perturbation marginals.
 - **An auditable model-evolution trace.** Every model version, structural edit, and
   rationale, including falsified hypotheses, is logged. The reasoning is an artifact.
 
@@ -106,7 +109,9 @@ Module (genes + Zhu DE, training state)
 - **Pre-registrations** are committed before their runs: `prereg/PREREG.md` (transfer),
   `prereg/PREREG_discovery.md` (cytokine discovery), `prereg/PREREG_norman.md` (epistasis).
 - **The limit-map** figure is in `paper/`. **The held-out gate** is `mmc/eval/holdout.py`.
-  The **module builder** and its Zhu-exclusion are `scripts/cytokine_module.py`.
+  The **module builder** and its Zhu-exclusion are `scripts/cytokine_module.py`. The
+  **combinatorial compose test** (Norman K562) is `scripts/norman_pseudobulk.py` and
+  `scripts/norman_epistasis.py`, with the result in `paper/NORMAN_RESULT.md`.
 - The atlas is queried, not re-ingested, via `MMC_ZHU_STORE`. No keys or tokens are in the
   repository. `pytest -q` runs the offline suite.
 
