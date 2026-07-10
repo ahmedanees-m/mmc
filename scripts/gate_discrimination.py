@@ -12,10 +12,10 @@ model's own held-out ACC_DEG, seed-stable) is run on every edge. Two clean outco
 
   - Textbook edges are flagged required while the novel edges are not -> the gate
     discriminates true regulation from plausible-but-wrong, and the calibration claim is
-    airtight.
+    supported.
   - Nothing is flagged required, even the textbook edges -> the gate is not shown to
-    discriminate on this data; the claim is scoped to "the AI's plausible novel hypotheses
-    conferred zero held-out predictive power" and drops "the gate supplies calibration."
+    discriminate on this data; the claim is scoped to "the novel hypotheses conferred zero
+    held-out predictive power" and drops "the gate supplies calibration."
 
 Deterministic: the structure is hand-built (no model calls), only the store is queried.
 Writes /app/gate_discrimination.json.

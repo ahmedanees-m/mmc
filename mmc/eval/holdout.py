@@ -174,5 +174,6 @@ def print_report(report: dict) -> None:
     for m in ("model", "mean", "linear", "zero"):
         if m not in report:
             continue
-        a = report[m]["acc_deg"]; d = report[m]["de_overlap"]
+        a = report[m]["acc_deg"]
+        d = report[m]["de_overlap"]
         print(f"{m:<10}{a[0]:.3f} [{a[1]:.3f}, {a[2]:.3f}]{'':<8}{d[0]:.3f} [{d[1]:.3f}, {d[2]:.3f}]")

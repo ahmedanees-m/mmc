@@ -56,7 +56,7 @@ gate is not a blanket rejecter.
 
 **But the edge-ablation gate does not discriminate textbook from novel.** The STK11 -> chemokine
 edges are flagged required too, some with a larger drop than the textbook edges. This is
-honest and important: the novel hypothesis is **edge-level grounded, not hallucinated** --
+important: the novel hypothesis is **edge-level grounded, not a spurious edge**, because
 STK11 knockdown genuinely moves those chemokines. Edge-level necessity is a weak bar: it
 largely confirms that the edge's regulator, when knocked down, moves its target, which is what
 the edge was drawn from. It does not test advantage over a baseline.
@@ -77,8 +77,8 @@ supports.
 
 ## The module-level gate is a verified discriminator, not a uniform rejecter
 
-The corrected claim rests on the module-level held-out-advantage test, so we verified that test
-can fire positive rather than rejecting everything. On synthetic ground truth (data generated
+The corrected claim rests on the module-level held-out-advantage test, so a synthetic control
+verifies that the test can fire positive rather than rejecting everything. On synthetic ground truth (data generated
 from a known sparse structure with additive noise, `scripts/gate_synthetic_control.py`), the
 true structure clears the held-out bar cleanly: leave-one-perturbation-out DE-overlap 0.90
 (95% CI [0.70, 1.00]) and ACC_DEG 1.0, against the mean baseline's 0.17 and 0.37. A

@@ -90,14 +90,14 @@ def score_set(pred_map: dict[str, dict[str, float]], obs_map: dict[str, dict[str
         pooled_o.append(ov)
     if not perts:
         return {"per_perturbation": {}, "pooled": None, "n_perturbations": 0}
-    P, O = np.concatenate(pooled_p), np.concatenate(pooled_o)
+    pred, obs = np.concatenate(pooled_p), np.concatenate(pooled_o)
     return {
         "per_perturbation": per,
         "n_perturbations": len(perts),
         "pooled": {
-            "pearson": pearson(P, O),
-            "spearman": spearman(P, O),
-            "sign_accuracy": sign_accuracy(P, O, threshold),
-            "pearson_ci": bootstrap_ci(pearson, P, O),
+            "pearson": pearson(pred, obs),
+            "spearman": spearman(pred, obs),
+            "sign_accuracy": sign_accuracy(pred, obs, threshold),
+            "pearson_ci": bootstrap_ci(pearson, pred, obs),
         },
     }

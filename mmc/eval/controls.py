@@ -25,23 +25,23 @@ def shuffled_negative(pred_map: dict[str, dict[str, float]],
         rng.shuffle(shuffled)
         if all(a != b for a, b in zip(perts, shuffled)):
             break
-    P, O = [], []
+    pred, obs = [], []
     for p, q in zip(perts, shuffled):
         pv, _ = align(pred_map[p], {}, genes)
         _, ov = align({}, obs_map[q], genes)
-        P.append(pv)
-        O.append(ov)
-    return pearson(np.concatenate(P), np.concatenate(O))
+        pred.append(pv)
+        obs.append(ov)
+    return pearson(np.concatenate(pred), np.concatenate(obs))
 
 
 def wt_positive(obs_map: dict[str, dict[str, float]], genes: list[str]) -> float | None:
     """Score the observed response against itself. Perfect by construction; it confirms
     the metric and the alignment are wired correctly."""
-    P, O = [], []
+    pred, obs = [], []
     for p in obs_map:
         v, _ = align(obs_map[p], {}, genes)
-        P.append(v)
-        O.append(v)
-    if not P:
+        pred.append(v)
+        obs.append(v)
+    if not pred:
         return None
-    return pearson(np.concatenate(P), np.concatenate(O))
+    return pearson(np.concatenate(pred), np.concatenate(obs))

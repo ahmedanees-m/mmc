@@ -114,7 +114,7 @@ is frozen.
     validated map: strongest;
   - beats linear, competitive with Arc State, only interpretable decomposition:
     strong;
-  - fails transfer and the decomposition shows genuine rewiring: honest negative.
+  - fails transfer and the decomposition shows genuine rewiring: reportable negative.
 
 ## 8. Analysis plan
 - Freeze the ensemble before reading any Tier A or Tier B result.

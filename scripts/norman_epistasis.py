@@ -82,7 +82,6 @@ def boot_ci(vals, rng, n_boot=N_BOOT):
 def main():
     d = np.load(PB, allow_pickle=True)   # self-produced, trusted (string arrays are object dtype)
     genes = d["readout_genes"].astype(str)
-    labels = d["group_label"].astype(str)
     gtype = d["group_type"].astype(str)
     gA = d["gene_A"].astype(str)
     gB = d["gene_B"].astype(str)

@@ -26,26 +26,33 @@ def _bounds(spec: ModelSpec) -> tuple[np.ndarray, np.ndarray]:
     hi: list[float] = [3.0] * n + [3.0] * n
     for _tgt, rule in spec.rules.items():
         for term in rule.terms:
-            lo.append(0.0); hi.append(8.0)           # prod
+            lo.append(0.0)          # prod
+            hi.append(8.0)
             for _reg in term.regulators:
-                lo += [0.0, -6.0]; hi += [8.0, 6.0]  # weight, threshold
+                lo += [0.0, -6.0]   # weight, threshold
+                hi += [8.0, 6.0]
     return np.array(lo), np.array(hi)
 
 
 def _unpack(spec: ModelSpec, x: np.ndarray) -> dict:
     i, n = 0, len(spec.genes)
-    basal = np.array(x[i:i + n], float); i += n
-    decay = np.array(x[i:i + n], float); i += n
+    basal = np.array(x[i:i + n], float)
+    i += n
+    decay = np.array(x[i:i + n], float)
+    i += n
     terms: dict[str, list] = {}
     for tgt, rule in spec.rules.items():
         tlist = []
         for term in rule.terms:
-            prod = float(x[i]); i += 1
+            prod = float(x[i])
+            i += 1
             w: dict[str, float] = {}
             theta: dict[str, float] = {}
             for reg in term.regulators:
-                w[reg] = float(x[i]); i += 1
-                theta[reg] = float(x[i]); i += 1
+                w[reg] = float(x[i])
+                i += 1
+                theta[reg] = float(x[i])
+                i += 1
             tlist.append({"prod": prod, "w": w, "theta": theta})
         terms[tgt] = tlist
     return {"basal": basal, "decay": decay, "terms": terms}

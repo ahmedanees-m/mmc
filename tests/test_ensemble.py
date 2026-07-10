@@ -1,6 +1,6 @@
 """The ensemble tracker: it keeps structures within a loss margin, up to a cap, and
 reports per-edge agreement."""
-from mmc.grammar.model_spec import ModelSpec, Edge, Rule, Term
+from mmc.grammar.model_spec import Edge, ModelSpec, Rule, Term
 from mmc.loop.ensemble import Ensemble
 
 

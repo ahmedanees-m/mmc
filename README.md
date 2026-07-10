@@ -1,152 +1,206 @@
-# MMC: an AI biological engineer that knows when it is wrong
+# MMC
 
-MMC is a Claude-driven loop that reads a genome-scale immune-perturbation atlas and
-autonomously builds interpretable, runnable models of gene-regulatory circuits: signed edges,
-bounded logic, a simulator. Two contributions make it worth your attention:
+[![CI](https://github.com/ahmedanees-m/mmc/actions/workflows/ci.yml/badge.svg)](https://github.com/ahmedanees-m/mmc/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/ahmedanees-m/mmc/branch/main/graph/badge.svg)](https://codecov.io/gh/ahmedanees-m/mmc)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-- **A novel, self-correcting modeling method.** Claude proposes an executable structural
-  model, reads its systematic residuals, and rewrites the structure (not the parameters), the
-  step a syntactic search cannot perform. It then holds every hypothesis to a held-out gate and
-  refuses to certify mechanism that does not beat a simple baseline.
-- **A field-clarifying limit-map.** A rigorous, reproducible boundary of where mechanistic and
-  AI models beat simple baselines and where they do not, validated on the newest atlas and
-  consistent with the field's own benchmarks, across single-perturbation and combinatorial
-  regimes.
+MMC (Mechanistic Model Compiler) is a discovery loop for gene-regulatory circuits. It reads a
+genome-scale perturbation atlas, proposes interpretable and runnable circuit models through a
+language-model reasoning step, fits them to the measured perturbation responses, and evaluates
+each model against simple baselines on held-out data. The reasoning step sets the structure and
+logic of a model; a deterministic optimizer sets its numerical parameters.
 
-The boundary is the honest finding that makes the method trustworthy: on this data,
-mechanistic models **fit but do not predict** held-out responses better than a linear baseline,
-and MMC says so rather than overclaiming. The contribution is not a prediction win; it is
-trustworthy, testable mechanistic hypotheses and a tool that declares where it cannot be
-trusted.
+The repository contains the loop, a deterministic evaluation harness, pre-registrations, the
+result artifacts, and a Streamlit presentation of the results.
 
-## The finding that should catch your eye
+## Contents
 
-The failure mode of AI-driven mechanistic discovery here is **not hallucination**. The loop's
-novel hypotheses are individually data-grounded: they pass edge-level necessity and ablation
-checks exactly like textbook biology (an edge-ablation control flags the novel STK11 to
-chemokine edges predictively necessary, just as it flags GATA3 to IL5). The failure is subtler
-and more dangerous: **grounded mechanism does not compose into a model that beats a linear
-baseline**, and these grounded-but-non-predictive hypotheses pass the interpretability checks
-(necessity, ablation) that most validation relies on. The only safeguard that catches them is
-**held-out predictive advantage over a strong baseline**, not interpretability, not grounding,
-not plausibility. For anyone deciding when to trust AI reasoning in science, that is a concrete,
-measured answer.
+- [Overview](#overview)
+- [How it works](#how-it-works)
+- [Results](#results)
+- [Design decisions](#design-decisions)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Reproducibility](#reproducibility)
+- [Repository layout](#repository-layout)
+- [Data and references](#data-and-references)
+- [License](#license)
 
-> Scope: the Zhu 2025 genome-scale CD4+ T-cell Perturb-seq atlas, these modules, CD4+ T
-> cells. No prediction win and no disease discovery is claimed.
+## Overview
 
-## The demo (three beats)
+**What it is.** MMC pairs a language-model reasoning step with a deterministic modeling and
+evaluation harness. The reasoning step proposes an executable model of a gene-regulatory module
+as signed edges and bounded logic gates, reads the systematic residuals after fitting, and
+revises the structure. The harness compiles the model to a steady state, fits its parameters,
+and measures held-out predictive accuracy against simple baselines.
+
+**What it produces.** For a module, MMC produces an interpretable circuit model, a
+leave-one-perturbation-out evaluation of that model against mean and linear baselines, an
+auditable trace of every proposal and revision, and a placement of the module on a limit map of
+where mechanistic and AI models beat simple baselines.
+
+**Scope.** Results are on the Zhu 2025 genome-scale CD4+ T-cell Perturb-seq atlas, the modules
+listed below, and single-knockdown steady-state readouts, with the combinatorial regime
+evaluated on the Norman 2019 K562 dataset. No prediction win and no disease discovery is claimed.
+
+## How it works
+
+The loop separates two responsibilities: the reasoning step sets structure and logic; the
+optimizer sets magnitudes.
+
+```
+Module (genes and differential expression, training state)
+  -> Reasoning step: propose an executable model (signed edges, bounded logic gates);
+     read the structural residuals; revise the structure, not the parameters
+  -> Structural backend: compile to a steady-state fixed point; apply do(x=0) knockdown
+     and do(x=high) activation interventions; fit parameters by gradient descent (JAX)
+  -> Residual reader and ensemble: iterate to a plateau; freeze an ensemble within a loss margin
+  -> Held-out evaluation: leave-one-perturbation-out against mean, linear, and zero baselines
+     on ACC_DEG and DE-overlap, with bootstrap confidence intervals
+```
+
+**Grammar.** A model is a set of signed edges and, per target gene, a bounded sum-of-products of
+sigmoid gates (an interpretable disjunctive normal form). A single additive term is the monotone
+default; a product of gates encodes AND; a sum of terms encodes OR; a negative weight encodes
+NOT. Bounds (at most three terms per target, at most three regulators per term) keep the model
+interpretable and identifiable.
+
+**Backend.** Each gene's steady-state level is a bounded function of its regulators, solved as a
+damped fixed point rather than by integrating dynamics, because the data are interventional
+steady states. A knockdown is a `do(x = 0)` clamp and an activation is a `do(x = high)` clamp.
+Parameters are fit by automatic differentiation through the vectorized fixed point.
+
+**Evaluation.** The held-out evaluation refits the structure on all but one perturbation and
+predicts the held-out perturbation, comparing the model against mean and linear baselines on
+DE-overlap and sign accuracy over differentially expressed genes, with bootstrap confidence
+intervals. An edge-ablation variant measures whether removing an edge lowers held-out accuracy.
+
+## Results
+
+**Circuit reconstruction.** On the Th2 / GATA3 module the loop reconstructs a coherent circuit
+(mutual GATA3 / TBX21 antagonism, GATA3 amplification of IL4/IL5/IL13) at in-sample Pearson 0.93.
+
+**Held-out evaluation.** On the cytokine-production module the loop proposes STK11 / LKB1 as a
+chemokine regulator. An edge-ablation control confirms the STK11 edges are individually
+supported: removing them lowers the model's held-out accuracy, comparable to textbook edges such
+as GATA3 -> IL5 (`paper/GATE_DISCRIMINATION.md`, `paper/gate_discrimination.json`). The model
+built from these edges nonetheless does not beat a linear baseline on held-out data (DE-overlap
+0.18 versus 0.45, separated confidence intervals). Across the immune modules, edge-level support
+does not imply predictive advantage over a simple baseline; the module-level held-out evaluation
+is the check that distinguishes them.
+
+The module-level held-out evaluation is a discriminator, not a uniform rejecter: on synthetic
+ground truth it certifies a true structure (held-out DE-overlap 0.90 versus a mean baseline's
+0.17) and ranks a fully-connected over-connected structure below it (0.63)
+(`scripts/gate_synthetic_control.py`, `paper/gate_synthetic_control.json`).
+
+**Limit map.** MMC places each module on a map of where mechanistic and AI models beat simple
+baselines on held-out data (`paper/LIMIT_MAP.md`, `paper/mmc_limit_map.png`). On single-knockdown
+steady-state data the mechanistic model shows no held-out advantage over simple baselines in any
+measured regime, whether or not it fits in-sample. The map is consistent with independent
+benchmarks: Ahlmann-Eltze et al. 2025 for single perturbations, and combinatorial benchmarks for
+double perturbations.
+
+**Combinatorial regime.** The remaining source of advantage is non-additivity, which
+single-knockdown data cannot exercise. A compose test on the Norman 2019 K562 CRISPRa dataset
+fits a structural model on single perturbations and predicts held-out double perturbations
+(`scripts/norman_pseudobulk.py`, `scripts/norman_epistasis.py`, `paper/NORMAN_RESULT.md`). On the
+non-additive pairs the model does not beat an additive baseline (held-out DE-overlap 0.35 versus
+0.37), because the pair-specific interaction is not identifiable from single-perturbation
+marginals.
+
+**Principal finding.** The failure mode observed here is not fabrication. The loop's novel
+hypotheses are individually supported and pass edge-level necessity and ablation checks like
+established biology. What they do not do is compose into a model that beats a simple baseline on
+held-out data. Support at the level of individual edges, including necessity and ablation, does
+not imply predictive advantage over a baseline; only held-out predictive advantage over a strong
+baseline establishes that. This distinguishes a supported marginal effect from a model whose
+predictions can be relied upon.
+
+## Design decisions
+
+- **Steady state over dynamics.** Fitting ordinary-differential-equation dynamics to
+  steady-state knockdown data is under-identified. The structural steady-state backend fits the
+  same data directly and is verified by a self-consistency check that recovers a known model at
+  Pearson 1.0 (`scripts/structural_selfcheck.py`).
+- **Held-out over in-sample.** In-sample fit does not imply held-out prediction; a strong
+  in-sample fit on the Th2 module (0.93) does not hold under leave-one-perturbation-out. All
+  reported model-versus-baseline comparisons are held-out.
+- **Pre-registration.** Success rules are fixed before each run in `prereg/`.
+- **Data-driven module selection.** Modules and the cytokine-module gene set are selected by a
+  precondition and baseline-beatability screen (`scripts/baseline_screen.py`,
+  `scripts/cytokine_module.py`), not by hand.
+
+## Installation
+
+```
+pip install -e .            # core
+pip install -e ".[dev]"     # tests and linting
+pip install -e ".[diffrax]" # JAX backend for structural fitting
+```
+
+Requires Python 3.11 or later.
+
+## Usage
+
+The Streamlit presentation runs on precomputed results and needs no data or key:
 
 ```
 pip install streamlit
 streamlit run demo/app.py
 ```
 
-1. **It builds.** Claude writes a runnable, interpretable model of the Th2/GATA3 axis
-   (allergy, asthma, atopic disease) from the atlas, as a signed simulatable circuit, and
-   fits it (in-sample Pearson 0.93).
-2. **It holds itself to the baseline.** Claude proposes STK11/LKB1 as a chemokine regulator
-   and reasons about it from the residuals. The edges are real (an edge-ablation control flags
-   them predictively necessary, like textbook edges), but the model built from them does not
-   beat a linear baseline held-out (0.18 versus 0.45, separated CIs), so the gate **refuses to
-   certify it** as a discovery.
-3. **It knows its limits.** The limit-map (`paper/mmc_limit_map.png`): mechanism has no
-   held-out advantage over simple baselines on single-knockdown data in any regime, and the
-   tool declares its boundary.
-
-## What the method contributes
-
-- **Reasoning-guided structural repair.** Executable gene-network synthesis exists (SCNS,
-  CellNOpt, RACIPE), but those search structure space syntactically. MMC reads a residual
-  pattern (a knockdown that raises a target the model lowers) and infers a structural change
-  (flip an edge sign, insert a repressor). That inference is the step a syntactic search
-  cannot perform.
-- **Self-correction, by construction, and measured.** A held-out prediction gate and an
-  anti-theater discovery protocol refuse to certify mechanism that does not beat a simple
-  baseline. On the cytokine module the loop proposed STK11 as a chemokine regulator with a
-  coherent, data-grounded rationale. A positive control (`paper/GATE_DISCRIMINATION.md`) makes
-  the honest picture precise: the edge-ablation gate flags the STK11 edges as predictively
-  necessary, exactly as it flags textbook edges like GATA3 to IL5, so the hypothesis is a real
-  marginal effect, not a hallucination. But the mechanistic model built from these grounded
-  edges still does not beat a linear baseline held-out (0 of 2 modules; the powered cytokine
-  module at 0.18 versus linear 0.45, separated CIs), and the module-level held-out gate refuses
-  to certify it on that basis. Plausible, edge-grounded mechanism is not the same as predictive
-  advantage over a baseline, and the gate is what reveals the gap
-  (`paper/engineer_behavior.png`). That gate is a verified discriminator, not a uniform
-  rejecter: on synthetic ground truth it certifies a true structure (held-out DE-overlap 0.90
-  versus a baseline's 0.17) and ranks an over-connected one well below it, so its rejection of
-  the real modules is discrimination, not a blanket no. An AI that declines to overclaim even
-  its own grounded hypotheses.
-- **The limit-map.** A rigorous, mechanistically-explained boundary of where mechanism beats
-  correlation and where it does not, resolving a live field confusion (why do mechanistic
-  and foundation models keep failing to beat simple baselines? they are usually tested where
-  nothing can, and fitting is not predicting). The boundary spans both regimes: single
-  perturbation (the immune modules) and combinatorial (the Norman K562 compose test,
-  `paper/NORMAN_RESULT.md`), where a model fit on the singles still does not predict held-out
-  doubles, because the interaction is unidentifiable from the single-perturbation marginals.
-- **An auditable model-evolution trace.** Every model version, structural edit, and
-  rationale, including falsified hypotheses, is logged. The reasoning is an artifact.
-
-## The iteration arc (what was wrestled with)
-
-The project is an honest sequence of reframes, each forced by the data:
-
-1. **Prediction-transfer framing (v1/v2).** Judge MMC on predicting unseen perturbations and
-   cross-state transfer, decomposed into a conserved core and rewiring. Built the full
-   pipeline: leakage-safe two-tier splits, mean/linear/consensus baselines, a fit-vs-
-   structure gate, pre-registration.
-2. **First honest negative.** On the TCR signalosome the model lost to the mean and
-   persistence on every metric. A baseline-beatability screen showed why: the signalosome is
-   the mean-baseline worst case (perturbations 0.91 correlated), so no method can win there.
-3. **The model-class correction.** Fitting ODE *dynamics* to *steady-state* knockdown data
-   is under-identified and slow (in-sample capped at Pearson ~0.30, unmoved by optimizer
-   budget). Replaced the ODE backend with a structural steady-state model solved as a fixed
-   point and fit by autodiff (JAX). A spec now fits in seconds; a self-consistency check
-   recovers a known model at Pearson 1.0.
-4. **In-sample is not prediction.** A strong in-sample fit on Th2 (0.93) collapsed on a
-   proper held-out test. Built the held-out gate (leave-one-perturbation-out, model vs
-   linear on DE-overlap with CIs) and a pleiotropy/novelty-filtered discovery module, and
-   pre-registered the success rule before running.
-5. **The decisive, clean negative.** On a powered, favorable-regime, rigorously-excluded
-   cytokine module, the model predicts *worse* than a linear baseline held-out (DE-overlap
-   0.18 vs 0.45, separated CIs). Decisive, not confounded: mechanism fits but does not
-   predict single-knockdown steady-state data. The engineer's proposal (STK11) was logged as
-   proposed-but-unvalidated, the discipline working.
-
-Each step walked back an earlier overclaim rather than defend it. That is the craft.
-
-## Architecture
-
-The trust boundary is an actor and tool split: the reasoning step sets structure and logic
-form; the optimizer sets magnitudes.
+Running the loop against the atlas requires the differential-expression store and a model API
+key:
 
 ```
-Module (genes + Zhu DE, training state)
-  -> REASONING STEP (Claude): propose an executable structural model (signed edges + bounded
-       logic gates), read the structural residuals, rewrite structure, not parameters
-  -> STRUCTURAL BACKEND + GATE (deterministic): compile to a steady-state fixed point,
-       do(x=0)/do(x=high) interventions, gradient-fit in JAX; a residual is structural only
-       if the best fit gets a DE gene's direction wrong
-  -> RESIDUAL READER + ENSEMBLE (deterministic): iterate to a plateau, freeze
-  -> HELD-OUT GATE: leave-one-perturbation-out vs mean/linear/zero on ACC_DEG + DE-overlap
-       with bootstrap CIs; certify only what predicts
+export MMC_ZHU_STORE=/path/to/zhu/store   # perturbation.parquet, gene.parquet, de.parquet
+export ANTHROPIC_API_KEY=...              # read from the environment, never committed
+python scripts/run_discovery.py <module> <condition> <iterations>
 ```
+
+The reasoning model is configurable with `MMC_MODEL` and defaults to `claude-opus-4-8`.
 
 ## Reproducibility
 
-- **The demo** runs on a clean clone with only Streamlit (it presents captured results; no
-  API key, store, or GPU). `streamlit run demo/app.py`.
-- **Pre-registrations** are committed before their runs: `prereg/PREREG.md` (transfer),
-  `prereg/PREREG_discovery.md` (cytokine discovery), `prereg/PREREG_norman.md` (epistasis).
-- **The limit-map** figure is in `paper/`. **The held-out gate** is `mmc/eval/holdout.py`.
-  The **module builder** and its Zhu-exclusion are `scripts/cytokine_module.py`. The
-  **combinatorial compose test** (Norman K562) is `scripts/norman_pseudobulk.py` and
-  `scripts/norman_epistasis.py`, with the result in `paper/NORMAN_RESULT.md`.
-- The atlas is queried, not re-ingested, via `MMC_ZHU_STORE`. No keys or tokens are in the
-  repository. `pytest -q` runs the offline suite.
+- The test suite is offline and requires no store, key, or GPU: `pytest -q` (42 tests).
+- Pre-registrations are committed before their runs: `prereg/PREREG_discovery.md` (cytokine
+  discovery) and `prereg/PREREG_norman.md` (combinatorial). `prereg/PREREG.md` is the superseded
+  transfer pre-registration, retained as a record.
+- Result artifacts and figures are in `paper/`. The held-out evaluation is `mmc/eval/holdout.py`.
+- The atlas is queried, not re-ingested, via `MMC_ZHU_STORE`. No keys or tokens are stored in the
+  repository.
 
-## Reuse from VERDICT
+## Repository layout
 
-The modeling loop is new. The supporting layer is carried over and lives in `mmc/shared/`:
-the Zhu DE store accessor (`store.py`), the model client with structured output and refusal
-handling (`llm.py`), and the receipt and evolution-trace pattern (`receipts.py`, `trace.py`).
+```
+mmc/            core library
+  grammar/      model specification (signed edges, bounded logic gates)
+  compile/      structural steady-state backend and interventions
+  fit/          parameter fitting and the fit-versus-structure diagnostic
+  loop/         propose, read residuals, repair, ensemble
+  eval/         held-out evaluation, metrics
+  baselines/    mean, linear, consensus baselines
+  data/         module extraction, precondition, splits
+  shared/       store accessor, model client, receipts, trace
+scripts/        pipelines and analyses
+tests/          offline unit tests
+paper/          result artifacts and figures
+prereg/         pre-registrations
+demo/           Streamlit presentation
+```
+
+## Data and references
+
+- Zhu et al. 2025, genome-scale Perturb-seq of primary human CD4+ T cells (bioRxiv
+  10.64898/2025.12.23.696273).
+- Norman et al. 2019, combinatorial CRISPRa Perturb-seq in K562 (GEO GSE133344).
+- Moonen et al. 2026, variant, enhancer, and gene mapping in CD4+ T cells (bioRxiv
+  10.64898/2026.03.09.710372).
+- Ahlmann-Eltze, Huber, and Anders 2025, Nature Methods (10.1038/s41592-025-02772-6).
+
+## License
+
+MIT. See [LICENSE](LICENSE).

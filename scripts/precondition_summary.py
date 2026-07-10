@@ -4,7 +4,9 @@ cross-state conservation of regulator activity + candidate-module breadth.
 
 Usage: python scripts/precondition_summary.py
 """
-import io, urllib.request
+import io
+import urllib.request
+
 import pandas as pd
 from scipy.stats import spearmanr
 

@@ -8,8 +8,8 @@ the activation operator, §3) · **Gate:** held-out prediction of doubles (mmc/e
 
 ---
 
-## 0. Role, stated first
-This is the **supporting capability pillar**, not the centerpiece and not a rescue for the paper. The paper is already decided and floored (method + limit-map + honest immune negative + engineer behavior). Track B either adds *"mechanism wins where non-additivity is real"* or adds *"the fit-not-predict boundary holds combinatorially too."* **Both strengthen the same honest paper; neither is load-bearing.** Non-immune (K562), the immune/disease story is deliberately **not** claimed for this piece.
+## 0. Role and scope
+This is a supporting capability test, not the central result. It evaluates whether a structural model fit on single perturbations predicts held-out double perturbations better than an additive baseline. Either outcome is informative: a positive result indicates that the logic-gate structure captures non-additivity, and a null result extends the single-perturbation fit-versus-predict boundary to the combinatorial regime. The dataset is non-immune (K562); no immune or disease claim is made from this test.
 
 ## 1. Hypothesis (pre-registered)
 On **strongly non-additive** pairs, the logic-gate structural model predicts **held-out double perturbations** better than the fitted-additive and mean-of-singles baselines; on **additive** pairs, it shows **no advantage**. The *contrast* (advantage concentrated on the non-additive pairs, absent on additive ones) is the claim: it shows the sum-of-products logic gates capture *exactly* the non-additivity that additive models structurally cannot, rather than a generic edge.
@@ -34,7 +34,7 @@ Norman is **activation**, not knockdown. The structural backend's perturbation o
 - **Baselines:** (a) **fitted-additive**: the Norman linear model c₁·s₁ + c₂·s₂ (the harder, meaningful bar); (b) **mean-of-singles**: 0.5·s₁ + 0.5·s₂ (the simple additive floor). (Optional foundation comparator: GEARS on the identical split, not required for the capability claim.)
 
 ## 6. Held-out design (the compose test)
-Fit structure + parameters on the **single** perturbations only; predict the **held-out doubles** (both singles seen, the double unseen). **Leakage rule:** no double is seen at fit time. This tests whether mechanism *composes* singles into the correct non-additive double, the honest analogue of Track A's held-out gate.
+Fit structure + parameters on the **single** perturbations only; predict the **held-out doubles** (both singles seen, the double unseen). **Leakage rule:** no double is seen at fit time. This tests whether mechanism *composes* singles into the correct non-additive double, the combinatorial analogue of the single-perturbation held-out gate.
 
 ## 7. Metrics
 DE-overlap (**primary**) + ACC_DEG on the held-out doubles, bootstrap CIs (same harness pattern as Track A). Report per set (non-additive vs additive).
@@ -42,7 +42,7 @@ DE-overlap (**primary**) + ACC_DEG on the held-out doubles, bootstrap CIs (same 
 ## 8. Success rule (pre-registered)
 **Win =** model **> fitted-additive AND > mean-of-singles** on **held-out DE-overlap (separated CIs)** on the **non-additive** set, **AND** the advantage is **specific** (present on non-additive, absent/smaller on additive, the §1 contrast). Beating additive on non-additive pairs while *also* beating it on additive pairs would suggest a generic (non-epistasis) effect and weakens the mechanistic claim; report it as such.
 
-## 9. Honest caution (the Track-A lesson, applied here)
+## 9. Caution (the single-perturbation lesson, applied here)
 **Expressivity ≠ generalization.** The logic gates *representing* non-additivity does not guarantee *predicting* held-out doubles; that exact gap sank Track A. Run expecting the possibility that it does not clear even here. A pre-registered **null unifies the paper** (fit-not-predict, single and combinatorial) and is reported as a finding, not a failure. Do not relax the rule after seeing results.
 
 ## 10. Scope

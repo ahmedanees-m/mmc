@@ -1,12 +1,12 @@
-"""Render the engineer-behavior characterization figure (corrected, two honest panels).
+"""Render the engineer-behavior characterization figure (two panels).
 
-Panel A: held-out DE-overlap of the model against the linear baseline, per module -- the
+Panel A: held-out DE-overlap of the model against the linear baseline, per module; the
 mechanistic model does not beat a simple baseline held-out. Panel B: the edge-ablation
-positive control -- the same held-out gate flags the loop's novel hypotheses (STK11 ->
+positive control; the same held-out gate flags the loop's novel hypotheses (STK11 ->
 chemokine) as predictively necessary, exactly as it flags textbook edges, so the novel
-hypotheses are individually grounded, not hallucinated. The corrected message: plausible,
-edge-grounded mechanism does not compose into a model that beats a baseline, and the
-module-level held-out gate is the calibration that reveals the gap.
+hypotheses are individually supported. The message: plausible, edge-supported mechanism does
+not compose into a model that beats a baseline, and the module-level held-out gate is the
+check that reveals the gap.
 
 Reads engineer_behavior.json (Panel A) and gate_discrimination.json (Panel B).
 """
@@ -16,6 +16,7 @@ import json
 import sys
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 

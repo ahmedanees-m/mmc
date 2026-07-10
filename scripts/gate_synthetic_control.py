@@ -1,11 +1,11 @@
 """Synthetic positive control: the module-level held-out gate is a verified discriminator.
 
 Data is generated from a known sparse true structure with additive noise. Leave-one-
-perturbation-out, we fit the TRUE structure and a fully-connected (over-connected) structure
-and score each against the mean baseline on held-out DE-overlap. The claim to test: the true
-structure clears the held-out-advantage bar and the over-connected one does not, so the
-module-level gate can fire positive and rejects over-fit structure, meaning its rejection of
-the real modules is discrimination, not a uniform no.
+perturbation-out, the TRUE structure and a fully-connected (over-connected) structure are each
+fit and scored against the mean baseline on held-out DE-overlap. The claim under test: the true
+structure clears the held-out-advantage bar and the over-connected one is ranked below it, so
+the module-level gate can fire positive and ranks over-fit structure lower, meaning its
+rejection of the real modules is discrimination, not a uniform no.
 
 Deterministic (seeded noise); no model calls. Writes /app/gate_synthetic_control.json.
 """

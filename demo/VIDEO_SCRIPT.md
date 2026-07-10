@@ -1,62 +1,59 @@
-# MMC: 3-minute demo video script
+# Demo walkthrough (3 minutes)
 
-Record the voiceover and the screen capture separately; hold on the self-correction. Cut to
-3:00 or under. Screen-capture each beat from `demo/app.py`. Never lead with the negative; the
-hero is autonomy plus the centerpiece finding in Beat 2 (the AI's novel hypotheses are
-grounded, pass the interpretability checks, and still do not compose into a model that beats a
-baseline; only held-out predictive advantage catches that) plus honest limits.
+A narration and screen-capture guide for a short walkthrough of `demo/app.py`. Record the
+narration and the screen capture separately and cut to 3:00 or under. Each section maps to one
+view in the app.
 
 ---
 
-**Beat 1 · It builds (0:00-1:00)**
+**1. Circuit reconstruction (0:00-1:00)**
 
-*On screen:* the loop proposing, simulating, revising, then the rendered Th2/GATA3 circuit
-(Beat 1 in the app).
+*On screen:* the loop proposing, simulating, and revising, then the reconstructed Th2 / GATA3
+circuit (Circuit reconstruction view).
 
-*Voiceover:* "This is Claude reading the newest immune-disease atlas and writing a runnable,
-interpretable model of the Th2 circuit that drives allergic and autoimmune disease: signed
-edges, logic, a simulator, autonomously. Not a black box. Something a target team can read
-and test."
-
----
-
-**Beat 2 · It holds itself to the baseline (1:00-2:05).** Hold here.
-
-*On screen:* Claude's STK11 proposal and its rationale, then the held-out gate refusing to
-certify the model, then the engineer-behavior figure (grounded edges, model below baseline).
-
-*Voiceover:* "Then it proposes a new hypothesis, STK11 as a chemokine repressor, with a
-coherent mechanistic story it reads straight from the knockdown data. And here is the honest
-part: the STK11 edges are real. An edge-ablation control flags them predictively necessary,
-exactly like textbook edges. But when Claude assembles them into a mechanistic model and asks
-whether that model beats a simple linear baseline on data it never saw, the answer is no,
-0.18 against 0.45. So the engine reports a real effect and refuses to certify the model as a
-discovery. Plausible, grounded mechanism is not predictive advantage, and it knows the
-difference. An AI scientist that will not overclaim even its own grounded hypotheses, the
-thing the field is most afraid it cannot do."
+*Narration:* "MMC reads a genome-scale immune-perturbation atlas and produces a runnable,
+interpretable model of the Th2 circuit, which is associated with allergic and autoimmune
+disease: signed edges, logic, and a simulator. The structure is proposed by the reasoning step
+and the magnitudes are set by the optimizer, so the model is inspectable and testable rather
+than a black box."
 
 ---
 
-**Beat 3 · It knows its limits (2:05-2:45)**
+**2. Held-out evaluation (1:00-2:05)**
 
-*On screen:* the field-level limit-map (`paper/mmc_limit_map.png`, Beat 3 in the app).
+*On screen:* the STK11 proposal and its rationale, the held-out result table, and the
+engineer-behavior figure.
 
-*Voiceover:* "And it maps exactly where mechanism can be trusted and where it can't, a
-boundary that matches the field's own benchmarks and resolves why these models keep failing
-to beat simple baselines: they are usually tested where nothing can win, and fitting is not
-predicting."
+*Narration:* "On the cytokine-production module the loop proposes a new hypothesis, STK11 as a
+chemokine repressor, derived from the knockdown residuals. The STK11 edges are individually
+supported: an edge-ablation control flags them as predictively necessary, comparable to
+textbook edges. The model built from them, however, does not beat a linear baseline on
+held-out data, 0.18 against 0.45 with separated confidence intervals. The hypothesis is
+therefore reported as proposed but not certified. Edge-level support is not the same as
+predictive advantage over a baseline, and the held-out evaluation is what distinguishes them."
+
+---
+
+**3. Limit map (2:05-2:45)**
+
+*On screen:* the limit map (`paper/mmc_limit_map.png`, Limit map view).
+
+*Narration:* "MMC maps where a mechanistic or AI model does and does not beat simple baselines
+on held-out data. The boundary is consistent with the field's benchmarks and explains why such
+models frequently fail to beat baselines: they are commonly evaluated where no method has an
+advantage, and in-sample fit does not imply held-out prediction."
 
 ---
 
 **Close (2:45-3:00)**
 
-*On screen:* the target-team framing (the app footer).
+*On screen:* the app footer.
 
-*Voiceover:* "Interpretable, testable mechanistic hypotheses from the newest atlas, and an AI
-that won't send a target team chasing the wrong one. Trust by construction."
+*Narration:* "MMC produces interpretable, testable mechanistic hypotheses from a genome-scale
+atlas and reports the regime within which its outputs are reliable."
 
 ---
 
-The Beat 2 numbers are from `paper/gate_discrimination.json` (the STK11 edges are grounded)
-and the cytokine held-out gate (0.18 versus 0.45). Framing rule: no prediction win, no disease
-discovery; STK11 is shown grounded-but-not-a-certified-model, and you say exactly that.
+Numbers in section 2 are from `paper/gate_discrimination.json` (edge-level support) and the
+cytokine held-out evaluation (0.18 versus 0.45). No prediction win and no disease discovery is
+claimed; STK11 is presented as proposed but not certified.

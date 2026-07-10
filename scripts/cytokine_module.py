@@ -22,13 +22,13 @@ import numpy as np
 import pandas as pd
 
 # ----------------------------- panels & lists -----------------------------
-# Broad cytokine/chemokine readout (the DE columns) -- breadth = power.
+# Broad cytokine/chemokine readout (the DE columns); breadth is the power signal.
 CYTOKINE_PANEL = [
     "IL2", "IL3", "IL4", "IL5", "IL9", "IL10", "IL13", "IL21", "IL17A", "IL17F", "IL22",
     "IFNG", "TNF", "LTA", "CSF2", "IL16", "CCL3", "CCL4", "CCL5", "CXCL8", "TGFB1",
 ]
 
-# Canonical / textbook cytokine regulators -- KNOWN backbone (subtract for discovery).
+# Canonical / textbook cytokine regulators; known backbone, subtracted for discovery.
 CANONICAL_REGULATORS = {
     "GATA3", "TBX21", "RORC", "RORA", "FOXP3", "BCL6", "PRDM1",
     "STAT1", "STAT3", "STAT4", "STAT5A", "STAT5B", "STAT6",
@@ -40,7 +40,7 @@ CANONICAL_REGULATORS = {
     "JAK1", "JAK2", "JAK3", "TYK2",
 }
 
-# Regulators NAMED by Zhu 2025 as cytokine regulators -- excluded from discovery, or a
+# Regulators named by Zhu 2025 as cytokine regulators; excluded from discovery, since a
 # discovery re-derives the atlas paper. Verified from the abstract (SAGA + Mediator drive
 # cytokines including TNF and IL16) and the Zhu analysis repository's validation tables
 # (ATP2A2, CYB5R4, ELOB, MEN1, KDM1A, SGF29, MED24 validated for IL10/IL21).
@@ -63,6 +63,7 @@ def _load_program_regulators() -> set:
     the analysis-repo coefficient tables. A discovery is void if Zhu named it for any
     program, not just cytokine production, so these extend the exclusion beyond cytokines."""
     import os
+
     import mmc
     path = os.path.join(os.path.dirname(mmc.__file__), "data", "zhu_program_regulators.txt")
     try:

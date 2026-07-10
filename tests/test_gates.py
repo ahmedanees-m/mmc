@@ -2,9 +2,9 @@
 a mutual-repression toggle switch is bistable."""
 import numpy as np
 
-from mmc.grammar.model_spec import ModelSpec, Edge, Rule, Term
-from mmc.compile.to_ode import build_rhs
 from mmc.compile.simulate import steady_state
+from mmc.compile.to_ode import build_rhs
+from mmc.grammar.model_spec import Edge, ModelSpec, Rule, Term
 
 
 def _xor():

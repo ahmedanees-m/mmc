@@ -1,6 +1,8 @@
 """Grammar schema round-trip and validators."""
 import pytest
-from mmc.grammar.model_spec import ModelSpec, Edge, Rule, Term
+from pydantic import ValidationError
+
+from mmc.grammar.model_spec import Edge, ModelSpec, Rule, Term
 
 
 def _spec():
@@ -19,12 +21,12 @@ def test_round_trip():
 
 
 def test_dangling_edge_rejected():
-    with pytest.raises(Exception):
+    with pytest.raises(ValidationError):
         ModelSpec(genes=["A"], edges=[Edge(regulator="A", target="Z", sign=1)], rules={})
 
 
 def test_rule_without_edge_rejected():
-    with pytest.raises(Exception):
+    with pytest.raises(ValidationError):
         ModelSpec(
             genes=["A", "B"], edges=[],
             rules={"B": Rule(terms=[Term(regulators=["A"])])},
@@ -32,7 +34,7 @@ def test_rule_without_edge_rejected():
 
 
 def test_bad_sign_rejected():
-    with pytest.raises(Exception):
+    with pytest.raises(ValidationError):
         Edge(regulator="A", target="B", sign=0)
 
 

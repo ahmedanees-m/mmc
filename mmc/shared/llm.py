@@ -1,11 +1,10 @@
 """Model client for the reasoning step.
 
-Carried over from the VERDICT engine client: structured output, adaptive thinking,
-an effort control, and refusal handling. In MMC the reasoning step proposes and
-repairs a ModelSpec (grammar.model_spec); it sees only the module gene list, the
-biological context, the current structure, and the structural residual summary. It
-never sees held-out or test-state data. The reasoning step sets structure and logic
-form; the optimizer sets every magnitude.
+Provides structured output, adaptive thinking, an effort control, and refusal
+handling. The reasoning step proposes and repairs a ModelSpec (grammar.model_spec);
+it sees only the module gene list, the biological context, the current structure,
+and the structural residual summary. It never sees held-out or test-state data. The
+reasoning step sets structure and logic form; the optimizer sets every magnitude.
 
 The key is read from the environment; it is never written to the repository. The
 model is configurable with MMC_MODEL and defaults to claude-opus-4-8.

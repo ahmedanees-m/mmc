@@ -2,7 +2,7 @@
 filtering, tested offline (no model client, no cma)."""
 import numpy as np
 
-from mmc.grammar.model_spec import ModelSpec, Edge, Rule, Term
+from mmc.grammar.model_spec import Edge, ModelSpec, Rule, Term
 from mmc.loop.residuals import _pattern, structural_items, summary_text
 
 

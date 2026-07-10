@@ -1,12 +1,13 @@
 """The model-evolution trace: every proposal, edit, rationale, and score.
 
 The trace is the auditable record of how the model reasoned across the loop,
-including hypotheses that were later falsified against data. The pattern is
-carried over from VERDICT's inspectable trace.
+including hypotheses that were later falsified against data.
 """
 from __future__ import annotations
-import json, time
-from dataclasses import dataclass, field, asdict
+
+import json
+import time
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
 

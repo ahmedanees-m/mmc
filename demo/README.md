@@ -1,27 +1,23 @@
-# MMC demo
+# Demo
 
-The three-beat demo of the honest AI biological engineer: Claude builds a runnable disease
-circuit, catches its own plausible-but-wrong hypothesis, and declares its own limits.
-
-The demo presents captured results, so it runs on a clean clone with only Streamlit; it
-needs no API key, no data store, and no GPU.
+A Streamlit presentation of MMC results. It renders precomputed outputs, so it runs on a clean
+clone with Streamlit alone and requires no API key, data store, or GPU.
 
 ```
 pip install streamlit
 streamlit run demo/app.py
 ```
 
-The three beats:
+Three views:
 
-1. **It builds**: Claude autonomously writes a runnable, interpretable model of the
-   Th2 / GATA3 axis (allergy, asthma, atopic disease) from the atlas, rendered as a signed
-   circuit, and fits it (in-sample Pearson 0.93).
-2. **It catches itself**: Claude proposes STK11 / LKB1 as a metabolic repressor of
-   chemokines, reasons about it from the knockdown residuals, and the held-out gate refuses
-   to certify it because it does not predict (held-out DE-overlap 0.18 versus a linear
-   baseline's 0.45, separated CIs).
-3. **It knows its limits**: the limit-map: mechanism has no held-out advantage over simple
-   baselines on single-knockdown data in any regime, and the tool says so.
+1. **Circuit reconstruction.** The reconstructed Th2 / GATA3 circuit (allergy, asthma, atopic
+   disease) as a signed, simulatable graph, with the in-sample fit (Pearson 0.93).
+2. **Held-out evaluation.** The STK11 / LKB1 chemokine-regulator hypothesis on the
+   cytokine-production module, and the leave-one-perturbation-out result: the model predicts
+   below a linear baseline (held-out DE-overlap 0.18 versus 0.45, separated CIs), so the
+   hypothesis is reported as proposed but not certified.
+3. **Limit map.** The regime boundary of where mechanistic and AI models beat simple baselines
+   on held-out data, and where they do not.
 
-No prediction win and no disease discovery is claimed. Every claim is scoped to the Zhu
-2025 CD4+ T-cell atlas and these modules.
+Scope: the Zhu 2025 CD4+ T-cell Perturb-seq atlas and these modules. No prediction win and no
+disease discovery is claimed.

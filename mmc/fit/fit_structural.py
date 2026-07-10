@@ -13,8 +13,14 @@ import numpy as np
 from scipy.optimize import minimize
 
 from ..compile import structural
-from ..compile.structural_jax import (bounds, build_tensors, make_loss, param_size,
-                                       predict_deltas, to_param_dict)
+from ..compile.structural_jax import (
+    bounds,
+    build_tensors,
+    make_loss,
+    param_size,
+    predict_deltas,
+    to_param_dict,
+)
 from ..grammar.model_spec import ModelSpec
 
 
