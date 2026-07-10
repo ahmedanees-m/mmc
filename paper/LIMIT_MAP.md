@@ -2,7 +2,7 @@
 
 *Validated on the Zhu 2025 CD4+ T-cell Perturb-seq atlas and consistent with the field's
 own benchmarks. Scope: CD4+ T cells, these modules, single-knockdown steady-state readouts,
-with the combinatorial regime characterized from independent data.*
+with the combinatorial regime now measured on independent data (Norman K562).*
 
 ## The confusion this resolves
 
@@ -33,12 +33,13 @@ simple baseline:
 | Redundant cascade | TCR signalosome | yes | no (mean unbeatable) | perturbations 0.91 correlated; the mean already is the answer, no headroom |
 | Weak specific signal | CD4 TF network | no (~0.2) | no | the specific TF-to-TF signal is swamped by the bulk response; a data ceiling |
 | Strong fit, no prediction | Th2/GATA3; cytokine module | yes (in-sample 0.93) | **no** (model 0.18 < linear 0.45, separated CIs) | fitting is not predicting; capacity does not compose to held-out generalization |
-| Non-additive (combinatorial) | Norman K562 (independent) | n/a | headroom exists in principle | logic gates represent epistasis additive models cannot; but the field's data shows most dual effects are still linear, so headroom is thin |
+| Non-additive (combinatorial) | Norman K562 (independent, measured) | yes (represents epistasis) | **no** (model 0.35 vs additive 0.37 on held-out doubles, non-additive pairs) | the interaction is unidentifiable from singles: a logic-gate model fit on the singles predicts doubles no better than additive even where non-additivity is large (0.77) |
 
 The figure encodes provenance honestly: filled markers are measured held-out DE-overlap on
-this atlas, open markers are other-metric or qualitative placements, and the star is the
-pre-registered combinatorial hypothesis (Norman), which single-knockdown data structurally
-cannot reach.
+this atlas, open markers are other-metric or qualitative placements, and the star marks the
+Norman combinatorial regime. That regime is now measured directly (`NORMAN_RESULT.md`): a
+structural model fit on the singles does not beat additive on the held-out doubles, so even
+the one regime with headroom in principle yields no held-out advantage from singles.
 
 ## The synthesis
 
@@ -51,14 +52,20 @@ hold, and each is often violated:
 - **(b) There is non-redundancy**: headroom over the mean. Functionally redundant modules
   (the TCR signalosome) leave none: the mean already is the answer.
 - **(c) There is non-additivity**: the distinctive feature of mechanism (logic gates, the
-  sum-of-products) is only needed for epistasis. But the field's combinatorial benchmarks
-  show most dual effects are close to additive, so even this regime's headroom is thin.
+  sum-of-products) is only needed for epistasis. The field's combinatorial benchmarks show
+  most dual effects are close to additive, so the headroom is thin; and on the Norman atlas we
+  measured that even where non-additivity is large, a logic-gate model fit on the singles does
+  not beat additive on the held-out doubles, because the interaction is unidentifiable from the
+  single-perturbation marginals.
 
 The negative that follows: on single-knockdown steady-state data, mechanism has no held-out
 advantage over simple baselines in any regime, whether or not it can fit. The only genuine
-headroom is non-additivity, which single-knockdown data cannot access, and which independent
-benchmarks show is itself mostly linear. This is why the field's answers conflict: models are
-usually evaluated where nothing can win, and where they can fit they still do not predict.
+headroom is non-additivity; single-knockdown data cannot access it, and on combinatorial data
+a model informed only by the singles still cannot predict it (the Norman compose test,
+`NORMAN_RESULT.md`), because the interaction is unidentifiable from the single-perturbation
+marginals. Mechanism fits but does not predict, in both the single-perturbation and the
+combinatorial regime. This is why the field's answers conflict: models are usually evaluated
+where nothing can win, and where they can fit they still do not predict.
 
 ## Why this is useful regardless of any positive
 

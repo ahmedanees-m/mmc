@@ -47,3 +47,15 @@ DE-overlap (**primary**) + ACC_DEG on the held-out doubles, bootstrap CIs (same 
 
 ## 10. Scope
 Capability validation only; K562, CRISPRa, non-immune. Every claim scoped accordingly. This pillar backs the *method*; the disease relevance lives entirely in the immune limit-map (Track A / C).
+
+## 11. Outcome (2026-07-10, run before this commit)
+
+Executed as pre-registered. The GSE133344 matrix (33694 genes, 111668 cells) was pseudobulked into 105 singles, 131 doubles, and a pooled negative control from 91168 clean cells (good_coverage and a single confident identity), by `scripts/norman_pseudobulk.py`. All 131 doubles had both singles present. Non-additivity was recomputed from the data as the deviation of each observed double from the best fitted additive model over the pair's DE genes (a deviation from section 4: the paper's precomputed genetic-interaction distance-correlation table is not shipped with the GEO matrix, so the same additive-fit deviation is recomputed from the pseudobulk; the tertiles separate cleanly, non-additive mean 0.77 versus additive-control 0.40). The compose test (`scripts/norman_epistasis.py`) fit the signed-logistic sum-of-products structural model on the singles only and predicted the held-out doubles via the activation operator.
+
+Result (held-out DE-overlap, primary; model versus fitted-additive and mean-of-singles):
+
+- Non-additive set (n=43): model 0.349 [0.303, 0.396], fitted-additive 0.376 [0.325, 0.430], mean-of-singles 0.370 [0.318, 0.422].
+- Additive control (n=43): model 0.586 [0.541, 0.628], fitted-additive 0.642 [0.605, 0.679], mean-of-singles 0.613 [0.571, 0.654].
+- ACC_DEG follows the same pattern; the model ties the additive baselines on both sets.
+
+Verdict: H0, the pre-registered null. The structural model does not beat the additive baselines on held-out doubles on either set, and in fact sits marginally below. Even where non-additivity is large (0.77), a model informed only by the singles cannot predict the double better than additive, because the pair-specific interaction is unidentifiable from single-perturbation marginals; the saturating logic gate is one concrete instance and the conclusion is model-class general. This unifies with Track A into a single boundary: mechanism fits but does not predict, single-perturbation and combinatorial. Reported as a finding per section 9, not a failure. Machine-readable result at `paper/norman_result.json`.
