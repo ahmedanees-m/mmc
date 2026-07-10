@@ -1,0 +1,480 @@
+{
+  "modules": [
+    {
+      "module": "Cytokine_production",
+      "hash": "5743dc9b5c",
+      "proposals": [
+        {
+          "module": "Cytokine_production",
+          "run": 0,
+          "kind": "propose",
+          "rationale": "I organize the module as a costimulatory signaling axis (CARMIL2\u2192CD28\u2192MALT1\u2192BATF/TBX21) that additively drives the cytokine/chemokine outputs, with STK11 as a metabolic restraint and a mitochondrial/translation\u2013ubiquitin fitness cluster feeding the core nodes, keeping every cytokine rule as independent additive single-regulator terms."
+        },
+        {
+          "module": "Cytokine_production",
+          "run": 0,
+          "kind": "repair",
+          "rationale": "The largest residuals (STK11 knockdown strongly lowers IL5/IL22) reveal STK11 is a positive\u2014not negative\u2014regulator of these cytokines, so flip the STK11\u2192IL5 and STK11\u2192IL22 edge signs from \u22121 to +1."
+        },
+        {
+          "module": "Cytokine_production",
+          "run": 0,
+          "kind": "repair",
+          "rationale": "The largest residual (RB1CC1 knockdown strongly increasing IL5) indicates RB1CC1 also acts as a direct repressor of IL5, so I add a repressive RB1CC1 edge and escalate IL5's BATF term to a product gate since the IL5 rule already holds three terms."
+        },
+        {
+          "module": "Cytokine_production",
+          "run": 1,
+          "kind": "propose",
+          "rationale": "I build a connected circuit where a CD28/CARMIL2\u2192MALT1\u2192BATF\u2192TBX21 signaling backbone drives the cytokine/chemokine outputs, a chromatin/ubiquitin cluster (RNF20/INO80B/UBR4/PPP1R11) tunes the core TFs, and a mitochondrial-metabolic loop gated by the STK11 energy sensor links all housekeeping genes to effector output."
+        },
+        {
+          "module": "Cytokine_production",
+          "run": 1,
+          "kind": "repair",
+          "rationale": "The largest unexplained residual is STK11 knockdown strongly reducing IL22 (-4.39), so add a positive STK11\u2192IL22 edge as a new additive term."
+        },
+        {
+          "module": "Cytokine_production",
+          "run": 1,
+          "kind": "repair",
+          "rationale": "IL5 shows the largest cluster of missing knockdown effects (INO80B, BATF, PPP1R11, CD28, RNF20, MALT1 all positive drivers via the TCR/BATF-MALT1 axis), so add a MALT1-dependent positive activation term to IL5 to capture the propagated loss-of-cytokine signal."
+        }
+      ],
+      "edges": [
+        {
+          "regulator": "PPP1R11",
+          "target": "CARMIL2",
+          "sign": 1,
+          "novel": true
+        },
+        {
+          "regulator": "PPP1R11",
+          "target": "CD28",
+          "sign": 1,
+          "novel": true
+        },
+        {
+          "regulator": "CARMIL2",
+          "target": "CD28",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "CD28",
+          "target": "MALT1",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "UBR4",
+          "target": "MALT1",
+          "sign": 1,
+          "novel": true
+        },
+        {
+          "regulator": "CD28",
+          "target": "IL2RB",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "IL2",
+          "target": "IL2RB",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "CD28",
+          "target": "BATF",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "MALT1",
+          "target": "BATF",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "RNF20",
+          "target": "BATF",
+          "sign": 1,
+          "novel": true
+        },
+        {
+          "regulator": "STK11",
+          "target": "BATF",
+          "sign": -1,
+          "novel": true
+        },
+        {
+          "regulator": "BATF",
+          "target": "TBX21",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "INO80B",
+          "target": "TBX21",
+          "sign": 1,
+          "novel": true
+        },
+        {
+          "regulator": "IFNG",
+          "target": "TBX21",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "STK11",
+          "target": "RFT1",
+          "sign": 1,
+          "novel": true
+        },
+        {
+          "regulator": "RFT1",
+          "target": "PGS1",
+          "sign": 1,
+          "novel": true
+        },
+        {
+          "regulator": "PGS1",
+          "target": "PNPT1",
+          "sign": 1,
+          "novel": true
+        },
+        {
+          "regulator": "PNPT1",
+          "target": "VARS2",
+          "sign": 1,
+          "novel": true
+        },
+        {
+          "regulator": "VARS2",
+          "target": "TUFM",
+          "sign": 1,
+          "novel": true
+        },
+        {
+          "regulator": "TUFM",
+          "target": "ATP5F1A",
+          "sign": 1,
+          "novel": true
+        },
+        {
+          "regulator": "ATP5F1A",
+          "target": "STK11",
+          "sign": -1,
+          "novel": true
+        },
+        {
+          "regulator": "UBR4",
+          "target": "RNF20",
+          "sign": 1,
+          "novel": true
+        },
+        {
+          "regulator": "RNF20",
+          "target": "INO80B",
+          "sign": 1,
+          "novel": true
+        },
+        {
+          "regulator": "INO80B",
+          "target": "UBR4",
+          "sign": 1,
+          "novel": true
+        },
+        {
+          "regulator": "STK11",
+          "target": "PPP1R11",
+          "sign": 1,
+          "novel": true
+        },
+        {
+          "regulator": "STK11",
+          "target": "RB1CC1",
+          "sign": 1,
+          "novel": true
+        },
+        {
+          "regulator": "BATF",
+          "target": "IL2",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "CD28",
+          "target": "IL2",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "STK11",
+          "target": "IL2",
+          "sign": -1,
+          "novel": true
+        },
+        {
+          "regulator": "TBX21",
+          "target": "IFNG",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "BATF",
+          "target": "IFNG",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "MALT1",
+          "target": "IFNG",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "BATF",
+          "target": "CSF2",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "MALT1",
+          "target": "CSF2",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "RB1CC1",
+          "target": "CSF2",
+          "sign": 1,
+          "novel": true
+        },
+        {
+          "regulator": "BATF",
+          "target": "IL3",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "IL2RB",
+          "target": "IL3",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "BATF",
+          "target": "IL5",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "IL2RB",
+          "target": "IL5",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "TBX21",
+          "target": "IL5",
+          "sign": -1,
+          "novel": false
+        },
+        {
+          "regulator": "MALT1",
+          "target": "IL5",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "BATF",
+          "target": "IL22",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "MALT1",
+          "target": "IL22",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "STK11",
+          "target": "IL22",
+          "sign": 1,
+          "novel": true
+        },
+        {
+          "regulator": "MALT1",
+          "target": "CCL3",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "CD28",
+          "target": "CCL3",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "MALT1",
+          "target": "CCL4",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "CD28",
+          "target": "CCL4",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "TBX21",
+          "target": "CCL5",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "MALT1",
+          "target": "CCL5",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "MALT1",
+          "target": "CXCL8",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "CD28",
+          "target": "CXCL8",
+          "sign": 1,
+          "novel": false
+        }
+      ],
+      "n_novel_edges": 21,
+      "held_out_DE_overlap": {
+        "model": 0.10524595803233575,
+        "linear": 0.44513936356041617
+      },
+      "beats_linear_held_out": false
+    },
+    {
+      "module": "Th2_GATA3",
+      "hash": "e883edb1e4",
+      "proposals": [
+        {
+          "module": "Th2_GATA3",
+          "run": 0,
+          "kind": "propose",
+          "rationale": "GATA3 serves as the Th2 hub\u2014driven by IL4/STAT6 autocrine signaling and cross-repressing the Th1 factors TBX21/STAT4\u2014so I wire a connected antagonistic circuit with mostly single additive terms."
+        },
+        {
+          "module": "Th2_GATA3",
+          "run": 1,
+          "kind": "propose",
+          "rationale": "I encode the canonical Th2 GATA3 core (STAT6\u2192GATA3 with GATA3 autoactivation driving IL4/IL5/IL13, IL4\u2192STAT6 feedback) coupled to the Th1 STAT4/TBX21 arm through mutual cross-antagonism, using separate additive terms to represent opposing activator/repressor inputs."
+        },
+        {
+          "module": "Th2_GATA3",
+          "run": 1,
+          "kind": "repair",
+          "rationale": "Add a direct activating edge from TBX21 to IL4 as a third additive term, since TBX21 knockdown reduces IL4 (a missing effect not explained by the current indirect repression path)."
+        }
+      ],
+      "edges": [
+        {
+          "regulator": "STAT6",
+          "target": "GATA3",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "GATA3",
+          "target": "GATA3",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "TBX21",
+          "target": "GATA3",
+          "sign": -1,
+          "novel": false
+        },
+        {
+          "regulator": "IL4",
+          "target": "STAT6",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "STAT4",
+          "target": "TBX21",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "GATA3",
+          "target": "TBX21",
+          "sign": -1,
+          "novel": false
+        },
+        {
+          "regulator": "TBX21",
+          "target": "STAT4",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "GATA3",
+          "target": "STAT4",
+          "sign": -1,
+          "novel": false
+        },
+        {
+          "regulator": "GATA3",
+          "target": "IL4",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "STAT6",
+          "target": "IL4",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "TBX21",
+          "target": "IL4",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "GATA3",
+          "target": "IL5",
+          "sign": 1,
+          "novel": false
+        },
+        {
+          "regulator": "GATA3",
+          "target": "IL13",
+          "sign": 1,
+          "novel": false
+        }
+      ],
+      "n_novel_edges": 0,
+      "held_out_DE_overlap": {
+        "model": 0.1,
+        "linear": 0.25
+      },
+      "beats_linear_held_out": false
+    }
+  ],
+  "n_coherent_proposals": 9,
+  "n_novel_hypotheses": 21,
+  "n_novel_validated_held_out": 0,
+  "catch_rate": 1.0
+}
