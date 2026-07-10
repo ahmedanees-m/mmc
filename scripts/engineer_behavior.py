@@ -4,8 +4,16 @@ Accumulate the structural hypotheses the loop proposes across modules and runs, 
 each novel (dark) hypothesis by whether Claude gave a coherent, data-referencing rationale,
 and assign the ground-truth verdict from the held-out gate: a hypothesis is VALIDATED only
 if the model that contains it beats the linear baseline on held-out DE-overlap; otherwise
-REJECTED. The finding is whether Claude's mechanistic plausibility tracks predictive
-validity, and whether the held-out gate reliably supplies the calibration.
+REJECTED. This is the module-level first pass.
+
+NOTE (post-review correction). The catch_rate written here is the fraction of novel edges
+not in a module that beats the linear baseline; it is NOT evidence that the gate discriminates
+true edges from false ones. The positive control in scripts/gate_discrimination.py
+(paper/GATE_DISCRIMINATION.md) shows the edge-ablation gate flags both textbook and novel edges
+as held-out-necessary, so the novel hypotheses are individually grounded, not hallucinated. The
+corrected, airtight claim is that plausible, edge-grounded mechanism does not compose into a
+model that beats a linear baseline held-out, and the module-level gate is the calibration. Do
+not cite catch_rate as a calibration result.
 
 Writes engineer_behavior.json (the proposal corpus + per-module gate verdict + the derived
 metrics). Requires the model client and the store.
