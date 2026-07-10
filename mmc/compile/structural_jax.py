@@ -94,8 +94,9 @@ def steady_state(basal, prod, w, theta, t, clamp_mask, clamp_val, iters=100, dam
     return x
 
 
-def predict_deltas(vec, t, pert_gene_idx):
-    """Predicted knockdown deltas (n_perts, n_genes) for do(x_g = 0) at each pert gene."""
+def predict_deltas(vec, t, pert_gene_idx, clamp_level: float = 0.0):
+    """Predicted deltas (n_perts, n_genes) for do(x_g = clamp_level) at each pert gene.
+    clamp_level 0 is a knockdown; a high level is a CRISPRa overexpression (Norman)."""
     basal, prod, w, theta = _unpack(vec, t)
     n = t["n"]
     zeros = jnp.zeros(n)
@@ -103,16 +104,18 @@ def predict_deltas(vec, t, pert_gene_idx):
 
     def one(gp):
         cm = jnp.zeros(n).at[gp].set(1.0)
-        ss = steady_state(basal, prod, w, theta, t, cm, zeros)
+        cv = jnp.zeros(n).at[gp].set(clamp_level)
+        ss = steady_state(basal, prod, w, theta, t, cm, cv)
         return ss - wt
 
     return jax.vmap(one)(pert_gene_idx)
 
 
-def make_loss(t, pert_gene_idx, obs, obs_mask, de_thr=0.5, de_w=4.0, sign_pen=0.5):
+def make_loss(t, pert_gene_idx, obs, obs_mask, de_thr=0.5, de_w=4.0, sign_pen=0.5,
+              clamp_level: float = 0.0):
     """Return a jitted value_and_grad of the sign-aware, DE-weighted loss."""
     def loss(vec):
-        deltas = predict_deltas(vec, t, pert_gene_idx)
+        deltas = predict_deltas(vec, t, pert_gene_idx, clamp_level)
         is_de = (jnp.abs(obs) >= de_thr) & (obs_mask > 0)
         weight = obs_mask * (1.0 + de_w * is_de)
         werr = jnp.sum(weight * (deltas - obs) ** 2) / jnp.maximum(jnp.sum(weight), 1.0)

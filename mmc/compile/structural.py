@@ -62,7 +62,27 @@ def steady_state(spec: ModelSpec, params: dict, clamp: dict | None = None,
 
 
 def knockdown(spec: ModelSpec, params: dict, gene: str, wt=None) -> np.ndarray:
-    """Delta = perturbed_ss - wt_ss for a do(x_gene = 0) intervention."""
+    """Delta = perturbed_ss - wt_ss for a do(x_gene = 0) intervention (CRISPRi)."""
     wt = steady_state(spec, params) if wt is None else wt
     ss = steady_state(spec, params, clamp={gene: 0.0})
     return ss - wt
+
+
+# CRISPRa overexpression clamps the node high rather than to zero. The level is fixed and
+# above the bounded WT range (basal is bounded to 3), so it is a genuine gain of function.
+ACTIVATION_LEVEL = 4.0
+
+
+def perturb_set(spec: ModelSpec, params: dict, genes, level: float, wt=None) -> np.ndarray:
+    """Delta = perturbed_ss - wt_ss for a do(x_g = level) intervention on a set of genes.
+    level 0 is a knockdown; a high level is a CRISPRa overexpression. A set lets a double
+    perturbation clamp both genes at once, for the Norman compose test."""
+    wt = steady_state(spec, params) if wt is None else wt
+    ss = steady_state(spec, params, clamp={g: level for g in genes})
+    return ss - wt
+
+
+def activation(spec: ModelSpec, params: dict, gene: str,
+               level: float = ACTIVATION_LEVEL, wt=None) -> np.ndarray:
+    """Delta for a single do(x_gene = level) overexpression (CRISPRa)."""
+    return perturb_set(spec, params, [gene], level, wt=wt)
