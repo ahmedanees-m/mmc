@@ -56,7 +56,8 @@ st.caption("Scope: the Zhu 2025 genome-scale CD4+ T-cell Perturb-seq atlas; thes
            "CD4+ T cells. No prediction win or disease discovery is claimed.")
 st.divider()
 
-beat = st.radio("Demo", ["1 · It builds", "2 · It catches itself", "3 · It knows its limits"],
+beat = st.radio("Demo", ["1 · It builds", "2 · It holds itself to the baseline",
+                         "3 · It knows its limits"],
                 horizontal=True, label_visibility="collapsed")
 
 # ------------------------------ Beat 1 ------------------------------
@@ -92,11 +93,12 @@ if beat.startswith("1"):
 
 # ------------------------------ Beat 2 ------------------------------
 elif beat.startswith("2"):
-    st.header("Beat 2 · It catches itself: the capability that surprised us")
+    st.header("Beat 2 · It holds itself to the baseline")
     st.markdown(
         "On the cytokine-production module, Claude proposed a **novel, disease-relevant** "
-        "hypothesis and reasoned about it from the data. Then the held-out gate was asked "
-        "whether the hypothesis actually **predicts**, and it refused to certify it."
+        "hypothesis and reasoned about it from the data. Then the held-out gate was asked the "
+        "only question that matters: **does the model beat a simple baseline on data it never "
+        "saw?**"
     )
     left, right = st.columns(2)
     with left:
@@ -113,41 +115,45 @@ elif beat.startswith("2"):
             [("STK11", "IL2", -1), ("STK11", "IFNG", -1), ("STK11", "CXCL8", -1),
              ("STK11", "CCL3", -1), ("STK11", "CCL4", -1)], highlight={"STK11"}),
             use_container_width=True)
-        st.caption("A plausible, coherent, disease-relevant mechanistic hypothesis: "
-                   "STK11/LKB1 as a metabolic repressor of chemokines.")
+        st.caption("A coherent, disease-relevant hypothesis, and the STK11 edges are **real**: "
+                   "an edge-ablation control flags them predictively necessary, just like "
+                   "textbook edges. Not a hallucination.")
     with right:
-        st.subheader("The gate refuses to certify it")
-        st.markdown("Held-out prediction (leave-one-perturbation-out), the metric that "
-                    "matters: **does the hypothesis predict data it never saw?**")
+        st.subheader("The gate refuses to certify the model")
+        st.markdown("Held-out prediction (leave-one-perturbation-out): **does the mechanistic "
+                    "model beat a simple baseline on data it never saw?**")
         st.table({
             "method": ["**MMC model**", "linear baseline", "mean baseline"],
             "held-out DE-overlap [95% CI]": ["**0.18 [0.10, 0.27]**",
                                              "0.45 [0.33, 0.57]", "0.37 [0.26, 0.49]"],
         })
-        st.error("**PROPOSED, NOT CERTIFIED.** The model predicts *worse* than a simple "
-                 "linear baseline, with cleanly separated confidence intervals. The "
-                 "hypothesis fits the training data but does not predict held-out data, so "
-                 "the engine refuses to send a target team chasing it.")
-        st.success("An AI scientist that knows when it is wrong, the exact thing the field "
-                   "is afraid AI cannot do. The honesty is the result.")
+        st.error("**PROPOSED, NOT CERTIFIED.** The STK11 edges are individually grounded, but "
+                 "the mechanistic model built from them predicts *worse* than a simple linear "
+                 "baseline, with cleanly separated confidence intervals. Grounded mechanism is "
+                 "not predictive advantage, so the engine will not send a target team chasing "
+                 "it as a discovery.")
+        st.success("An AI scientist that will not overclaim even its own grounded hypotheses, "
+                   "the exact thing the field is afraid AI cannot do. The honesty is the "
+                   "result.")
 
     st.divider()
     st.subheader("This was not a one-off: we measured it")
     st.markdown(
-        "Across every hypothesis Claude proposed on these modules, we measured whether its "
-        "mechanistic plausibility tracked **held-out predictive validity**, and whether the "
-        "gate reliably caught the proposals that did not predict."
+        "Across the modules, the loop's novel hypotheses are **individually grounded**, not "
+        "hallucinated: the same edge-ablation gate flags the novel STK11 edges predictively "
+        "necessary, exactly as it flags textbook edges. Yet the mechanistic model still does "
+        "**not beat a linear baseline** held-out on any module, and the module-level gate is "
+        "the calibration that reveals the gap."
     )
-    m1, m2, m3, m4 = st.columns(4)
-    m1.metric("Coherent proposals", "9")
-    m2.metric("Novel (non-textbook) edges", "21")
-    m3.metric("Validated held-out", "0")
-    m4.metric("Gate catch rate", "100%")
+    m1, m2, m3 = st.columns(3)
+    m1.metric("STK11 edges flagged necessary", "3 of 3")
+    m2.metric("Modules beating linear held-out", "0 of 2")
+    m3.metric("Cytokine model vs linear", "0.18 vs 0.45")
     if os.path.exists(ENGINEER_FIG):
         st.image(ENGINEER_FIG, use_container_width=True)
-    st.caption("Every coherently-argued proposal that failed held-out validation was caught "
-               "by the gate. Plausibility did not track prediction; the gate supplied the "
-               "calibration the rationale lacked.")
+    st.caption("Plausible, edge-grounded mechanism is not predictive advantage over a "
+               "baseline. The held-out gate is what separates a real marginal effect from a "
+               "model worth trusting.")
 
 # ------------------------------ Beat 3 ------------------------------
 else:

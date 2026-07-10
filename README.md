@@ -1,14 +1,23 @@
 # MMC: an AI biological engineer that knows when it is wrong
 
-MMC is a Claude-driven loop that reads a genome-scale immune-perturbation atlas,
-autonomously proposes interpretable, runnable models of gene-regulatory circuits, tests
-them against the real perturbation data, and **refuses to certify the hypotheses it cannot
-stand behind**, catching its own plausible-but-wrong ideas.
+MMC is a Claude-driven loop that reads a genome-scale immune-perturbation atlas and
+autonomously builds interpretable, runnable models of gene-regulatory circuits: signed edges,
+bounded logic, a simulator. Two contributions make it worth your attention:
 
-The honest headline: on this data, mechanistic models **fit but do not predict** held-out
-single-knockdown responses, and MMC says so. The contribution is not a prediction win. It
-is a working, self-correcting mechanistic-hypothesis engine, plus a rigorous map of where
-mechanism can and cannot be trusted.
+- **A novel, self-correcting modeling method.** Claude proposes an executable structural
+  model, reads its systematic residuals, and rewrites the structure (not the parameters), the
+  step a syntactic search cannot perform. It then holds every hypothesis to a held-out gate and
+  refuses to certify mechanism that does not beat a simple baseline.
+- **A field-clarifying limit-map.** A rigorous, reproducible boundary of where mechanistic and
+  AI models beat simple baselines and where they do not, validated on the newest atlas and
+  consistent with the field's own benchmarks, across single-perturbation and combinatorial
+  regimes.
+
+The boundary is the honest finding that makes the method trustworthy: on this data,
+mechanistic models **fit but do not predict** held-out responses better than a linear baseline,
+and MMC says so rather than overclaiming. The contribution is not a prediction win; it is
+trustworthy, testable mechanistic hypotheses and a tool that declares where it cannot be
+trusted.
 
 > Scope: the Zhu 2025 genome-scale CD4+ T-cell Perturb-seq atlas, these modules, CD4+ T
 > cells. No prediction win and no disease discovery is claimed.
@@ -23,10 +32,11 @@ streamlit run demo/app.py
 1. **It builds.** Claude writes a runnable, interpretable model of the Th2/GATA3 axis
    (allergy, asthma, atopic disease) from the atlas, as a signed simulatable circuit, and
    fits it (in-sample Pearson 0.93).
-2. **It catches itself.** Claude proposes STK11/LKB1 as a chemokine repressor, reasons
-   about it from the knockdown residuals, and the held-out gate **refuses to certify it**
-   because it does not predict (held-out DE-overlap 0.18 versus a linear baseline's 0.45,
-   cleanly separated CIs).
+2. **It holds itself to the baseline.** Claude proposes STK11/LKB1 as a chemokine regulator
+   and reasons about it from the residuals. The edges are real (an edge-ablation control flags
+   them predictively necessary, like textbook edges), but the model built from them does not
+   beat a linear baseline held-out (0.18 versus 0.45, separated CIs), so the gate **refuses to
+   certify it** as a discovery.
 3. **It knows its limits.** The limit-map (`paper/mmc_limit_map.png`): mechanism has no
    held-out advantage over simple baselines on single-knockdown data in any regime, and the
    tool declares its boundary.
@@ -39,14 +49,18 @@ streamlit run demo/app.py
   (flip an edge sign, insert a repressor). That inference is the step a syntactic search
   cannot perform.
 - **Self-correction, by construction, and measured.** A held-out prediction gate and an
-  anti-theater discovery protocol refuse to certify a hypothesis that fits but does not
-  predict. On the cytokine module the loop proposed STK11 as a chemokine repressor with a
-  coherent, data-grounded rationale; the gate rejected it. This was not a one-off: across
-  every hypothesis the loop proposed on these modules, nine coherently-argued proposals
-  yielded twenty-one novel edges and zero that survived held-out validation, a 100 percent
-  gate catch rate. Plausibility did not track prediction, and the gate supplied the
-  calibration the rationale lacked (`paper/engineer_behavior.png`). An AI that knows when it
-  is wrong.
+  anti-theater discovery protocol refuse to certify mechanism that does not beat a simple
+  baseline. On the cytokine module the loop proposed STK11 as a chemokine regulator with a
+  coherent, data-grounded rationale. A positive control (`paper/GATE_DISCRIMINATION.md`) makes
+  the honest picture precise: the edge-ablation gate flags the STK11 edges as predictively
+  necessary, exactly as it flags textbook edges like GATA3 to IL5, so the hypothesis is a real
+  marginal effect, not a hallucination. But the mechanistic model built from these grounded
+  edges still does not beat a linear baseline held-out (0 of 2 modules; the powered cytokine
+  module at 0.18 versus linear 0.45, separated CIs), and the module-level held-out gate refuses
+  to certify it on that basis. Plausible, edge-grounded mechanism is not the same as predictive
+  advantage over a baseline, and the gate is what reveals the gap
+  (`paper/engineer_behavior.png`). An AI that declines to overclaim even its own grounded
+  hypotheses.
 - **The limit-map.** A rigorous, mechanistically-explained boundary of where mechanism beats
   correlation and where it does not, resolving a live field confusion (why do mechanistic
   and foundation models keep failing to beat simple baselines? they are usually tested where

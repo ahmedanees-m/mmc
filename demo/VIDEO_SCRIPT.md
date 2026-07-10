@@ -18,18 +18,20 @@ and test."
 
 ---
 
-**Beat 2 · It catches itself (1:00-2:05).** Hold here.
+**Beat 2 · It holds itself to the baseline (1:00-2:05).** Hold here.
 
-*On screen:* Claude's STK11 proposal and its rationale, then the held-out gate's rejection,
-then the catch-rate statistic (Beat 2 in the app plus the engineer-behavior figure).
+*On screen:* Claude's STK11 proposal and its rationale, then the held-out gate refusing to
+certify the model, then the engineer-behavior figure (grounded edges, model below baseline).
 
-*Voiceover:* "Then it proposes a new hypothesis, STK11 as a cytokine repressor, with a
-coherent mechanistic story it reads straight from the knockdown data. And its own held-out
-gate refuses to certify it, because it doesn't predict. We measured this across every
-hypothesis it proposed: nine coherently-argued proposals, twenty-one novel edges, and not one
-validated as a held-out predictive necessity, a hundred-percent catch rate. Plausibility did
-not track prediction, and the gate caught all of it. An AI scientist that knows when it is
-wrong, the thing the field is most afraid it cannot do."
+*Voiceover:* "Then it proposes a new hypothesis, STK11 as a chemokine repressor, with a
+coherent mechanistic story it reads straight from the knockdown data. And here is the honest
+part: the STK11 edges are real. An edge-ablation control flags them predictively necessary,
+exactly like textbook edges. But when Claude assembles them into a mechanistic model and asks
+whether that model beats a simple linear baseline on data it never saw, the answer is no,
+0.18 against 0.45. So the engine reports a real effect and refuses to certify the model as a
+discovery. Plausible, grounded mechanism is not predictive advantage, and it knows the
+difference. An AI scientist that will not overclaim even its own grounded hypotheses, the
+thing the field is most afraid it cannot do."
 
 ---
 
@@ -53,5 +55,6 @@ that won't send a target team chasing the wrong one. Trust by construction."
 
 ---
 
-Catch rate (100%, from `engineer_behavior.json`, Work Stream A) is filled above. Framing rule:
-no prediction win, no disease discovery; STK11 is shown proposed-and-rejected, and you say so.
+The Beat 2 numbers are from `paper/gate_discrimination.json` (the STK11 edges are grounded)
+and the cytokine held-out gate (0.18 versus 0.45). Framing rule: no prediction win, no disease
+discovery; STK11 is shown grounded-but-not-a-certified-model, and you say exactly that.
