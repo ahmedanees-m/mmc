@@ -1,0 +1,53 @@
+{
+  "true_sparse": {
+    "n_edges": 5,
+    "model_de_overlap": [
+      0.9,
+      0.7,
+      1.0
+    ],
+    "mean_de_overlap": [
+      0.167,
+      0.0,
+      0.367
+    ],
+    "model_acc_deg": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "mean_acc_deg": [
+      0.367,
+      0.067,
+      0.7
+    ],
+    "beats_mean_de_overlap": true
+  },
+  "over_connected_full": {
+    "n_edges": 10,
+    "model_de_overlap": [
+      0.633,
+      0.367,
+      0.9
+    ],
+    "mean_de_overlap": [
+      0.167,
+      0.0,
+      0.367
+    ],
+    "model_acc_deg": [
+      0.767,
+      0.5,
+      1.0
+    ],
+    "mean_acc_deg": [
+      0.367,
+      0.067,
+      0.7
+    ],
+    "beats_mean_de_overlap": true
+  },
+  "true_certifies_separated": true,
+  "over_connected_ranked_below_true": true,
+  "gate_discriminates": true
+}

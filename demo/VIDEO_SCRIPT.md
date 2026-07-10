@@ -1,8 +1,10 @@
 # MMC: 3-minute demo video script
 
 Record the voiceover and the screen capture separately; hold on the self-correction. Cut to
-3:00 or under. Screen-capture each beat from `demo/app.py`. Never lead with the negative;
-the hero is autonomy plus measured self-correction plus honest limits.
+3:00 or under. Screen-capture each beat from `demo/app.py`. Never lead with the negative; the
+hero is autonomy plus the centerpiece finding in Beat 2 (the AI's novel hypotheses are
+grounded, pass the interpretability checks, and still do not compose into a model that beats a
+baseline; only held-out predictive advantage catches that) plus honest limits.
 
 ---
 

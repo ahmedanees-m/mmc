@@ -19,6 +19,19 @@ and MMC says so rather than overclaiming. The contribution is not a prediction w
 trustworthy, testable mechanistic hypotheses and a tool that declares where it cannot be
 trusted.
 
+## The finding that should catch your eye
+
+The failure mode of AI-driven mechanistic discovery here is **not hallucination**. The loop's
+novel hypotheses are individually data-grounded: they pass edge-level necessity and ablation
+checks exactly like textbook biology (an edge-ablation control flags the novel STK11 to
+chemokine edges predictively necessary, just as it flags GATA3 to IL5). The failure is subtler
+and more dangerous: **grounded mechanism does not compose into a model that beats a linear
+baseline**, and these grounded-but-non-predictive hypotheses pass the interpretability checks
+(necessity, ablation) that most validation relies on. The only safeguard that catches them is
+**held-out predictive advantage over a strong baseline**, not interpretability, not grounding,
+not plausibility. For anyone deciding when to trust AI reasoning in science, that is a concrete,
+measured answer.
+
 > Scope: the Zhu 2025 genome-scale CD4+ T-cell Perturb-seq atlas, these modules, CD4+ T
 > cells. No prediction win and no disease discovery is claimed.
 
@@ -59,8 +72,11 @@ streamlit run demo/app.py
   module at 0.18 versus linear 0.45, separated CIs), and the module-level held-out gate refuses
   to certify it on that basis. Plausible, edge-grounded mechanism is not the same as predictive
   advantage over a baseline, and the gate is what reveals the gap
-  (`paper/engineer_behavior.png`). An AI that declines to overclaim even its own grounded
-  hypotheses.
+  (`paper/engineer_behavior.png`). That gate is a verified discriminator, not a uniform
+  rejecter: on synthetic ground truth it certifies a true structure (held-out DE-overlap 0.90
+  versus a baseline's 0.17) and ranks an over-connected one well below it, so its rejection of
+  the real modules is discrimination, not a blanket no. An AI that declines to overclaim even
+  its own grounded hypotheses.
 - **The limit-map.** A rigorous, mechanistically-explained boundary of where mechanism beats
   correlation and where it does not, resolving a live field confusion (why do mechanistic
   and foundation models keep failing to beat simple baselines? they are usually tested where

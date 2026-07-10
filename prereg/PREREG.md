@@ -7,6 +7,12 @@ rewired scaffold are fixed here, before any modeling code exists.
 
 **Committed:** 2026-07-09 (this commit). **Author:** Anees Ahmed Mahaboob Ali.
 
+**Status (superseded):** this is the v1/v2 prediction-transfer pre-registration. The transfer
+framing, including the planned Arc State comparison below, was superseded by the v3 reframe (see
+the README iteration arc); the Arc State baseline was never run on this atlas. The live
+pre-registrations are `PREREG_discovery.md` and `PREREG_norman.md`. This file is kept as the
+dated historical record.
+
 The module and direction were selected by the Stage-0 precondition test
 (`mmc/data/precondition.py`, run with `scripts/run_precondition.py`) against the Zhu
 store, not chosen by hand. Thresholds: FDR below 0.10; a perturbation is active
