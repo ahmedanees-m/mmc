@@ -5,6 +5,20 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2026-07-10
+
+### Added
+- Scaled engineer-behavior characterization across modules, conditions, and repeated runs
+  (`scripts/engineer_behavior_scaled.py`, `paper/engineer_behavior_scaled.json`,
+  `paper/engineer_behavior_scaled.png`): the held-out validated rate and the module-condition
+  beats-linear rate with Wilson confidence intervals, and a reasoning-versus-search comparison
+  of the proposed structure against a random structure of equal edge count.
+
+### Changed
+- The engineer-behavior claim is reported with confidence intervals from the powered corpus
+  (0 of 76 distinct novel hypotheses beat a linear baseline held-out, Wilson 95% CI [0, 4.8%])
+  in the README, the abstract, and the demo.
+
 ## [0.6.0] - 2026-07-10
 
 ### Added

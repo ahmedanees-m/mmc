@@ -1,0 +1,1005 @@
+{
+  "grid": [
+    [
+      "Cytokine_production",
+      "Stim8hr",
+      3
+    ],
+    [
+      "Cytokine_production",
+      "Stim48hr",
+      2
+    ],
+    [
+      "Th2_GATA3",
+      "Stim8hr",
+      2
+    ],
+    [
+      "CD4_TF_network",
+      "Stim8hr",
+      1
+    ],
+    [
+      "TCR_core",
+      "Stim8hr",
+      1
+    ]
+  ],
+  "n_proposals": 25,
+  "novel_edges": [
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "edge": "STK11->RB1CC1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "edge": "RB1CC1->UBR4",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "edge": "UBR4->RNF20",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "edge": "UBR4->PPP1R11",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "edge": "UBR4->CARMIL2",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "edge": "RNF20->INO80B",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "edge": "INO80B->PNPT1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "edge": "INO80B->RFT1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "edge": "PNPT1->TUFM",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "edge": "PNPT1->VARS2",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "edge": "VARS2->TUFM",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "edge": "RFT1->PGS1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "edge": "PGS1->ATP5F1A",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "edge": "TUFM->ATP5F1A",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "edge": "ATP5F1A->CD28",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "edge": "ATP5F1A->STK11",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "edge": "PPP1R11->MALT1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "edge": "STK11->CD28",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "edge": "STK11->CSF2",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "STK11->ATP5F1A",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "STK11->TUFM",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "STK11->VARS2",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "STK11->PNPT1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "STK11->PGS1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "STK11->RFT1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "UBR4->RNF20",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "UBR4->INO80B",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "UBR4->RB1CC1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "UBR4->PPP1R11",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "RNF20->TBX21",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "INO80B->BATF",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "ATP5F1A->CSF2",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "TUFM->CSF2",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "VARS2->IL2",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "PNPT1->CXCL8",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "PGS1->IL5",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "RFT1->IL3",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "RB1CC1->IL22",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "edge": "PPP1R11->CCL5",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "STK11->ATP5F1A",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "STK11->VARS2",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "STK11->PGS1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "STK11->RB1CC1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "UBR4->TUFM",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "UBR4->PNPT1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "UBR4->RFT1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "UBR4->INO80B",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "UBR4->TBX21",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "INO80B->RNF20",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "INO80B->BATF",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "RNF20->BATF",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "RB1CC1->PPP1R11",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "RB1CC1->IL2RB",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "PPP1R11->UBR4",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "PPP1R11->STK11",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "PPP1R11->MALT1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "ATP5F1A->CD28",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "TUFM->CD28",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "VARS2->CD28",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "PNPT1->CARMIL2",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "PGS1->CARMIL2",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "RFT1->IL2RB",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "STK11->MALT1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "edge": "STK11->IFNG",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "UBR4->CD28",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "UBR4->MALT1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "UBR4->RNF20",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "INO80B->TBX21",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "RNF20->BATF",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "RNF20->INO80B",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "RB1CC1->BATF",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "ATP5F1A->STK11",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "ATP5F1A->IL2",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "ATP5F1A->IFNG",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "STK11->RB1CC1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "STK11->UBR4",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "STK11->PGS1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "STK11->PNPT1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "STK11->TUFM",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "STK11->VARS2",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "STK11->RFT1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "STK11->PPP1R11",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "PGS1->ATP5F1A",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "PNPT1->ATP5F1A",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "TUFM->ATP5F1A",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "VARS2->ATP5F1A",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "RFT1->ATP5F1A",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "edge": "PPP1R11->ATP5F1A",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "INO80B->BATF",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "TUFM->BATF",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "STK11->BATF",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "RNF20->TBX21",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "RFT1->CARMIL2",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "RFT1->STK11",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "TUFM->RFT1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "STK11->RB1CC1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "RB1CC1->PPP1R11",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "PPP1R11->UBR4",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "UBR4->RNF20",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "RNF20->INO80B",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "PGS1->ATP5F1A",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "ATP5F1A->TUFM",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "ATP5F1A->PNPT1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "VARS2->TUFM",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "PNPT1->VARS2",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "TUFM->PGS1",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "STK11->IFNG",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "STK11->IL2",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "TUFM->CSF2",
+      "in_beats_linear_module": false
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "edge": "STK11->IL5",
+      "in_beats_linear_module": false
+    }
+  ],
+  "modules": [
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 0,
+      "n_proposals": 3,
+      "n_novel": 19,
+      "beats_linear": false,
+      "model_de": [
+        0.13212445449287555,
+        0.0619940293624504,
+        0.21273477253740405
+      ],
+      "linear_de": [
+        0.44513936356041617,
+        0.3288303144224197,
+        0.5731511069340016
+      ],
+      "claude_insample_pearson": 0.15378402368034882,
+      "random_insample_pearson": 0.01756760290745548
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 1,
+      "n_proposals": 3,
+      "n_novel": 20,
+      "beats_linear": false,
+      "model_de": [
+        0.1293040293040293,
+        0.07231528340080971,
+        0.19107066544566545
+      ],
+      "linear_de": [
+        0.44513936356041617,
+        0.3288303144224197,
+        0.5731511069340016
+      ],
+      "claude_insample_pearson": 0.27495855613213915,
+      "random_insample_pearson": -0.0035149863225556028
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim8hr",
+      "run": 2,
+      "n_proposals": 3,
+      "n_novel": 25,
+      "beats_linear": false,
+      "model_de": [
+        0.07941325191202982,
+        0.037961761343503236,
+        0.1262164053063515
+      ],
+      "linear_de": [
+        0.44513936356041617,
+        0.3288303144224197,
+        0.5731511069340016
+      ],
+      "claude_insample_pearson": 0.14986180889214717,
+      "random_insample_pearson": -0.014149667921813776
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 0,
+      "n_proposals": 3,
+      "n_novel": 24,
+      "beats_linear": false,
+      "model_de": [
+        0.19026512702983292,
+        0.1302663363325128,
+        0.2511966410495822
+      ],
+      "linear_de": [
+        0.35185185185185186,
+        0.2506172839506173,
+        0.4468298059964726
+      ],
+      "claude_insample_pearson": 0.13168940225721049,
+      "random_insample_pearson": 0.016985158714749607
+    },
+    {
+      "module": "Cytokine_production",
+      "condition": "Stim48hr",
+      "run": 1,
+      "n_proposals": 3,
+      "n_novel": 22,
+      "beats_linear": false,
+      "model_de": [
+        0.20158255487202859,
+        0.11864679849877217,
+        0.2935625917698286
+      ],
+      "linear_de": [
+        0.35185185185185186,
+        0.2506172839506173,
+        0.4468298059964726
+      ],
+      "claude_insample_pearson": 0.22953293068716377,
+      "random_insample_pearson": -0.018405594473300303
+    },
+    {
+      "module": "Th2_GATA3",
+      "condition": "Stim8hr",
+      "run": 0,
+      "n_proposals": 3,
+      "n_novel": 0,
+      "beats_linear": false,
+      "model_de": [
+        0.25,
+        0.0,
+        0.5
+      ],
+      "linear_de": [
+        0.25,
+        0.0,
+        0.5
+      ],
+      "claude_insample_pearson": 0.20866342593029014,
+      "random_insample_pearson": 0.20807809747139203
+    },
+    {
+      "module": "Th2_GATA3",
+      "condition": "Stim8hr",
+      "run": 1,
+      "n_proposals": 1,
+      "n_novel": 0,
+      "beats_linear": false,
+      "model_de": [
+        0.1,
+        0.0,
+        0.2
+      ],
+      "linear_de": [
+        0.25,
+        0.0,
+        0.5
+      ],
+      "claude_insample_pearson": 0.2551712163255205,
+      "random_insample_pearson": -0.04354998854347653
+    },
+    {
+      "module": "CD4_TF_network",
+      "condition": "Stim8hr",
+      "run": 0,
+      "n_proposals": 3,
+      "n_novel": 0,
+      "beats_linear": false,
+      "model_de": [
+        0.14646464646464644,
+        0.015151515151515152,
+        0.29797979797979796
+      ],
+      "linear_de": [
+        0.20538720538720537,
+        0.07407407407407407,
+        0.3383838383838384
+      ],
+      "claude_insample_pearson": 0.025237380472392535,
+      "random_insample_pearson": -0.03251282830579911
+    },
+    {
+      "module": "TCR_core",
+      "condition": "Stim8hr",
+      "run": 0,
+      "n_proposals": 3,
+      "n_novel": 0,
+      "beats_linear": false,
+      "model_de": [
+        0.3833333333333333,
+        0.26666666666666666,
+        0.5
+      ],
+      "linear_de": [
+        0.4583333333333333,
+        0.37499999999999994,
+        0.5
+      ],
+      "claude_insample_pearson": 0.38742032689214584,
+      "random_insample_pearson": 0.46375549836922164
+    }
+  ],
+  "summary": {
+    "n_runs": 9,
+    "n_proposals": 25,
+    "n_novel_edges": 110,
+    "validated_rate": [
+      0.0,
+      0.0,
+      0.034
+    ],
+    "modules_beating_linear": [
+      0,
+      9
+    ],
+    "beats_linear_rate": [
+      0.0,
+      0.0,
+      0.299
+    ],
+    "claude_insample_pearson_mean": 0.202,
+    "random_insample_pearson_mean": 0.066
+  }
+}

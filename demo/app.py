@@ -15,6 +15,7 @@ import streamlit as st
 HERE = os.path.dirname(os.path.abspath(__file__))
 LIMIT_MAP = os.path.join(HERE, "..", "paper", "mmc_limit_map.png")
 ENGINEER_FIG = os.path.join(HERE, "..", "paper", "engineer_behavior.png")
+ENGINEER_SCALED_FIG = os.path.join(HERE, "..", "paper", "engineer_behavior_scaled.png")
 
 st.set_page_config(page_title="MMC: mechanistic discovery loop", layout="wide")
 
@@ -127,18 +128,22 @@ elif view == "Held-out evaluation":
     st.subheader("Measured across the modules")
     st.markdown(
         "The loop's novel hypotheses are individually supported: the same edge-ablation gate "
-        "flags the novel STK11 edges as predictively necessary, as it flags textbook edges. The "
-        "model nonetheless does not beat a linear baseline held-out on either module; the "
-        "module-level held-out evaluation is what identifies this."
+        "flags the novel STK11 edges as predictively necessary, as it flags textbook edges. "
+        "Across a powered corpus (25 proposals and 76 distinct novel hypotheses over 9 runs and "
+        "two conditions), none is in a model that beats a linear baseline held-out."
     )
     m1, m2, m3 = st.columns(3)
-    m1.metric("STK11 edges flagged necessary", "3 of 3")
-    m2.metric("Modules beating linear held-out", "0 of 2")
-    m3.metric("Cytokine model vs linear", "0.18 vs 0.45")
-    if os.path.exists(ENGINEER_FIG):
+    m1.metric("Novel hypotheses validated", "0 of 76", help="Wilson 95% CI [0, 4.8%]")
+    m2.metric("Module-conditions beating linear", "0 of 9", help="Wilson 95% CI [0, 30%]")
+    m3.metric("Reasoning vs random (in-sample)", "0.20 vs 0.07", help="mean in-sample Pearson")
+    if os.path.exists(ENGINEER_SCALED_FIG):
+        st.image(ENGINEER_SCALED_FIG, use_container_width=True)
+    elif os.path.exists(ENGINEER_FIG):
         st.image(ENGINEER_FIG, use_container_width=True)
-    st.caption("Edge-level support is not predictive advantage over a baseline. The held-out "
-               "evaluation distinguishes a supported marginal effect from a predictive model.")
+    st.caption("Edge-level support is not predictive advantage over a baseline. The reasoning "
+               "step produces better-fitting structure than random search on the informative "
+               "modules; the held-out evaluation separates a supported marginal effect from a "
+               "predictive model.")
 
 # ------------------------------ Limit map ------------------------------
 else:
