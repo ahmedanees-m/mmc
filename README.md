@@ -91,6 +91,16 @@ built from these edges nonetheless does not beat a linear baseline on held-out d
 does not imply predictive advantage over a simple baseline; the module-level held-out evaluation
 is the check that distinguishes them.
 
+**Scaled characterization.** Across 25 proposals and 76 distinct novel hypotheses (110
+instances) accumulated over 9 runs and two conditions, none is in a model that beats a linear
+baseline held-out (validated rate 0 of 76, Wilson 95% CI [0, 4.8%]); 0 of 9 module-conditions
+beat linear (CI [0, 30%]) (`scripts/engineer_behavior_scaled.py`,
+`paper/engineer_behavior_scaled.png`). A reasoning-versus-search comparison shows the reasoning
+step is not equivalent to random structure search: the proposed structure fits in-sample better
+than a random structure of equal edge count on the informative modules (cytokine 0.19 versus
+0.00, Th2 0.23 versus 0.08 Pearson; mean 0.20 versus 0.07), and not on the redundant TCR cascade
+(0.39 versus 0.46), where structure carries little information.
+
 The module-level held-out evaluation is a discriminator, not a uniform rejecter: on synthetic
 ground truth it certifies a true structure (held-out DE-overlap 0.90 versus a mean baseline's
 0.17) and ranks a fully-connected over-connected structure below it (0.63)
@@ -113,9 +123,11 @@ marginals.
 
 **Principal finding.** The failure mode observed here is not fabrication. The loop's novel
 hypotheses are individually supported and pass edge-level necessity and ablation checks like
-established biology. What they do not do is compose into a model that beats a simple baseline on
-held-out data. Support at the level of individual edges, including necessity and ablation, does
-not imply predictive advantage over a baseline; only held-out predictive advantage over a strong
+established biology, and the reasoning step produces better-fitting structure than random search
+on the informative modules. What the hypotheses do not do is compose into a model that beats a
+simple baseline on held-out data: across 76 distinct novel hypotheses none does (Wilson 95% CI
+[0, 4.8%]). Support at the level of individual edges, including necessity and ablation, does not
+imply predictive advantage over a baseline; only held-out predictive advantage over a strong
 baseline establishes that. This distinguishes a supported marginal effect from a model whose
 predictions can be relied upon.
 

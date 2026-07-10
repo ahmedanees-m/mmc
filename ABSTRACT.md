@@ -11,8 +11,13 @@ the cytokine-production module it proposes STK11 / LKB1 as a chemokine regulator
 edge-ablation control confirms the STK11 edges are individually supported, comparable to
 textbook edges, but the model built from them does not beat a linear baseline on held-out data
 (DE-overlap 0.18 versus 0.45, separated CIs), so the hypothesis is reported as proposed but not
-certified. Across the immune modules, edge-level support does not imply predictive advantage
-over a simple baseline; the module-level held-out evaluation is what distinguishes them.
+certified. Across a powered corpus of 25 proposals and 76 distinct novel hypotheses over nine
+runs and two conditions, none is in a model that beats a linear baseline held-out (Wilson 95% CI
+[0, 4.8%]). A reasoning-versus-search comparison shows the reasoning step is not equivalent to
+random structure search, producing better-fitting structure than a random structure of equal
+edge count on the informative modules (mean in-sample Pearson 0.20 versus 0.07). Edge-level
+support does not imply predictive advantage over a simple baseline; the module-level held-out
+evaluation is what distinguishes them.
 
 MMC includes a limit map: the regime boundary of where mechanistic and AI models beat simple
 baselines on held-out data. On single-knockdown steady-state data no held-out advantage is
