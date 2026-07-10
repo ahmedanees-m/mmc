@@ -61,9 +61,12 @@ allowed to see the double, reaches only 0.38 DE-overlap on them (against 0.64 on
 controls). The headroom is real and large. But a model informed only by the singles cannot
 reach it, because the pair-specific interaction is unidentifiable from single-perturbation
 marginals. A saturating logic gate imposes one particular non-additive extrapolation; it is
-not the true interaction, so it does not help and slightly hurts. The saturating gate is one
-concrete instance, and the identifiability argument is model-class general: no singles-only
-model can recover a genuine pair interaction.
+not the true interaction, so it does not help and slightly hurts. The identifiability argument
+is general for models that infer the double from the single-perturbation marginals alone, which
+is what this compose test does. Methods that inject external pairwise priors (for example GEARS,
+with its gene-gene graph) do modestly better on the non-additive subset, but even they do not
+reliably beat a fitted-additive baseline (Ahlmann-Eltze, Huber, and Anders, Nature Methods
+2025, report additive beating GEARS overall), so the headroom stays thin.
 
 This closes the last "in principle" gap in the limit-map. The single genuine source of
 headroom over simple baselines, non-additivity, is inaccessible not only to single-knockdown

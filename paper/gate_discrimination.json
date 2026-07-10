@@ -1,0 +1,92 @@
+{
+  "perts": [
+    "CCL3",
+    "CCL4",
+    "CXCL8",
+    "GATA3",
+    "IL13",
+    "IL4",
+    "IL5",
+    "STAT4",
+    "STAT6",
+    "STK11",
+    "TBX21"
+  ],
+  "held_out_acc_by_seed": [
+    0.5,
+    0.5,
+    0.5
+  ],
+  "required_drop_threshold": 0.02,
+  "edges": [
+    {
+      "edge": "GATA3->IL13",
+      "class": "textbook",
+      "drop": 0.292,
+      "required": true
+    },
+    {
+      "edge": "STK11->CCL3",
+      "class": "novel",
+      "drop": 0.25,
+      "required": true
+    },
+    {
+      "edge": "STK11->CCL4",
+      "class": "novel",
+      "drop": 0.25,
+      "required": true
+    },
+    {
+      "edge": "STAT6->GATA3",
+      "class": "textbook",
+      "drop": 0.208,
+      "required": true
+    },
+    {
+      "edge": "GATA3->IL5",
+      "class": "textbook",
+      "drop": 0.167,
+      "required": true
+    },
+    {
+      "edge": "STK11->CXCL8",
+      "class": "novel",
+      "drop": 0.125,
+      "required": true
+    },
+    {
+      "edge": "GATA3->IL4",
+      "class": "textbook",
+      "drop": 0.083,
+      "required": true
+    },
+    {
+      "edge": "STAT4->TBX21",
+      "class": "textbook",
+      "drop": 0.083,
+      "required": true
+    },
+    {
+      "edge": "TBX21->GATA3",
+      "class": "textbook",
+      "drop": 0.083,
+      "required": true
+    }
+  ],
+  "textbook_required": [
+    "GATA3->IL13",
+    "STAT6->GATA3",
+    "GATA3->IL5",
+    "GATA3->IL4",
+    "STAT4->TBX21",
+    "TBX21->GATA3"
+  ],
+  "novel_required": [
+    "STK11->CCL3",
+    "STK11->CCL4",
+    "STK11->CXCL8"
+  ],
+  "gate_says_yes_to_a_true_edge": true,
+  "gate_discriminates": false
+}

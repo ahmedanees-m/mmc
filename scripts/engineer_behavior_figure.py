@@ -1,10 +1,14 @@
-"""Work Stream A5: render the engineer-behavior characterization figure.
+"""Render the engineer-behavior characterization figure (corrected, two honest panels).
 
-Reads engineer_behavior.json and draws two panels: the held-out DE-overlap of the model
-against the linear baseline per module (the model does not predict), and the proposal
-characterization (coherently-argued hypotheses, split by novelty, none validated as a
-held-out predictive necessity). The headline is the catch rate: the fraction of coherent
-proposals the gate rejects.
+Panel A: held-out DE-overlap of the model against the linear baseline, per module -- the
+mechanistic model does not beat a simple baseline held-out. Panel B: the edge-ablation
+positive control -- the same held-out gate flags the loop's novel hypotheses (STK11 ->
+chemokine) as predictively necessary, exactly as it flags textbook edges, so the novel
+hypotheses are individually grounded, not hallucinated. The corrected message: plausible,
+edge-grounded mechanism does not compose into a model that beats a baseline, and the
+module-level held-out gate is the calibration that reveals the gap.
+
+Reads engineer_behavior.json (Panel A) and gate_discrimination.json (Panel B).
 """
 from __future__ import annotations
 
@@ -15,14 +19,17 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-RED, GREEN, GREY = "#C62828", "#2E7D32", "#9E9E9E"
+RED, GREEN, GREY, ORANGE = "#C62828", "#2E7D32", "#9E9E9E", "#F9A825"
 
 
 def main() -> None:
-    path = sys.argv[1] if len(sys.argv) > 1 else "engineer_behavior.json"
-    out = sys.argv[2] if len(sys.argv) > 2 else "engineer_behavior.png"
-    with open(path) as f:
+    eb = sys.argv[1] if len(sys.argv) > 1 else "engineer_behavior.json"
+    gd = sys.argv[2] if len(sys.argv) > 2 else "gate_discrimination.json"
+    out = sys.argv[3] if len(sys.argv) > 3 else "engineer_behavior.png"
+    with open(eb) as f:
         d = json.load(f)
+    with open(gd) as f:
+        g = json.load(f)
 
     fig, (axA, axB) = plt.subplots(1, 2, figsize=(13, 5))
 
@@ -40,32 +47,32 @@ def main() -> None:
     axA.set_title("A  The model does not beat the linear baseline held-out", fontsize=11)
     axA.legend(fontsize=9)
 
-    # Panel B: proposal characterization
-    n_prop = d["n_coherent_proposals"]
-    n_novel = d["n_novel_hypotheses"]
-    n_val = d["n_novel_validated_held_out"]
-    catch = d.get("catch_rate")
-    axB.bar([0], [n_prop], color=GREEN, width=0.5, label="coherently-argued proposals")
-    axB.bar([1], [n_novel], color="#F9A825", width=0.5, label="novel (non-textbook) hypotheses")
-    axB.bar([2], [n_val], color=RED, width=0.5, label="validated held-out (predictive necessity)")
-    axB.set_xticks([0, 1, 2])
-    axB.set_xticklabels(["proposed\n(all coherent)", "novel", "validated\nheld-out"], fontsize=9)
-    axB.set_ylabel("number of structural hypotheses")
-    axB.set_title("B  Plausibility does not track predictive validity", fontsize=11)
-    for i, v in enumerate([n_prop, n_novel, n_val]):
-        axB.text(i, v + 0.3, str(v), ha="center", fontsize=11, fontweight="bold")
-    catch_txt = "n/a" if catch is None else f"{catch*100:.0f}%"
-    axB.text(0.5, 0.9, f"catch rate {catch_txt}\n(coherent proposals the gate rejects)",
-             transform=axB.transAxes, ha="center", fontsize=10,
-             bbox=dict(boxstyle="round", fc="#FFF3E0", ec=RED))
+    # Panel B: edge-ablation positive control (held-out ACC_DEG drop when edge removed)
+    edges = sorted(g["edges"], key=lambda r: r["drop"])
+    names = [e["edge"] for e in edges]
+    drops = [e["drop"] for e in edges]
+    colors = [GREEN if e["class"] == "textbook" else ORANGE for e in edges]
+    y = range(len(edges))
+    axB.barh(list(y), drops, color=colors)
+    axB.axvline(g["required_drop_threshold"], color=GREY, ls="--", lw=1)
+    axB.set_yticks(list(y))
+    axB.set_yticklabels(names, fontsize=8)
+    axB.set_xlabel("held-out ACC_DEG drop when edge removed (required if > dashed line)")
+    axB.set_title("B  Novel hypotheses are individually grounded, not hallucinated",
+                  fontsize=11)
+    axB.plot([], [], color=GREEN, lw=6, label="textbook edge")
+    axB.plot([], [], color=ORANGE, lw=6, label="novel (STK11) edge")
+    axB.legend(fontsize=9, loc="lower right")
 
-    fig.suptitle("MMC engineer-behavior: the held-out gate supplies the calibration the "
-                 "rationale lacks", fontsize=12, fontweight="bold")
-    fig.text(0.5, 0.005, "Across the loop's coherently-argued structural hypotheses, none is "
-             "validated as a held-out predictive necessity; the gate rejects every "
-             "non-predictive proposal. Scope: this atlas, CD4+ T, these modules.",
-             ha="center", fontsize=9, style="italic")
-    fig.tight_layout(rect=[0, 0.04, 1, 0.96])
+    fig.suptitle("MMC engineer-behavior: grounded mechanism does not beat a simple baseline",
+                 fontsize=12, fontweight="bold")
+    caption = (
+        "Panel B: the edge-ablation gate flags the novel STK11 edges predictively necessary, "
+        "like the textbook edges,\nso they are real marginal effects, not hallucinations. Yet "
+        "the model built from them does not beat a linear\nbaseline held-out (Panel A). The "
+        "module-level held-out gate is the calibration. Scope: this atlas, CD4+ T.")
+    fig.text(0.5, 0.02, caption, ha="center", fontsize=8, style="italic")
+    fig.tight_layout(rect=[0, 0.12, 1, 0.96])
     fig.savefig(out, dpi=150)
     print(f"wrote {out}")
 

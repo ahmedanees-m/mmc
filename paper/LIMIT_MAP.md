@@ -63,8 +63,9 @@ advantage over simple baselines in any regime, whether or not it can fit. The on
 headroom is non-additivity; single-knockdown data cannot access it, and on combinatorial data
 a model informed only by the singles still cannot predict it (the Norman compose test,
 `NORMAN_RESULT.md`), because the interaction is unidentifiable from the single-perturbation
-marginals. Mechanism fits but does not predict, in both the single-perturbation and the
-combinatorial regime. This is why the field's answers conflict: models are usually evaluated
+marginals; methods that inject external pairwise priors (GEARS) do modestly better on the
+non-additive pairs but still do not reliably beat additive (Ahlmann-Eltze). Mechanism fits but
+does not predict, in both the single-perturbation and the combinatorial regime. This is why the field's answers conflict: models are usually evaluated
 where nothing can win, and where they can fit they still do not predict.
 
 ## Why this is useful regardless of any positive
