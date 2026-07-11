@@ -5,6 +5,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.2] - 2026-07-11
+
+### Changed
+- The demo is arranged as three tabs for a screen-capture walkthrough, with large metric cards,
+  a stable layout (the mechanistic IL5 value holds when a second knockdown is added while the
+  additive baseline over-predicts), and reduced on-screen clutter. The video walkthrough and the
+  demo README are updated to match.
+
 ## [0.8.1] - 2026-07-11
 
 ### Added
