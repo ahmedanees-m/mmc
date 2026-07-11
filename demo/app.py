@@ -1,13 +1,14 @@
 """Streamlit presentation of MMC results.
 
 Runs on a clean clone with Streamlit alone; it renders precomputed results and requires no
-API key, data store, or GPU. Three views: circuit reconstruction, held-out evaluation, and
+API key, data store, or GPU. Three views: interrogate the circuit, held-out evaluation, and
 the limit map.
 
     streamlit run demo/app.py
 """
 from __future__ import annotations
 
+import json
 import os
 
 import streamlit as st
@@ -16,6 +17,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 LIMIT_MAP = os.path.join(HERE, "..", "paper", "mmc_limit_map.png")
 ENGINEER_FIG = os.path.join(HERE, "..", "paper", "engineer_behavior.png")
 ENGINEER_SCALED_FIG = os.path.join(HERE, "..", "paper", "engineer_behavior_scaled.png")
+DEMO_INTERV = os.path.join(HERE, "demo_interventions.json")
 
 st.set_page_config(page_title="MMC: mechanistic discovery loop", layout="wide")
 
@@ -41,6 +43,31 @@ def circuit_dot(edges, highlight=None):
     return "\n".join(lines)
 
 
+def intervention_dot(genes, edges, response, path_edges):
+    path_set = {(r, t) for r, t in path_edges}
+    lines = ["digraph {", "rankdir=LR;", "bgcolor=transparent;",
+             'node [shape=box style="rounded,filled" fontname="Helvetica"];',
+             'edge [fontname="Helvetica"];']
+    for g in genes:
+        d = response.get(g, 0.0)
+        if d <= -0.5:
+            fill, col = "#FFCDD2", RED
+        elif d >= 0.5:
+            fill, col = "#C8E6C9", GREEN
+        else:
+            fill, col = "#F5F5F5", "#BDBDBD"
+        label = f"{g}\\n{d:+.1f}" if abs(d) >= 0.05 else g
+        lines.append(f'"{g}" [label="{label}" fillcolor="{fill}" color="{col}"];')
+    for r, t, s in edges:
+        on = (r, t) in path_set
+        color = (GREEN if s > 0 else RED) if on else "#D0D0D0"
+        pen = 3 if on else 1
+        arrow = "normal" if s > 0 else "tee"
+        lines.append(f'"{r}" -> "{t}" [color="{color}" penwidth={pen} arrowhead={arrow}];')
+    lines.append("}")
+    return "\n".join(lines)
+
+
 # ------------------------------ header ------------------------------
 st.title("MMC: mechanistic discovery loop for T-cell gene regulation")
 st.markdown(
@@ -53,38 +80,68 @@ st.caption("Scope: the Zhu 2025 genome-scale CD4+ T-cell Perturb-seq atlas, thes
            "CD4+ T cells. No prediction win or disease discovery is claimed.")
 st.divider()
 
-view = st.radio("View", ["Circuit reconstruction", "Held-out evaluation", "Limit map"],
+view = st.radio("View", ["Interrogate the circuit", "Held-out evaluation", "Limit map"],
                 horizontal=True, label_visibility="collapsed")
 
-# ------------------------------ Circuit reconstruction ------------------------------
-if view == "Circuit reconstruction":
-    st.header("Circuit reconstruction: the Th2 / GATA3 axis")
+# ------------------------------ Interrogate the circuit ------------------------------
+if view == "Interrogate the circuit":
+    st.header("Interrogate the circuit: the Th2 / GATA3 axis")
     st.markdown(
-        "From the atlas alone, the loop writes a runnable, interpretable model of the "
-        "Th2 / GATA3 axis (associated with allergy, asthma, and atopic disease) as signed edges "
-        "and logic, fits it, reads the residuals, and revises the structure."
+        "The loop reconstructs a runnable, interpretable model of the Th2 / GATA3 axis "
+        "(associated with allergy, asthma, and atopic disease) from the atlas. Select an "
+        "intervention below: the structural model simulates the response and traces the causal "
+        "path through the validated circuit. A model that can be interrogated, not a black box."
     )
-    th2_edges = [
-        ("STAT6", "GATA3", 1), ("TBX21", "GATA3", -1), ("GATA3", "TBX21", -1),
-        ("STAT4", "TBX21", 1), ("TBX21", "STAT4", 1), ("IL4", "STAT6", 1),
-        ("GATA3", "IL4", 1), ("GATA3", "IL5", 1), ("GATA3", "IL13", 1),
-    ]
-    c1, c2 = st.columns([3, 2])
-    with c1:
-        st.graphviz_chart(circuit_dot(th2_edges), use_container_width=True)
-        st.caption("Green arrow: activation. Red bar: repression. The reasoning step proposed "
-                   "the structure; the optimizer set the magnitudes.")
-    with c2:
-        st.markdown("**Proposed rationale (verbatim):**")
-        st.info("The circuit is centered on GATA3 as the Th2 master regulator with mutual "
-                "antagonism against the TBX21/STAT4 Th1 axis and a feed-forward IL4 to STAT6 to "
-                "GATA3 loop, using product-gate terms only where activator/repressor logic is "
-                "non-monotone.")
-        st.metric("In-sample fit", "Pearson 0.93",
-                  help="Agreement between the fitted circuit and the training knockdowns. "
-                       "In-sample fit, not a prediction claim.")
-        st.caption("The GATA3 to IL4/IL5/IL13 amplification and the GATA3 to TBX21 mutual "
-                   "antagonism are established Th2 biology, recovered from the data.")
+    if not os.path.exists(DEMO_INTERV):
+        st.warning("demo_interventions.json not found; run scripts/demo_precompute.py")
+    else:
+        with open(DEMO_INTERV) as fh:
+            data = json.load(fh)
+        choice = st.selectbox("Intervention",
+                              ["(unperturbed circuit)"] + list(data["interventions"].keys()))
+        c1, c2 = st.columns([3, 2])
+        if choice == "(unperturbed circuit)":
+            with c1:
+                st.graphviz_chart(
+                    intervention_dot(data["genes"], data["edges"],
+                                     {g: 0.0 for g in data["genes"]}, []),
+                    use_container_width=True)
+                st.caption("The validated Th2 / GATA3 circuit; every edge was confirmed "
+                           "held-out-necessary by the edge-ablation control. Select an "
+                           "intervention to simulate.")
+            with c2:
+                st.markdown("**How to read it.** Green arrow: activation. Red bar: repression. "
+                            "After an intervention, each node's color and label show the "
+                            "simulated log2 fold-change, and the highlighted path is the causal "
+                            "route the effect travels.")
+        else:
+            iv = data["interventions"][choice]
+            with c1:
+                st.graphviz_chart(
+                    intervention_dot(data["genes"], data["edges"], iv["response"], iv["path"]),
+                    use_container_width=True)
+                st.caption("Node label: simulated log2 fold-change. Highlighted path: the causal "
+                           "route through validated edges. Red node: down, green node: up.")
+            with c2:
+                st.markdown(f"**Cytokine readouts, simulated ({iv['kind']}):**")
+                for m, g in zip(st.columns(len(data["readouts"])), data["readouts"]):
+                    m.metric(g, f"{iv['response'][g]:+.2f}")
+                if iv["composed"] and iv["additive_baseline"]:
+                    add = iv["additive_baseline"]
+                    st.markdown("**Structural model versus the additive baseline:**")
+                    st.table({"readout": data["readouts"],
+                              "structural": [f"{iv['response'][g]:+.2f}"
+                                             for g in data["readouts"]],
+                              "additive (sum)": [f"{add[g]:+.2f}" for g in data["readouts"]]})
+                    st.info("STAT6 acts through GATA3. Once GATA3 is knocked down, also knocking "
+                            "down STAT6 adds little, and the structural model captures this "
+                            "epistasis; the additive baseline sums the two knockdowns and "
+                            "over-predicts the drop. Composing interventions is what a mechanistic "
+                            "model can do and an additive baseline cannot.")
+                else:
+                    st.caption("The response propagates only through validated edges. A "
+                               "single-gene baseline gives these numbers but cannot trace the "
+                               "path or compose a second intervention.")
 
 # ------------------------------ Held-out evaluation ------------------------------
 elif view == "Held-out evaluation":

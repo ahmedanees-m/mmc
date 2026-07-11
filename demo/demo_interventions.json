@@ -1,0 +1,207 @@
+{
+  "genes": [
+    "STAT4",
+    "TBX21",
+    "STAT6",
+    "GATA3",
+    "IL4",
+    "IL5",
+    "IL13"
+  ],
+  "edges": [
+    [
+      "STAT6",
+      "GATA3",
+      1
+    ],
+    [
+      "TBX21",
+      "GATA3",
+      -1
+    ],
+    [
+      "STAT4",
+      "TBX21",
+      1
+    ],
+    [
+      "GATA3",
+      "IL4",
+      1
+    ],
+    [
+      "GATA3",
+      "IL5",
+      1
+    ],
+    [
+      "GATA3",
+      "IL13",
+      1
+    ]
+  ],
+  "readouts": [
+    "IL4",
+    "IL5",
+    "IL13"
+  ],
+  "interventions": {
+    "GATA3 knockdown": {
+      "kind": "knockdown",
+      "targets": [
+        "GATA3"
+      ],
+      "response": {
+        "STAT4": -0.0,
+        "TBX21": -0.0,
+        "STAT6": -0.0,
+        "GATA3": -1.93,
+        "IL4": -1.733,
+        "IL5": -4.999,
+        "IL13": -4.78
+      },
+      "path": [
+        [
+          "GATA3",
+          "IL4"
+        ],
+        [
+          "GATA3",
+          "IL5"
+        ],
+        [
+          "GATA3",
+          "IL13"
+        ]
+      ],
+      "additive_baseline": {
+        "STAT4": -0.48,
+        "TBX21": -0.15,
+        "STAT6": 0.049,
+        "GATA3": -3.069,
+        "IL4": -1.733,
+        "IL5": -4.999,
+        "IL13": -4.78
+      },
+      "composed": false
+    },
+    "GATA3 activation": {
+      "kind": "activation",
+      "targets": [
+        "GATA3"
+      ],
+      "response": {
+        "STAT4": -0.0,
+        "TBX21": -0.0,
+        "STAT6": -0.0,
+        "GATA3": 2.07,
+        "IL4": 4.512,
+        "IL5": 0.26,
+        "IL13": 0.0
+      },
+      "path": [
+        [
+          "GATA3",
+          "IL4"
+        ],
+        [
+          "GATA3",
+          "IL5"
+        ],
+        [
+          "GATA3",
+          "IL13"
+        ]
+      ],
+      "additive_baseline": null,
+      "composed": false
+    },
+    "STAT6 knockdown": {
+      "kind": "knockdown",
+      "targets": [
+        "STAT6"
+      ],
+      "response": {
+        "STAT4": -0.0,
+        "TBX21": -0.0,
+        "STAT6": -0.864,
+        "GATA3": -0.39,
+        "IL4": -0.766,
+        "IL5": -0.395,
+        "IL13": -0.0
+      },
+      "path": [
+        [
+          "STAT6",
+          "GATA3"
+        ],
+        [
+          "GATA3",
+          "IL4"
+        ],
+        [
+          "GATA3",
+          "IL5"
+        ],
+        [
+          "GATA3",
+          "IL13"
+        ]
+      ],
+      "additive_baseline": {
+        "STAT4": 0.085,
+        "TBX21": 0.43,
+        "STAT6": -2.438,
+        "GATA3": -0.385,
+        "IL4": -0.767,
+        "IL5": -0.395,
+        "IL13": 0.189
+      },
+      "composed": false
+    },
+    "GATA3 + STAT6 knockdown": {
+      "kind": "knockdown",
+      "targets": [
+        "GATA3",
+        "STAT6"
+      ],
+      "response": {
+        "STAT4": -0.0,
+        "TBX21": -0.0,
+        "STAT6": -0.864,
+        "GATA3": -1.93,
+        "IL4": -1.733,
+        "IL5": -4.999,
+        "IL13": -4.78
+      },
+      "path": [
+        [
+          "STAT6",
+          "GATA3"
+        ],
+        [
+          "GATA3",
+          "IL4"
+        ],
+        [
+          "GATA3",
+          "IL5"
+        ],
+        [
+          "GATA3",
+          "IL13"
+        ]
+      ],
+      "additive_baseline": {
+        "STAT4": -0.395,
+        "TBX21": 0.28,
+        "STAT6": -2.389,
+        "GATA3": -3.454,
+        "IL4": -2.5,
+        "IL5": -5.393,
+        "IL13": -4.59
+      },
+      "composed": true
+    }
+  }
+}

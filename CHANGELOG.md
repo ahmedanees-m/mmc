@@ -5,6 +5,23 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2026-07-11
+
+### Added
+- Interactive circuit interrogation in the demo (`demo/app.py`, `demo/demo_interventions.json`,
+  `scripts/demo_precompute.py`): the validated Th2 / GATA3 sub-circuit responds to interventions
+  (knockdown, activation, and a double), simulating the per-gene response and tracing the causal
+  path, and contrasting the mechanistic composition of a double knockdown with the additive
+  baseline.
+- Norman top-decile positive control (`scripts/norman_positive_control.py`,
+  `paper/norman_positive_control.json`): the most strongly non-additive pairs show no held-out
+  advantage over the additive baselines, and no per-pair case where the model beats both.
+
+### Changed
+- The demo leads with the interactive circuit; the video walkthrough is updated to match.
+- The README overview elevates the key finding (grounded but not compositional) and the
+  interrogability of the reconstructed circuit.
+
 ## [0.7.0] - 2026-07-10
 
 ### Added

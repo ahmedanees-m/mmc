@@ -6,54 +6,58 @@ view in the app.
 
 ---
 
-**1. Circuit reconstruction (0:00-1:00)**
+**1. Interrogate the circuit (0:00-1:05)**
 
-*On screen:* the loop proposing, simulating, and revising, then the reconstructed Th2 / GATA3
-circuit (Circuit reconstruction view).
+*On screen:* the "Interrogate the circuit" view. Select GATA3 knockdown, then STAT6 knockdown,
+then the GATA3 + STAT6 double, holding on the simulated response and the highlighted causal path
+each time.
 
-*Narration:* "MMC reads a genome-scale immune-perturbation atlas and produces a runnable,
-interpretable model of the Th2 circuit, which is associated with allergic and autoimmune
-disease: signed edges, logic, and a simulator. The structure is proposed by the reasoning step
-and the magnitudes are set by the optimizer, so the model is inspectable and testable rather
-than a black box."
-
----
-
-**2. Held-out evaluation (1:00-2:05)**
-
-*On screen:* the STK11 proposal and its rationale, the held-out result table, and the
-engineer-behavior figure.
-
-*Narration:* "On the cytokine-production module the loop proposes a new hypothesis, STK11 as a
-chemokine repressor, derived from the knockdown residuals. The STK11 edges are individually
-supported: an edge-ablation control flags them as predictively necessary, comparable to
-textbook edges. The model built from them, however, does not beat a linear baseline on
-held-out data, 0.18 against 0.45 with separated confidence intervals. The hypothesis is
-therefore reported as proposed but not certified. Edge-level support is not the same as
-predictive advantage over a baseline, and the held-out evaluation is what distinguishes them."
+*Narration:* "MMC reconstructs a runnable model of the Th2 circuit from the newest CD4 T-cell
+atlas, and it is not a black box: you can intervene on it. Knock down GATA3 and the model
+simulates the cytokines falling and traces the causal path. Knock down STAT6 and the effect
+travels through GATA3. Knock down both, and the model shows the second knockdown adds almost
+nothing, because STAT6 acts through GATA3; the additive baseline sums the two and over-predicts,
+while the mechanistic model composes them. A model you can interrogate is the capability the
+black-box predictors do not provide."
 
 ---
 
-**3. Limit map (2:05-2:45)**
+**2. Grounded, not predictive (1:05-2:00)**
 
-*On screen:* the limit map (`paper/mmc_limit_map.png`, Limit map view).
+*On screen:* the "Held-out evaluation" view: the STK11 proposal and rationale, then the
+scaled-corpus figure and metrics.
 
-*Narration:* "MMC maps where a mechanistic or AI model does and does not beat simple baselines
-on held-out data. The boundary is consistent with the field's benchmarks and explains why such
-models frequently fail to beat baselines: they are commonly evaluated where no method has an
-advantage, and in-sample fit does not imply held-out prediction."
-
----
-
-**Close (2:45-3:00)**
-
-*On screen:* the app footer.
-
-*Narration:* "MMC produces interpretable, testable mechanistic hypotheses from a genome-scale
-atlas and reports the regime within which its outputs are reliable."
+*Narration:* "The loop also proposes new hypotheses. On the cytokine module it proposes STK11 as
+a chemokine regulator, and the STK11 edges are real: an edge-ablation control flags them
+predictively necessary, like textbook edges. But across a powered corpus of 76 distinct novel
+hypotheses over nine runs, none produces a model that beats a simple linear baseline held-out.
+Grounded is not the same as predictive, and the property that separates them is held-out
+advantage over a baseline, not the interpretability checks."
 
 ---
 
-Numbers in section 2 are from `paper/gate_discrimination.json` (edge-level support) and the
-cytokine held-out evaluation (0.18 versus 0.45). No prediction win and no disease discovery is
-claimed; STK11 is presented as proposed but not certified.
+**3. Held to the baseline (2:00-2:35)**
+
+*On screen:* the held-out result table declining the STK11 model (0.18 versus 0.45).
+
+*Narration:* "So the engine holds its own proposal to the baseline and declines it. STK11 is a
+real effect, but the model built from it does not predict better than the baseline, and the
+engine reports it as proposed, not certified: a model that declines its own good-looking
+hypotheses on the evidence."
+
+---
+
+**4. Close (2:35-3:00)**
+
+*On screen:* the "Limit map" view.
+
+*Narration:* "Single-perturbation prediction does not beat simple baselines, on this atlas and
+in the field's own benchmarks, and the combinatorial regime does not rescue it. That is the case
+for an instrument that can be interrogated and that audits itself against a baseline, rather than
+one more prediction number."
+
+---
+
+Numbers: the intervention responses are from `demo/demo_interventions.json`; the corpus figures
+from `scripts/engineer_behavior_scaled.py`; the held-out result from the cytokine evaluation
+(0.18 versus 0.45). No prediction win and no disease discovery is claimed.

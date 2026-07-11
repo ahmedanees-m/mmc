@@ -39,7 +39,16 @@ and measures held-out predictive accuracy against simple baselines.
 **What it produces.** For a module, MMC produces an interpretable circuit model, a
 leave-one-perturbation-out evaluation of that model against mean and linear baselines, an
 auditable trace of every proposal and revision, and a placement of the module on a limit map of
-where mechanistic and AI models beat simple baselines.
+where mechanistic and AI models beat simple baselines. The reconstructed circuit is
+interrogable: an intervention is simulated mechanistically, composing perturbations in a way an
+additive baseline cannot (see the demo).
+
+**Key finding.** The failure mode of AI-driven mechanistic discovery observed here is not
+fabrication. The loop's novel hypotheses are individually supported and pass edge-level
+necessity and ablation checks like established biology, but across a powered corpus of 76
+distinct novel hypotheses none composes into a model that beats a linear baseline held-out
+(Wilson 95% CI [0, 4.8%]). Interpretability checks, including necessity and ablation, are not
+the safeguard; held-out advantage over a strong baseline is.
 
 **Scope.** Results are on the Zhu 2025 genome-scale CD4+ T-cell Perturb-seq atlas, the modules
 listed below, and single-knockdown steady-state readouts, with the combinatorial regime
