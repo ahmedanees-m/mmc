@@ -5,6 +5,18 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.1] - 2026-07-11
+
+### Added
+- Unit tests for the structural steady-state backend, the held-out evaluation engine, and the
+  receipt, trace, and module-registration utilities (`tests/test_structural.py`,
+  `tests/test_holdout.py`, `tests/test_shared.py`). Line coverage of the offline-testable core
+  rises from 40 percent to 75 percent.
+
+### Changed
+- Coverage configuration targets the offline-testable core and excludes modules that require
+  external resources unavailable in CI (the store, the model API, and the JAX backend).
+
 ## [0.8.0] - 2026-07-11
 
 ### Added
