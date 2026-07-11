@@ -1,0 +1,26 @@
+{
+  "n_pairs_total": 131,
+  "decile_n": 13,
+  "na_range_decile": [
+    0.794,
+    0.99
+  ],
+  "deov_model": [
+    0.188,
+    0.122,
+    0.263
+  ],
+  "deov_fitted_additive": [
+    0.211,
+    0.131,
+    0.292
+  ],
+  "deov_mean_of_singles": [
+    0.2,
+    0.123,
+    0.283
+  ],
+  "trust_correct_pairs": [],
+  "n_trust_correct": 0,
+  "beats_baselines_aggregate": false
+}
