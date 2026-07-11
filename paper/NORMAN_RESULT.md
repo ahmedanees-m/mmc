@@ -54,6 +54,13 @@ additive control: model 0.862, additive baselines 0.862 to 0.870). The structura
 not beat the additive baselines on either set and sits marginally below. This is the
 pre-registered null.
 
+A positive control on the most favorable subset confirms this. On the top decile of
+non-additivity (13 pairs, deviation 0.79 to 0.99, the strongest genetic interactions),
+held-out DE-overlap is model 0.19 versus fitted-additive 0.21 and mean-of-singles 0.20, and no
+individual pair has the model beating both baselines (0 of 13). The most non-additive setting
+is where a structural model would beat additive if it could anywhere, and it does not
+(`scripts/norman_positive_control.py`, `paper/norman_positive_control.json`).
+
 ## What it means
 
 The non-additive pairs are genuinely non-additive: even the fitted-additive oracle, which is
