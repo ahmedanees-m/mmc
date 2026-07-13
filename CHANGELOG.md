@@ -5,13 +5,29 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2026-07-13
+
+### Added
+- Deterministic replay of the discovery loop in the demo (`demo/app.py`, `demo/loop_replay.json`,
+  `scripts/capture_loop_trace.py`): a captured run on the TCR signalosome core in Stim8hr is
+  stepped through iteration by iteration, showing the proposed structure, the structural residuals
+  surfaced to the reasoning step, its verbatim rationale, the structural edit, and the training
+  loss and structural-residual count. The reasoning step proposes an activating cascade and, on
+  reading that knockdowns raise their targets, revises three edges to repressive (training loss
+  0.96 to 0.66, structural residuals 10 to 6).
+- An optional per-iteration replay log in the discovery loop (`mmc/loop/run.py`) recording the
+  structure, the residuals shown to the reasoning step, the rationale, and the edit.
+
+### Changed
+- The demo leads with the discovery loop, followed by the STK11 proposal, the interactive circuit,
+  and the evidence.
+
 ## [0.8.2] - 2026-07-11
 
 ### Changed
-- The demo is arranged as three tabs for a screen-capture walkthrough, with large metric cards,
-  a stable layout (the mechanistic IL5 value holds when a second knockdown is added while the
-  additive baseline over-predicts), and reduced on-screen clutter. The video walkthrough and the
-  demo README are updated to match.
+- The demo is arranged as three tabs, with large metric cards and a stable layout (the
+  mechanistic IL5 value holds when a second knockdown is added while the additive baseline
+  over-predicts).
 
 ## [0.8.1] - 2026-07-11
 
@@ -38,7 +54,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   advantage over the additive baselines, and no per-pair case where the model beats both.
 
 ### Changed
-- The demo leads with the interactive circuit; the video walkthrough is updated to match.
+- The demo leads with the interactive circuit.
 - The README overview elevates the key finding (grounded but not compositional) and the
   interrogability of the reconstructed circuit.
 

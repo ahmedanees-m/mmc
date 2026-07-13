@@ -1,0 +1,487 @@
+{
+  "module": "TCR_core:Stim8hr",
+  "iterations": [
+    {
+      "n": 1,
+      "genes": [
+        "ZAP70",
+        "LAT",
+        "LCP2",
+        "PLCG1",
+        "PRKCQ"
+      ],
+      "edges": [
+        {
+          "src": "ZAP70",
+          "dst": "LAT",
+          "sign": 1
+        },
+        {
+          "src": "LAT",
+          "dst": "LCP2",
+          "sign": 1
+        },
+        {
+          "src": "LAT",
+          "dst": "PLCG1",
+          "sign": 1
+        },
+        {
+          "src": "LCP2",
+          "dst": "PLCG1",
+          "sign": 1
+        },
+        {
+          "src": "PLCG1",
+          "dst": "PRKCQ",
+          "sign": 1
+        },
+        {
+          "src": "LCP2",
+          "dst": "PRKCQ",
+          "sign": 1
+        },
+        {
+          "src": "PRKCQ",
+          "dst": "ZAP70",
+          "sign": 1
+        }
+      ],
+      "residuals": [
+        {
+          "perturbation": "LCP2",
+          "target": "PRKCQ",
+          "predicted": 0.0,
+          "observed": 1.49,
+          "gap": 1.49,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "ZAP70",
+          "target": "PRKCQ",
+          "predicted": 0.0,
+          "observed": 1.35,
+          "gap": 1.35,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "ZAP70",
+          "target": "PLCG1",
+          "predicted": 0.0,
+          "observed": 1.3,
+          "gap": 1.3,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "LCP2",
+          "target": "PLCG1",
+          "predicted": 0.0,
+          "observed": 1.26,
+          "gap": 1.26,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "LAT",
+          "target": "PRKCQ",
+          "predicted": 0.0,
+          "observed": 1.0,
+          "gap": 1.0,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "LAT",
+          "target": "PLCG1",
+          "predicted": 0.0,
+          "observed": 0.95,
+          "gap": 0.95,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "PLCG1",
+          "target": "PRKCQ",
+          "predicted": 0.0,
+          "observed": 0.9,
+          "gap": 0.9,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "ZAP70",
+          "target": "LCP2",
+          "predicted": 0.0,
+          "observed": 0.82,
+          "gap": 0.82,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "PLCG1",
+          "target": "LCP2",
+          "predicted": 0.0,
+          "observed": 0.71,
+          "gap": 0.71,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "LAT",
+          "target": "LCP2",
+          "predicted": 0.0,
+          "observed": 0.56,
+          "gap": 0.56,
+          "pattern": "magnitude"
+        }
+      ],
+      "rationale": "Encode the canonical proximal TCR cascade (ZAP70\u2192LAT\u2192LCP2/PLCG1\u2192PRKCQ) as a connected feed-forward chain with a PKC\u03b8\u2192ZAP70 positive feedback to give the apex a regulator, using a coincidence (product) gate for PLCG1 which requires both LAT scaffolding and LCP2.",
+      "edit": null,
+      "fit": 0.9629,
+      "n_structural": 10
+    },
+    {
+      "n": 2,
+      "genes": [
+        "ZAP70",
+        "LAT",
+        "LCP2",
+        "PLCG1",
+        "PRKCQ"
+      ],
+      "edges": [
+        {
+          "src": "ZAP70",
+          "dst": "LAT",
+          "sign": 1
+        },
+        {
+          "src": "LAT",
+          "dst": "LCP2",
+          "sign": 1
+        },
+        {
+          "src": "LAT",
+          "dst": "PLCG1",
+          "sign": 1
+        },
+        {
+          "src": "LCP2",
+          "dst": "PLCG1",
+          "sign": 1
+        },
+        {
+          "src": "PLCG1",
+          "dst": "PRKCQ",
+          "sign": 1
+        },
+        {
+          "src": "LCP2",
+          "dst": "PRKCQ",
+          "sign": -1
+        },
+        {
+          "src": "PRKCQ",
+          "dst": "ZAP70",
+          "sign": 1
+        }
+      ],
+      "residuals": [
+        {
+          "perturbation": "ZAP70",
+          "target": "PRKCQ",
+          "predicted": 0.0,
+          "observed": 1.35,
+          "gap": 1.35,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "ZAP70",
+          "target": "PLCG1",
+          "predicted": 0.0,
+          "observed": 1.3,
+          "gap": 1.3,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "LCP2",
+          "target": "PLCG1",
+          "predicted": 0.0,
+          "observed": 1.26,
+          "gap": 1.26,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "LAT",
+          "target": "PLCG1",
+          "predicted": 0.0,
+          "observed": 0.95,
+          "gap": 0.95,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "PLCG1",
+          "target": "PRKCQ",
+          "predicted": -0.0,
+          "observed": 0.9,
+          "gap": 0.9,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "ZAP70",
+          "target": "LCP2",
+          "predicted": 0.0,
+          "observed": 0.82,
+          "gap": 0.82,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "LAT",
+          "target": "LCP2",
+          "predicted": -0.18,
+          "observed": 0.56,
+          "gap": 0.74,
+          "pattern": "magnitude"
+        },
+        {
+          "perturbation": "PLCG1",
+          "target": "LCP2",
+          "predicted": 0.0,
+          "observed": 0.71,
+          "gap": 0.71,
+          "pattern": "missing_effect"
+        }
+      ],
+      "rationale": "The observed knockdowns increase their downstream targets, indicating the strongest link (LCP2\u2192PRKCQ) is repressive rather than activating, so I flip its sign to negative.",
+      "edit": {
+        "added": [
+          "LCP2->PRKCQ(-1)"
+        ],
+        "removed": [
+          "LCP2->PRKCQ(+1)"
+        ]
+      },
+      "fit": 0.7639,
+      "n_structural": 8
+    },
+    {
+      "n": 3,
+      "genes": [
+        "ZAP70",
+        "LAT",
+        "LCP2",
+        "PLCG1",
+        "PRKCQ"
+      ],
+      "edges": [
+        {
+          "src": "ZAP70",
+          "dst": "LAT",
+          "sign": 1
+        },
+        {
+          "src": "LAT",
+          "dst": "LCP2",
+          "sign": -1
+        },
+        {
+          "src": "LAT",
+          "dst": "PLCG1",
+          "sign": 1
+        },
+        {
+          "src": "LCP2",
+          "dst": "PLCG1",
+          "sign": 1
+        },
+        {
+          "src": "PLCG1",
+          "dst": "PRKCQ",
+          "sign": 1
+        },
+        {
+          "src": "LCP2",
+          "dst": "PRKCQ",
+          "sign": -1
+        },
+        {
+          "src": "PRKCQ",
+          "dst": "ZAP70",
+          "sign": 1
+        }
+      ],
+      "residuals": [
+        {
+          "perturbation": "ZAP70",
+          "target": "PRKCQ",
+          "predicted": -0.0,
+          "observed": 1.35,
+          "gap": 1.35,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "ZAP70",
+          "target": "PLCG1",
+          "predicted": -0.0,
+          "observed": 1.3,
+          "gap": 1.3,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "LCP2",
+          "target": "PLCG1",
+          "predicted": 0.0,
+          "observed": 1.26,
+          "gap": 1.26,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "LAT",
+          "target": "PRKCQ",
+          "predicted": -0.0,
+          "observed": 1.0,
+          "gap": 1.0,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "LAT",
+          "target": "PLCG1",
+          "predicted": -0.0,
+          "observed": 0.95,
+          "gap": 0.95,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "PLCG1",
+          "target": "PRKCQ",
+          "predicted": -0.0,
+          "observed": 0.9,
+          "gap": 0.9,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "PLCG1",
+          "target": "LCP2",
+          "predicted": 0.0,
+          "observed": 0.71,
+          "gap": 0.71,
+          "pattern": "missing_effect"
+        }
+      ],
+      "rationale": "The only edge with a clear wrong-sign fingerprint is LAT\u2192LCP2 (model predicts LCP2 drops on LAT knockdown, but LCP2 rises), so flip that edge to repressive.",
+      "edit": {
+        "added": [
+          "LAT->LCP2(-1)"
+        ],
+        "removed": [
+          "LAT->LCP2(+1)"
+        ]
+      },
+      "fit": 0.6978,
+      "n_structural": 7
+    },
+    {
+      "n": 4,
+      "genes": [
+        "ZAP70",
+        "LAT",
+        "LCP2",
+        "PLCG1",
+        "PRKCQ"
+      ],
+      "edges": [
+        {
+          "src": "ZAP70",
+          "dst": "LAT",
+          "sign": 1
+        },
+        {
+          "src": "LAT",
+          "dst": "LCP2",
+          "sign": -1
+        },
+        {
+          "src": "LAT",
+          "dst": "PLCG1",
+          "sign": 1
+        },
+        {
+          "src": "LCP2",
+          "dst": "PLCG1",
+          "sign": 1
+        },
+        {
+          "src": "PLCG1",
+          "dst": "PRKCQ",
+          "sign": -1
+        },
+        {
+          "src": "LCP2",
+          "dst": "PRKCQ",
+          "sign": -1
+        },
+        {
+          "src": "PRKCQ",
+          "dst": "ZAP70",
+          "sign": 1
+        }
+      ],
+      "residuals": [
+        {
+          "perturbation": "ZAP70",
+          "target": "PRKCQ",
+          "predicted": -0.04,
+          "observed": 1.35,
+          "gap": 1.39,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "ZAP70",
+          "target": "PLCG1",
+          "predicted": 0.0,
+          "observed": 1.3,
+          "gap": 1.3,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "LCP2",
+          "target": "PLCG1",
+          "predicted": 0.0,
+          "observed": 1.26,
+          "gap": 1.26,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "LAT",
+          "target": "PRKCQ",
+          "predicted": -0.04,
+          "observed": 1.0,
+          "gap": 1.04,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "LAT",
+          "target": "PLCG1",
+          "predicted": 0.0,
+          "observed": 0.95,
+          "gap": 0.95,
+          "pattern": "missing_effect"
+        },
+        {
+          "perturbation": "PLCG1",
+          "target": "LCP2",
+          "predicted": 0.0,
+          "observed": 0.71,
+          "gap": 0.71,
+          "pattern": "missing_effect"
+        }
+      ],
+      "rationale": "Flip the PLCG1\u2192PRKCQ edge to repressive, since knockdown of PLCG1 (and its upstream activators ZAP70/LAT) consistently increases PRKCQ, indicating the PLCG1-to-PRKCQ path is net inhibitory rather than activating.",
+      "edit": {
+        "added": [
+          "PLCG1->PRKCQ(-1)"
+        ],
+        "removed": [
+          "PLCG1->PRKCQ(+1)"
+        ]
+      },
+      "fit": 0.6571,
+      "n_structural": 6
+    }
+  ],
+  "ensemble_size": 3
+}

@@ -53,7 +53,7 @@ def discover(module: str, condition: str, context: str | None = None, *,
              perts: list[str] | None = None, start_spec=None, backend: str = "structural",
              max_iters: int = 4, n_starts: int = 8, max_iter: int = 300,
              ensemble_k: int = 5, ensemble_margin: float = 0.2,
-             trace: Trace | None = None) -> LoopResult:
+             trace: Trace | None = None, replay_log: list | None = None) -> LoopResult:
     # The structural steady-state backend (v3) is the default; the ODE backend is kept
     # for the earlier experiments and the tests.
     if backend == "structural":
@@ -79,8 +79,10 @@ def discover(module: str, condition: str, context: str | None = None, *,
         trace.log(Step(kind="propose", model_hash=model_hash(spec),
                        rationale="adapt from the frozen structure", edit=None,
                        train_score=None))
+        step_rationale, step_edit = "adapt from the frozen structure", None
     else:
-        spec, _ = propose_mod.propose(genes, context, trace=trace)
+        spec, step_rationale = propose_mod.propose(genes, context, trace=trace)
+        step_edit = None
     for it in range(max_iters):
         best, labels, stats = fitmod.diagnose(spec, observed, n_starts=n_starts, max_iter=max_iter)
         ens.add(spec, best["loss"], best["params"])
@@ -91,10 +93,26 @@ def discover(module: str, condition: str, context: str | None = None, *,
                        edit=None, train_score=best["loss"]))
         history.append({"hash": model_hash(spec), "loss": round(best["loss"], 4),
                         "n_structural": len(items)})
+        if replay_log is not None:
+            # A per-iteration record for the deterministic loop replay: the structure at this
+            # step, the residuals the reasoning step was shown, its rationale, the edit that
+            # produced this structure, and the training-fit diagnostics.
+            replay_log.append({
+                "n": it + 1,
+                "genes": list(genes),
+                "edges": [{"src": e.regulator, "dst": e.target, "sign": int(e.sign)}
+                          for e in spec.edges],
+                "residuals": items,
+                "rationale": step_rationale,
+                "edit": step_edit,
+                "fit": round(float(best["loss"]), 4),
+                "n_structural": len(items),
+            })
         if not items or it == max_iters - 1:
             break
         summary = residuals.summary_text(items, stats)
-        spec, _ = repair_mod.repair(spec, context, summary, trace=trace)
+        spec, step_rationale = repair_mod.repair(spec, context, summary, trace=trace)
+        step_edit = trace.steps[-1].edit
 
     top = ens.best()
     trace.log(Step(kind="freeze",

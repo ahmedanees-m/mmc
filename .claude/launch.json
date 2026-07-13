@@ -4,7 +4,7 @@
     {
       "name": "mmc-demo",
       "runtimeExecutable": "streamlit",
-      "runtimeArgs": ["run", "demo/app.py", "--server.headless=true", "--server.port=8501"],
+      "runtimeArgs": ["run", "demo/app.py", "--server.headless=true", "--server.port=8501", "--theme.base=light"],
       "port": 8501
     }
   ]
