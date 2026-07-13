@@ -17,6 +17,9 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   0.96 to 0.66, structural residuals 10 to 6).
 - An optional per-iteration replay log in the discovery loop (`mmc/loop/run.py`) recording the
   structure, the residuals shown to the reasoning step, the rationale, and the edit.
+- A terminal replay of the captured trace (`scripts/replay_loop.py`): steps through the recorded
+  run in the console, printing the structure, residuals, rationale, edit, and training loss for
+  each iteration.
 
 ### Changed
 - The demo leads with the discovery loop, followed by the STK11 proposal, the interactive circuit,
