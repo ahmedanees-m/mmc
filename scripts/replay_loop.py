@@ -1,11 +1,3 @@
-"""Replay the captured discovery-loop trace in the terminal.
-
-A deterministic, offline replay of demo/loop_replay.json. For each iteration of a captured
-run it prints the structure, the residuals the reasoning step was shown, its verbatim
-rationale, the structural edit, and the training loss. This replays a real recorded run; it
-does not call the model and adds no result of its own. The pacing between lines is for
-readability only.
-
     python scripts/replay_loop.py
     python scripts/replay_loop.py --pace 1.0
 """
