@@ -1,3 +1,5 @@
+"""Replay the captured discovery-loop trace in the terminal (deterministic, offline).
+
     python scripts/replay_loop.py
     python scripts/replay_loop.py --pace 1.0
 """
