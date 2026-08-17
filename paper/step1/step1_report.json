@@ -1,0 +1,412 @@
+{
+  "modules": {
+    "Cytokine_production": {
+      "n_genes": 28,
+      "n_perts": 28,
+      "n_de_entries": 109,
+      "de_per_pert_mean": 3.893,
+      "n_folds_with_de": 19,
+      "perts": [
+        "ATP5F1A",
+        "BATF",
+        "CARMIL2",
+        "CCL3",
+        "CCL4",
+        "CCL5",
+        "CD28",
+        "CSF2",
+        "CXCL8",
+        "IFNG",
+        "IL2",
+        "IL22",
+        "IL2RB",
+        "IL3",
+        "IL5",
+        "INO80B",
+        "MALT1",
+        "PGS1",
+        "PNPT1",
+        "PPP1R11",
+        "RB1CC1",
+        "RFT1",
+        "RNF20",
+        "STK11",
+        "TBX21",
+        "TUFM",
+        "UBR4",
+        "VARS2"
+      ]
+    }
+  },
+  "protocol": {
+    "fit_starts": 4,
+    "fit_max_iter": 250,
+    "n_boot": 10000,
+    "search_folds": 0,
+    "search_starts": 1,
+    "search_max_iter": 80,
+    "screen_folds": 2,
+    "screen_keep": 20,
+    "greedy_pool": 120,
+    "max_edges": 30,
+    "anneal_steps": 480,
+    "seeds": 10,
+    "n_random": 1000
+  },
+  "provenance": {
+    "textbook": {
+      "selected_from": "prior",
+      "note": "fixed from published biology before this data was read"
+    },
+    "claude": {
+      "selected_from": "module",
+      "note": "proposed from the module's training data at loop time"
+    },
+    "mean_difference": {
+      "selected_from": "full matrix",
+      "note": "thresholded from the full response matrix"
+    },
+    "grnboost2": {
+      "selected_from": "full matrix",
+      "note": "regressed on the full response matrix"
+    },
+    "oracle": {
+      "selected_from": "held-out",
+      "note": "selected on the held-out score; ceiling estimator"
+    },
+    "oracle_nested": {
+      "selected_from": "inner split",
+      "note": "selected on an inner split, scored on an untouched outer split"
+    },
+    "linear": {
+      "selected_from": "not a structure",
+      "note": "the bar"
+    },
+    "mean": {
+      "selected_from": "not a structure",
+      "note": "mean of training perturbations"
+    },
+    "zero": {
+      "selected_from": "not a structure",
+      "note": "predicts no change"
+    }
+  },
+  "tables": {
+    "Cytokine_production": [
+      {
+        "source": "linear",
+        "n_edges": 0,
+        "de_overlap_mean": 0.4451,
+        "de_overlap_lo": 0.328,
+        "de_overlap_hi": 0.5716,
+        "delta_vs_linear": 0.0,
+        "delta_lo": 0.0,
+        "delta_hi": 0.0,
+        "advantage": false,
+        "n_folds": 19,
+        "random_null_percentile": 100.0
+      },
+      {
+        "source": "mean",
+        "n_edges": 0,
+        "de_overlap_mean": 0.3712,
+        "de_overlap_lo": 0.2626,
+        "de_overlap_hi": 0.4899,
+        "delta_vs_linear": -0.0739,
+        "delta_lo": -0.2555,
+        "delta_hi": 0.1055,
+        "advantage": false,
+        "n_folds": 19,
+        "random_null_percentile": 100.0
+      },
+      {
+        "source": "oracle",
+        "n_edges": 7,
+        "de_overlap_mean": 0.292,
+        "de_overlap_lo": 0.1646,
+        "de_overlap_hi": 0.4464,
+        "delta_vs_linear": -0.1531,
+        "delta_lo": -0.2837,
+        "delta_hi": 0.0133,
+        "advantage": false,
+        "n_folds": 19,
+        "anneal_gain": 0.0,
+        "random_null_percentile": 100.0
+      },
+      {
+        "source": "mean_difference",
+        "n_edges": 30,
+        "de_overlap_mean": 0.2468,
+        "de_overlap_lo": 0.153,
+        "de_overlap_hi": 0.3529,
+        "delta_vs_linear": -0.1983,
+        "delta_lo": -0.3532,
+        "delta_hi": -0.0646,
+        "advantage": false,
+        "n_folds": 19,
+        "random_null_percentile": 100.0
+      },
+      {
+        "source": "zero",
+        "n_edges": 0,
+        "de_overlap_mean": 0.1252,
+        "de_overlap_lo": 0.0958,
+        "de_overlap_hi": 0.1549,
+        "delta_vs_linear": -0.3199,
+        "delta_lo": -0.4549,
+        "delta_hi": -0.1967,
+        "advantage": false,
+        "n_folds": 19,
+        "random_null_percentile": 97.3
+      },
+      {
+        "source": "textbook",
+        "n_edges": 16,
+        "de_overlap_mean": 0.1211,
+        "de_overlap_lo": 0.0734,
+        "de_overlap_hi": 0.1768,
+        "delta_vs_linear": -0.3241,
+        "delta_lo": -0.461,
+        "delta_hi": -0.202,
+        "advantage": false,
+        "n_folds": 19,
+        "random_null_percentile": 93.8
+      },
+      {
+        "source": "grnboost2",
+        "n_edges": 30,
+        "de_overlap_mean": 0.1113,
+        "de_overlap_lo": 0.0767,
+        "de_overlap_hi": 0.1449,
+        "delta_vs_linear": -0.3338,
+        "delta_lo": -0.4717,
+        "delta_hi": -0.208,
+        "advantage": false,
+        "n_folds": 19,
+        "random_null_percentile": 74.3
+      }
+    ]
+  },
+  "diagnostics": {
+    "Cytokine_production": {
+      "effective_rank": 3.6385989504616516,
+      "effective_rank_normalised": 0.12994996251648755,
+      "leading_pc_fraction": 0.2757595769743102,
+      "perturbation_specific_ratio": 1.3359645250794667,
+      "effect_sizes": {
+        "n_perts": 28,
+        "n_genes": 28,
+        "n_de_entries": 109,
+        "de_per_pert_mean": 3.892857142857143,
+        "de_per_pert_min": 0,
+        "de_per_pert_max": 11,
+        "abs_effect_median": 0.14115356653928757,
+        "de_abs_effect_median": 1.9154040813446045,
+        "de_abs_effect_p90": 5.446598529815674
+      },
+      "from_trace": {
+        "equivalence_width": {
+          "n_in_class": 107,
+          "n_evaluated": 667,
+          "best_train_loss": 4.3893583989668326,
+          "width": 0.11539317093900203,
+          "sd": 0.03753554382553321,
+          "holdout_min": 0.18820407708860942,
+          "holdout_max": 0.30359724802761145,
+          "holdout_mean": 0.24128295233279837
+        },
+        "sign_stability": {
+          "n_edges": 50,
+          "n_in_class": 107,
+          "fraction_stable": 0.84,
+          "per_edge_agreement": {
+            "ATP5F1A->IL22": 1.0,
+            "IL2->IL22": 1.0,
+            "IL2RB->IL2": 1.0,
+            "INO80B->IL22": 1.0,
+            "PGS1->IL2": 1.0,
+            "VARS2->IL5": 0.99,
+            "IL2RB->IL5": 0.6,
+            "INO80B->IL5": 1.0,
+            "CD28->IL2": 0.81,
+            "BATF->IL5": 1.0,
+            "CARMIL2->IL5": 0.6,
+            "CCL5->IL5": 1.0,
+            "UBR4->IFNG": 1.0,
+            "CSF2->IL5": 0.667,
+            "TUFM->IL5": 1.0,
+            "PPP1R11->IL5": 1.0,
+            "UBR4->IL5": 0.5,
+            "RNF20->IL5": 0.5,
+            "PNPT1->IL5": 0.5,
+            "TBX21->IL3": 1.0,
+            "STK11->IL5": 0.5,
+            "IL3->IL5": 1.0,
+            "MALT1->IL5": 1.0,
+            "CXCL8->PPP1R11": 1.0,
+            "RNF20->CSF2": 1.0,
+            "IL2RB->CD28": 1.0,
+            "UBR4->IL2RB": 1.0,
+            "TBX21->UBR4": 1.0,
+            "RFT1->CCL5": 1.0,
+            "PPP1R11->VARS2": 1.0,
+            "IL5->UBR4": 1.0,
+            "PPP1R11->ATP5F1A": 1.0,
+            "MALT1->VARS2": 1.0,
+            "IL2RB->PPP1R11": 1.0,
+            "PGS1->CCL5": 1.0,
+            "IFNG->ATP5F1A": 1.0,
+            "STK11->RB1CC1": 1.0,
+            "RFT1->IL5": 1.0,
+            "IL3->CCL3": 1.0,
+            "RNF20->IL3": 1.0,
+            "RFT1->ATP5F1A": 1.0,
+            "INO80B->RB1CC1": 1.0,
+            "CXCL8->PGS1": 1.0,
+            "IL5->IL2RB": 1.0,
+            "CCL3->CARMIL2": 1.0,
+            "ATP5F1A->CD28": 1.0,
+            "IL2RB->CXCL8": 1.0,
+            "CD28->IFNG": 1.0,
+            "CSF2->CD28": 1.0,
+            "IL22->PPP1R11": 1.0
+          }
+        }
+      }
+    }
+  },
+  "random_null": {
+    "Cytokine_production": {
+      "n_edges": 7,
+      "n_structures": 1000,
+      "seconds": 2329.0,
+      "n": 1000,
+      "mean": 0.1081689201810681,
+      "sd": 0.009215688059323835,
+      "p50": 0.10686641628848603,
+      "p95": 0.12226151060663415,
+      "p99": 0.15468864740106347,
+      "max": 0.1708700776319574
+    }
+  },
+  "structure_agreement": {
+    "Cytokine_production": {
+      "textbook|mean_difference": 0.122,
+      "textbook|grnboost2": 0.0,
+      "textbook|oracle": 0.0952,
+      "textbook|oracle_nested": 0.0,
+      "mean_difference|grnboost2": 0.0345,
+      "mean_difference|oracle": 0.0278,
+      "mean_difference|oracle_nested": 0.0294,
+      "grnboost2|oracle": 0.0,
+      "grnboost2|oracle_nested": 0.0294,
+      "oracle|oracle_nested": 0.3333
+    }
+  },
+  "family_a": {
+    "textbook": [
+      {
+        "module": "Cytokine_production",
+        "source": "textbook",
+        "delta": -0.3241,
+        "lo": -0.461,
+        "hi": -0.202,
+        "n_folds": 19,
+        "p": 1.0,
+        "advantage": false,
+        "bh_reject": false
+      }
+    ],
+    "claude": [],
+    "mean_difference": [
+      {
+        "module": "Cytokine_production",
+        "source": "mean_difference",
+        "delta": -0.1983,
+        "lo": -0.3532,
+        "hi": -0.0646,
+        "n_folds": 19,
+        "p": 0.9967,
+        "advantage": false,
+        "bh_reject": false
+      }
+    ],
+    "grnboost2": [
+      {
+        "module": "Cytokine_production",
+        "source": "grnboost2",
+        "delta": -0.3338,
+        "lo": -0.4716,
+        "hi": -0.208,
+        "n_folds": 19,
+        "p": 1.0,
+        "advantage": false,
+        "bh_reject": false
+      }
+    ],
+    "oracle": [
+      {
+        "module": "Cytokine_production",
+        "source": "oracle",
+        "delta": -0.1531,
+        "lo": -0.2837,
+        "hi": 0.0133,
+        "n_folds": 19,
+        "p": 0.9685,
+        "advantage": false,
+        "bh_reject": false
+      }
+    ]
+  },
+  "branch": {
+    "module": "Cytokine_production",
+    "oracle_vs_linear": {
+      "delta": -0.15311052631578947,
+      "lo": -0.2837378947368421,
+      "hi": 0.013267236842105205,
+      "n_folds": 19,
+      "advantage": false
+    },
+    "claude_vs_linear": null,
+    "nested_outer": {
+      "mean": 0.13329258012812453,
+      "lo": 0.07967729268280738,
+      "hi": 0.18278271181110764,
+      "n_folds": 8
+    },
+    "ceiling_spread": {
+      "by_seed": [
+        0.2363625341286454,
+        0.24212760668938357,
+        0.29202154187921864,
+        0.16898061364782174,
+        0.24524467419789844,
+        0.20309079828579887,
+        0.26616918431953007,
+        0.29202154187921864,
+        0.24687247938849394,
+        0.29202154187921864
+      ],
+      "sd": 0.03818517118157466,
+      "min": 0.16898061364782174,
+      "max": 0.29202154187921864
+    },
+    "branch": "A",
+    "reading": "no structure in this grammar, including one selected on the held-out answer, beats a linear map; the ceiling is set by the data"
+  },
+  "algorithmic_scope": {
+    "runnable": [
+      "mean_difference",
+      "grnboost2"
+    ],
+    "not_runnable": [
+      "gies",
+      "dcdi-g",
+      "dcdi-dsf",
+      "bicycle",
+      "avici",
+      "sdcd"
+    ],
+    "reason": "the store holds one differential-expression summary per perturbation, not per-cell counts; see PREREG_v4 amendment A3"
+  }
+}

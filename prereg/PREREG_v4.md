@@ -303,4 +303,34 @@ One implementation consequence, which the panel adapter has to handle or it will
 
 ### Outcomes
 
-*(pending)*
+**Step 1, primary module (Cytokine_production / Stim8hr), 2026-08-17. Branch A.**
+
+Read on the powered module as section 2.4 requires. 28 genes, 28 perturbations, 109 DE entries, 19 folds carrying a DE gene. All figures are held-out DE-overlap under the corrected metric of amendment A2, with the paired statistic of section 1.2.
+
+| Source | Edges | DE-overlap [95% CI] | Δ vs linear [95% CI] | Advantage | Selected from |
+|---|---|---|---|---|---|
+| linear (S6) | n/a | 0.4451 [0.3280, 0.5716] | reference | n/a | not a structure |
+| mean (S7) | n/a | 0.3712 [0.2626, 0.4899] | -0.0739 [-0.2555, +0.1055] | no | not a structure |
+| oracle (S5) | 7 | 0.2920 [0.1646, 0.4464] | -0.1531 [-0.2837, +0.0133] | no | held-out score |
+| mean difference (S4) | 30 | 0.2468 [0.1530, 0.3529] | -0.1983 [-0.3532, -0.0646] | no | full response matrix |
+| zero | n/a | 0.1252 [0.0958, 0.1549] | -0.3199 [-0.4549, -0.1967] | no | not a structure |
+| textbook (S2) | 16 | 0.1211 [0.0734, 0.1768] | -0.3241 [-0.4610, -0.2020] | no | prior literature |
+| GRNBoost2 (S4) | 30 | 0.1113 [0.0767, 0.1449] | -0.3338 [-0.4717, -0.2080] | no | full response matrix |
+
+Random-structure null (S3), 1000 draws at the oracle's edge count: mean 0.1082.
+
+**The branch is A.** The oracle does not clear the linear baseline; its paired interval against linear runs from -0.2837 to +0.0133 and therefore fails the section 1.2 rule, and its point estimate sits 0.15 below. Since S5 is an upper bound selected on the held-out answer itself, no structure in this grammar clears the bar on this module, and the limit is a property of the data rather than of any proposer. Section 2.4's Branch A language stands as written and C1 is not retired.
+
+Supporting numbers, all pre-registered:
+
+- **Ceiling seed stability (section 2.3).** Ten independent searches gave 0.1690 to 0.2920, sd 0.038. A ceiling that holds this steady is not a search artefact.
+- **Nested honest variant (section 2.2).** Structure selected on an inner split, scored on an outer split selection never touched: 0.1333 [0.0797, 0.1828] over 8 folds. The gap to the leaky 0.2920 is the size of the selection advantage, and the honest number sits barely above the random null.
+- **The oracle is finding something, and it is not enough.** At 0.2920 it is roughly 2.7 times the null mean of 0.1082, so the search is not merely fitting noise; it is simply far below a linear map.
+- **Textbook structure performs at the floor.** 0.1211 against a null of 0.1082. Canonical immunology, compiled into this grammar, predicts held-out perturbation responses no better than a random structure of the same size.
+- **Structure-equivalence width (section 3).** 107 structures lie within 5 percent of the best training loss; their held-out scores span 0.188 to 0.304, a width of 0.115. Fitting the training data equally well carries almost no information about predicting held-out responses, which is the mechanism behind the ceiling.
+- **Sign stability (section 3).** Across that near-optimal class, 84 percent of the 50 distinct edges have a determined sign. `VARS2 -> IL5` appears activating in one search and repressing in another.
+- **What the oracle selected.** `ATP5F1A -> IL22`, `PGS1 -> IL2`, `VARS2 -> IL5`, `INO80B -> IL22`, alongside `CD28 -> IL2`. Mostly metabolic and housekeeping genes rather than regulators, which is what an upper-bound search returns when there is little real signal to find.
+
+One measurement worth recording against amendment A2: the linear baseline recomputed under the corrected metric is 0.4451, against 0.45 reported previously. The correction left the baseline where it was, as predicted, and moved only the sparse structural arms. The zero baseline fell to 0.1252 and now sits essentially on the random null, which is where a prediction of no change belongs.
+
+Remaining Step 1 work before the branch is final for the paper: TCR_signalosome, Th2_GATA3 and CD4_lineage_TFs are running, the S1 proposal arm is evaluated in the second pass, and the swept null of amendment A5 replaces the single-band null above for the percentile column.

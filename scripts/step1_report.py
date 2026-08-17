@@ -148,9 +148,11 @@ def figure(results: dict[str, dict], out_prefix: Path) -> None:
                      f"{summ.get('n_de_entries', '?')} DE entries", fontsize=9)
         ax.set_xlabel("held-out DE-overlap")
         ax.grid(axis="x", alpha=0.25)
-    fig.suptitle("Structure sources against the linear baseline. Dashed line: random-structure "
-                 "null mean; dotted: its 95th percentile.", fontsize=9, y=0.02)
-    fig.tight_layout(rect=(0, 0.05, 1, 1))
+    fig.text(0.5, 0.015,
+             "Structure sources against the linear baseline. Dashed line: random-structure "
+             "null mean; dotted: its 95th percentile.",
+             ha="center", va="bottom", fontsize=8, wrap=True)
+    fig.tight_layout(rect=(0, 0.075, 1, 1))
     fig.savefig(f"{out_prefix}_fig1.png", dpi=200)
     print(f"wrote {out_prefix}_fig1.png")
 
