@@ -23,9 +23,9 @@ from pathlib import Path
 
 import numpy as np
 
+from mmc.data import module_extract
 from mmc.data import module_generator as mg
 from mmc.data.module_data import build_module_data
-from mmc.data import module_extract
 from mmc.eval import annotation as ann
 from mmc.shared import store
 
