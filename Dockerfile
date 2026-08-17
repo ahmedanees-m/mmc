@@ -8,7 +8,7 @@ WORKDIR /app
 RUN pip install --no-cache-dir \
     "duckdb>=1.0" "polars>=1.0" "pandas>=2.0" "numpy>=1.26" "scipy>=1.11" \
     "pydantic>=2.6" "cma>=3.3" "anthropic>=0.116" "matplotlib>=3.8" "pytest>=8.0" \
-    "jax[cpu]>=0.4.30"
+    "jax[cpu]>=0.4.30" "scikit-learn>=1.3"
 
 ENV PYTHONPATH=/app
 CMD ["pytest", "-q"]

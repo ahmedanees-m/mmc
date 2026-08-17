@@ -251,6 +251,25 @@ def main() -> None:
             print(f"  textbook skipped: {e}")
         flush()
 
+    if "algorithmic" in sources:
+        from mmc.compare import scp_infer_adapter
+        out["algorithmic_scope"] = {
+            "runnable": list(scp_infer_adapter.METHODS),
+            "not_runnable": ["gies", "dcdi-g", "dcdi-dsf", "bicycle", "avici", "sdcd"],
+            "reason": ("the store holds one differential-expression summary per "
+                       "perturbation, not per-cell counts; see PREREG_v4 amendment A3"),
+        }
+        for method in scp_infer_adapter.METHODS:
+            edges = scp_infer_adapter.algorithmic_edges(mod, method, max_edges=MAX_EDGES)
+            if not edges:
+                print(f"  {method} produced no edges")
+                continue
+            spec = oracle_search.spec_from_edges(mod.genes, edges)
+            results[method] = evaluate_spec(mod, spec, method)
+            out["specs"][method] = json.loads(spec.to_json())
+            print(f"  {method} done ({len(spec.edges)} edges)")
+        flush()
+
     if "claude" in sources and args.frozen:
         with open(args.frozen) as f:
             frozen = json.load(f)
