@@ -53,7 +53,16 @@ def discover(module: str, condition: str, context: str | None = None, *,
              perts: list[str] | None = None, start_spec=None, backend: str = "structural",
              max_iters: int = 4, n_starts: int = 8, max_iter: int = 300,
              ensemble_k: int = 5, ensemble_margin: float = 0.2,
-             trace: Trace | None = None) -> LoopResult:
+             trace: Trace | None = None,
+             observed: dict | None = None, genes: list[str] | None = None) -> LoopResult:
+    """Run the propose, fit, read-residuals, repair loop on a module.
+
+    `observed` and `genes` override what would be read from the store. They exist for
+    the Step 5 arms, which need to hold the harness fixed while changing exactly one
+    thing: the gene identities the model sees (aliased) or the pairing between a
+    perturbation and its response (permuted). Doing that by substitution here keeps
+    every arm on the same code path, which is what makes the arms comparable.
+    """
     # The structural steady-state backend (v3) is the default; the ODE backend is kept
     # for the earlier experiments and the tests.
     if backend == "structural":
@@ -62,13 +71,14 @@ def discover(module: str, condition: str, context: str | None = None, *,
         from ..fit import diagnose as fitmod
     trace = trace or Trace(module=f"{module}:{condition}")
     context = context or DEFAULT_CONTEXT.get(module, f"Module {module} in CD4+ T cells.")
-    observed = module_extract.observed_deltas(module, condition)   # training state only
+    if observed is None:
+        observed = module_extract.observed_deltas(module, condition)  # training state only
     if perts is not None:
         # restrict to the split's visible perturbations, so a held-out knockdown never
         # enters the loop even though it is measured in this state.
         keep = set(perts)
         observed = {p: d for p, d in observed.items() if p in keep}
-    genes = module_extract.model_genes(module)
+    genes = list(genes) if genes is not None else module_extract.model_genes(module)
     ens = Ensemble(k=ensemble_k, margin=ensemble_margin)
     history: list[dict] = []
 
