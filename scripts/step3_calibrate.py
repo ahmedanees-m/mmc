@@ -79,21 +79,31 @@ def fit_generator(mod, n_edges: int, seed: int):
 
 
 def simulate(mod, spec, params, *, noise_scale: float, shared_weight: float,
-             seed: int) -> np.ndarray:
-    """Simulate the module's response matrix from the fitted structural model."""
+             seed: int, shared_rank: int = 2) -> np.ndarray:
+    """Simulate the module's response matrix from the fitted structural model.
+
+    `shared_weight` mixes in a low-rank co-response component taken from the real
+    module. It has to be a *per-perturbation scaled* component, not a constant vector
+    added to every row: both diagnostics are computed on the column-centred matrix, so
+    a constant offset is removed by the centring and cannot change either of them. An
+    earlier version of this script added a constant and produced identical diagnostics
+    at every weight, which is the signature of exactly that mistake.
+    """
     rng = np.random.default_rng(seed)
     clean = np.stack([np.asarray(structural.knockdown(spec, params, p))
                       for p in mod.perts])
 
     # residual noise bootstrapped from the real module rather than assumed Gaussian
     resid = np.asarray(mod.observed, float) - clean
-    flat = resid.reshape(-1)
-    noise = rng.choice(flat, size=clean.shape, replace=True) * noise_scale
+    noise = rng.choice(resid.reshape(-1), size=clean.shape, replace=True) * noise_scale
 
     out = clean + noise
     if shared_weight > 0:
-        shared = np.asarray(mod.observed, float).mean(axis=0)
-        out = out + shared_weight * shared
+        real = np.asarray(mod.observed, float)
+        centred = real - real.mean(axis=0, keepdims=True)
+        u, s, vt = np.linalg.svd(centred, full_matrices=False)
+        k = min(shared_rank, s.size)
+        out = out + shared_weight * ((u[:, :k] * s[:k]) @ vt[:k])
     return out
 
 
@@ -140,8 +150,9 @@ def main() -> None:
     spec, params = fit_generator(mod, args.edges, seed=0)
     print(f"  generator: {len(spec.edges)} edges\n")
 
-    grid = [("structural", 0.0), ("structural+shared", 0.25), ("structural+shared", 0.5),
-            ("structural+shared", 1.0), ("structural+shared", 2.0)]
+    grid = [("structural", 0.0), ("structural+lowrank", 0.5), ("structural+lowrank", 1.0),
+            ("structural+lowrank", 2.0), ("structural+lowrank", 4.0),
+            ("structural+lowrank", 8.0)]
     for name, w in grid:
         sims = [diagnostics_of(simulate(mod, spec, params, noise_scale=1.0,
                                         shared_weight=w, seed=s))
