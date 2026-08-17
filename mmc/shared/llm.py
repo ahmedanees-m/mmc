@@ -68,12 +68,13 @@ def reason(system: str, user: str, *, effort: str = "high", max_tokens: int = 80
     behaviour are identical across families. Anything model-specific would make the
     panel a prompt-engineering result rather than a statement about the models.
     """
-    from ..loop.providers import AnthropicProvider, get_provider
+    from ..loop.providers import get_provider
 
-    provider = get_provider(model())
-    if isinstance(provider, AnthropicProvider):
-        return anthropic_reason(system, user, effort=effort, max_tokens=max_tokens)
-    return provider.complete(system, user, max_tokens=max_tokens, effort=effort)
+    # Always go through the provider, including for Anthropic. Short-circuiting the
+    # Anthropic branch here left its calls uncounted, so the panel's call and retry
+    # columns read zero for exactly the models the existing record was built on.
+    return get_provider(model()).complete(system, user, max_tokens=max_tokens,
+                                          effort=effort)
 
 
 def extract(system: str, user: str, schema: dict, *, max_tokens: int = 2000) -> dict:

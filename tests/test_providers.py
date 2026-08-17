@@ -144,6 +144,19 @@ def test_unknown_provider_is_rejected():
         P.get_provider("some/model", provider="nope")
 
 
+def test_the_anthropic_path_is_counted_too(monkeypatch):
+    """Regression: routing Anthropic around the provider left its calls uncounted, so
+    the panel's call and retry columns read zero for the models the record was built on."""
+    from mmc.shared import llm
+
+    monkeypatch.setenv("MMC_MODEL", "claude-opus-4-8")
+    monkeypatch.setattr(llm, "anthropic_reason",
+                        lambda system, user, effort="high", max_tokens=0: "ok")
+    assert llm.reason("sys", "user") == "ok"
+    assert P.STATS.calls == 1
+    assert P.STATS.by_model["claude-opus-4-8"] == 1
+
+
 def test_stats_serialise():
     P.STATS.record("m", 5)
     d = P.STATS.as_dict()
