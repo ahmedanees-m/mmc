@@ -64,15 +64,20 @@ def bind_structural_with_offset(spec, mod: ModuleData, *, n_starts: int = FIT_ST
 
 
 def bind_dense_linear(mod: ModuleData, *, l2: float = 1.0, max_regulators: int = 0):
-    """A signed linear structural map with no in-degree cap.
+    """A one-hot ridge over which gene was perturbed. **Not usable under leave-one-out.**
 
-    Each gene's response to a knockdown is a linear function of which gene was knocked
-    down, fitted by ridge across the training perturbations. This is the same family as
-    the grammar's signed edges with the gates and the cap removed, so a gap between this
-    and the bounded grammar is attributable to the bound rather than to the model family.
+    Withdrawn from Step 10 by the verification recorded in PREREG_v4 under the Step 1
+    four-module outcome. Under leave-one-perturbation-out the held-out perturbation's
+    indicator column never appears in the training rows, so its fitted coefficient is
+    zero and the prediction is exactly zero for every gene. Measured, it reproduces the
+    zero baseline exactly: 0.1220 on CD4_lineage_TFs and 0.1252 on the cytokine module.
+
+    Retained only as the diagnostic that established this, and because the behaviour is
+    worth being able to demonstrate. An unbounded in-degree comparison has to be built as
+    a structural model with the cap lifted, not as a regression on perturbation identity.
 
     `max_regulators` above zero keeps only that many largest-magnitude coefficients per
-    target, which lets the cap be swept rather than only lifted.
+    target.
     """
 
     def fn(train_idx, held_idx):

@@ -424,7 +424,26 @@ The ordering that governs it is the perturbation-specific ratio, and its mirror 
 
 The branch was pre-registered to be read on the cytokine module alone, and it stands as Branch A. CD4 does not overturn it; it shows that the comparator, not the structure, is what varies.
 
-**One item requiring verification before the write-up.** The linear baseline scoring below chance needs to be established as a property of the module rather than a defect in the baseline. Six of its eleven scoreable folds on CD4 score exactly zero, meaning its top-k contained none of the observed DE genes. A prediction carrying no information would score at chance, not below it, so scoring below chance means the ridge map is systematically pointing at the wrong genes, which is plausible on a perturbation-specific module where the typical response is not the response to any particular perturbation. Plausible is not established. Until it is checked, CD4's linear row is reported with the anomaly stated and the module's conclusions are drawn against its null rather than against linear.
+**Verification of the CD4 linear anomaly, 2026-08-18. It is a property of the module, and the baseline is sound.**
+
+The linear arm's low CD4 score was checked directly rather than assumed, since an advantage over a broken comparator would not be a result. Two candidate explanations were separated: the baseline is degenerate on this module, or the module is perturbation-specific enough that the typical response the ridge map learns is uninformative about any particular held-out perturbation.
+
+The baseline is not degenerate. Across CD4's eleven scoreable folds the perturbed gene's response signature has median norm 1.03 and is non-zero in every fold, and the resulting prediction has median norm 1.68 and is non-zero in every fold. The map is well posed and produces substantial predictions; it simply ranks the wrong genes.
+
+Counting hits against what a random ranking of the same size would give settles the reading:
+
+| Module | Observed hits | Expected under random ranking | Ratio |
+|---|---|---|---|
+| Cytokine_production | 63 | 29.25 | 2.15 |
+| CD4_lineage_TFs | 13 | 19.94 | 0.65 |
+
+On the cytokine module the signature ridge is strongly informative, recovering more than twice the DE genes a random ranking would. On CD4 it recovers fewer than chance would. The deficit on CD4 is roughly 1.5 standard deviations on a Poisson scale and is **not** significantly below chance, so the correct statement is the weaker and safer one: **on CD4 the linear baseline carries no usable signal, rather than being actively anti-correlated.** The earlier wording of "below chance" overstates what 13 against 19.94 supports and is withdrawn.
+
+This confirms the reading in the table above. CD4's oracle advantage over linear reflects a comparator with nothing to contribute on that module, not a structure that predicts well, and the module's conclusions continue to be drawn against its own null. It also strengthens the regime account rather than complicating it: the same baseline is highly informative where responses are shared and uninformative where they are perturbation-specific, which is the gradient the four-module table shows.
+
+**A second finding from the same check, which changes amendment A9.** A one-hot ridge over which gene was perturbed was run on the identical folds as a differently-constructed linear comparator. Under leave-one-perturbation-out it is degenerate by construction: the held-out perturbation's indicator column never appears in the training rows, so its fitted coefficient is zero and the prediction is exactly zero for every gene. Its score duplicates the zero baseline exactly, 0.1220 on CD4 and 0.1252 on the cytokine module.
+
+The `dense_linear` class added in amendment A9 for Step 10 is built this way and is therefore **not a usable model class under this evaluation protocol**. It is withdrawn from Step 10. The `structural + offset` class, which is the one that actually tests the section 2.2 mechanism, is unaffected and stands. If an unbounded in-degree comparison is still wanted it has to be built as a structural model with the cap lifted rather than as a one-hot regression, and that is left for the write-up to note as untested rather than added late.
 
 **Step 7, module extraction, 2026-08-17. Annotation-defined modules are systematically underpowered; data-defined ones are not.**
 
