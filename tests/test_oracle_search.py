@@ -158,6 +158,54 @@ def test_screening_is_bypassed_when_the_batch_is_already_small():
     assert screen_calls == []
 
 
+def test_greedy_starts_from_an_unscoreable_empty_structure():
+    """The empty structure scores NaN on a sparse module, because no fold has a DE
+    gene to overlap with. Comparing a candidate against NaN never succeeds, so a naive
+    loop returns the empty set having accepted nothing."""
+    def score_many(edge_sets):
+        out = []
+        for es in edge_sets:
+            if not es:
+                out.append((float("nan"), float("inf")))
+            else:
+                out.append((len(TARGET_EDGES & set(es)) / len(TARGET_EDGES), 1.0))
+        return out
+
+    found = osr.greedy_forward_backward(score_many, osr.all_pairs(_mod()), max_edges=4)
+    assert found, "greedy returned the empty set from a NaN start"
+    assert TARGET_EDGES <= found
+
+
+def test_greedy_stops_cleanly_when_every_candidate_is_undefined():
+    def score_many(edge_sets):
+        return [(float("nan"), float("inf")) for _ in edge_sets]
+
+    found = osr.greedy_forward_backward(score_many, osr.all_pairs(_mod()), max_edges=4)
+    assert found == set()
+
+
+def test_annealing_survives_an_all_nan_objective():
+    def score_many(edge_sets):
+        return [(float("nan"), float("inf")) for _ in edge_sets]
+
+    best = osr.simulated_annealing(score_many, set(), osr.all_pairs(_mod()),
+                                   n_steps=60, batch=6, seed=0)
+    assert best == set()
+
+
+def test_greedy_respects_the_round_cap():
+    """A scorer that always claims an improvement would loop forever without the cap."""
+    calls = {"n": 0}
+
+    def score_many(edge_sets):
+        calls["n"] += 1
+        return [(float(calls["n"]), 1.0) for _ in edge_sets]
+
+    osr.greedy_forward_backward(score_many, osr.all_pairs(_mod()),
+                                max_edges=2, max_rounds=2)
+    assert calls["n"] < 100
+
+
 def test_edges_of_round_trips_through_spec_from_edges():
     spec = osr.spec_from_edges(GENES, TARGET_EDGES)
     assert osr.edges_of(spec) == TARGET_EDGES

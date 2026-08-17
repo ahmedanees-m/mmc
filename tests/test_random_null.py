@@ -69,6 +69,16 @@ def test_percentile_of():
     assert np.isnan(random_null.percentile_of(0.5, [float("nan")]))
 
 
+def test_null_helpers_accept_json_round_tripped_nulls():
+    """NaN is written as null in JSON, so the values come back as None."""
+    vals = [0.1, None, 0.3, float("nan"), 0.5]
+    assert random_null.percentile_of(0.4, vals) == pytest.approx(200.0 / 3)
+    s = random_null.summarise_null(vals)
+    assert s["n"] == 3
+    assert s["mean"] == pytest.approx(0.3)
+    assert np.isnan(random_null.percentile_of(None, vals))
+
+
 def test_summarise_null_reports_the_upper_tail():
     v = list(np.linspace(0, 1, 101))
     s = random_null.summarise_null(v)

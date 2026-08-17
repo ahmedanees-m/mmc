@@ -331,8 +331,16 @@ def main() -> None:
                 flush()
 
             if "random" in sources:
-                n_edges = args.random_edges or (
-                    results["oracle"].n_edges if "oracle" in results else 24)
+                # Match the edge count of whichever source the null is being compared
+                # against, preferring the oracle, then the textbook. Never fall through
+                # to zero: a zero-edge null is not a null.
+                n_edges = args.random_edges
+                for candidate in ("oracle", "textbook", "claude"):
+                    if n_edges:
+                        break
+                    if candidate in results:
+                        n_edges = results[candidate].n_edges
+                n_edges = max(4, n_edges or 24)
                 print(f"  random null: {args.n_random} structures at {n_edges} edges")
                 rng = np.random.default_rng(999)
                 specs = []

@@ -81,16 +81,23 @@ def sample_spec_gated(genes: list[str], perts: list[str], n_edges: int,
     return ModelSpec(genes=list(base.genes), edges=base.edges, rules=rules)
 
 
+def _defined(null_values) -> np.ndarray:
+    """Drop undefined entries. Accepts None as well as NaN, because the values
+    round-trip through JSON where NaN is written as null."""
+    return np.asarray([float(x) for x in null_values
+                       if x is not None and float(x) == float(x)], float)
+
+
 def percentile_of(value: float, null_values) -> float:
     """Where a source sits in the null distribution, as a percentile in [0, 100]."""
-    v = np.asarray([x for x in null_values if not np.isnan(x)], float)
-    if v.size == 0 or np.isnan(value):
+    v = _defined(null_values)
+    if v.size == 0 or value is None or value != value:
         return float("nan")
     return float(100.0 * (v < value).mean())
 
 
 def summarise_null(null_values) -> dict:
-    v = np.asarray([x for x in null_values if not np.isnan(x)], float)
+    v = _defined(null_values)
     if v.size == 0:
         return {"n": 0}
     return {

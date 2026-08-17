@@ -106,6 +106,24 @@ def _legal_add(edges, pair, sign) -> bool:
     return _in_degree(edges).get(tgt, 0) < MAX_REGS_PER_TERM
 
 
+def _best_index(scored) -> int | None:
+    """Index of the highest score, or None when every candidate is undefined.
+
+    A candidate scores NaN when no fold in it had an observed DE gene, which happens
+    on sparse modules and for the empty structure. `np.nanargmax` raises on an
+    all-NaN input, so the caller needs to be told to stop rather than crash.
+    """
+    vals = [h for h, _ in scored]
+    if not vals or all(v != v for v in vals):
+        return None
+    return int(np.nanargmax(vals))
+
+
+def _as_float(score: float) -> float:
+    """NaN start scores compare as the floor, so the first real candidate can beat them."""
+    return -np.inf if score != score else score
+
+
 def _rank_and_score(sets, score_many, screen_many, screen_keep, trace):
     """Score a batch of candidates, optionally screening cheaply first.
 
@@ -123,7 +141,7 @@ def _rank_and_score(sets, score_many, screen_many, screen_keep, trace):
                 trace.add(es, h, ln)
         return sets, scored
     rough = screen_many(sets)
-    order = np.argsort([-(h if not np.isnan(h) else -np.inf) for h, _ in rough])
+    order = np.argsort([-_as_float(h) for h, _ in rough])
     short = [sets[i] for i in order[:screen_keep]]
     scored = score_many(short)
     if trace is not None:
@@ -135,7 +153,8 @@ def _rank_and_score(sets, score_many, screen_many, screen_keep, trace):
 def greedy_forward_backward(score_many, pool_pairs, *, max_edges: int = 30,
                             min_gain: float = 1e-4, trace: SearchTrace | None = None,
                             init: set[EdgeKey] | None = None,
-                            screen_many=None, screen_keep: int = 20) -> set[EdgeKey]:
+                            screen_many=None, screen_keep: int = 20,
+                            max_rounds: int = 3) -> set[EdgeKey]:
     """Add the best edge until nothing helps, then drop any edge whose removal helps.
 
     score_many(list_of_edge_sets) returns a list of (holdout, train_loss) pairs, so
@@ -147,9 +166,15 @@ def greedy_forward_backward(score_many, pool_pairs, *, max_edges: int = 30,
     cur_score, cur_loss = score_many([frozenset(current)])[0]
     if trace is not None:
         trace.add(current, cur_score, cur_loss)
+    # The empty structure is undefined rather than bad. Treating its NaN as the floor
+    # is what lets the first edge be accepted; comparing against NaN never succeeds
+    # and the search would return the empty set having evaluated nothing.
+    cur_score = _as_float(cur_score)
 
+    rounds = 0
     improved = True
-    while improved:
+    while improved and rounds < max_rounds:
+        rounds += 1
         improved = False
 
         # forward
@@ -160,7 +185,9 @@ def greedy_forward_backward(score_many, pool_pairs, *, max_edges: int = 30,
                 break
             sets = [frozenset(current | {(p[0], p[1], s)}) for p, s in cands]
             sets, scored = _rank_and_score(sets, score_many, screen_many, screen_keep, trace)
-            k = int(np.nanargmax([h for h, _ in scored]))
+            k = _best_index(scored)
+            if k is None:
+                break
             best_h, best_l = scored[k]
             if not (best_h > cur_score + min_gain):
                 break
@@ -172,8 +199,8 @@ def greedy_forward_backward(score_many, pool_pairs, *, max_edges: int = 30,
         if current:
             sets = [frozenset(current - {e}) for e in list(current)]
             sets, scored = _rank_and_score(sets, score_many, screen_many, screen_keep, trace)
-            k = int(np.nanargmax([h for h, _ in scored]))
-            if scored[k][0] > cur_score + min_gain:
+            k = _best_index(scored)
+            if k is not None and scored[k][0] > cur_score + min_gain:
                 current = set(sets[k])
                 cur_score, cur_loss = scored[k]
                 improved = True
@@ -193,7 +220,7 @@ def simulated_annealing(score_many, start: set[EdgeKey], full_pairs, *,
     """
     rng = np.random.default_rng(seed)
     current = set(start)
-    cur_score = score_many([frozenset(current)])[0][0]
+    cur_score = _as_float(score_many([frozenset(current)])[0][0])
     best, best_score = set(current), cur_score
 
     n_batches = max(1, n_steps // batch)
@@ -225,8 +252,10 @@ def simulated_annealing(score_many, start: set[EdgeKey], full_pairs, *,
         if trace is not None:
             for es, (h, ln) in zip(proposals, scored):
                 trace.add(es, h, ln)
-        k = int(np.nanargmax([h for h, _ in scored]))
-        cand_score = scored[k][0]
+        k = _best_index(scored)
+        if k is None:
+            continue
+        cand_score = _as_float(scored[k][0])
         delta = cand_score - cur_score
         if delta > 0 or rng.random() < np.exp(delta / max(temp, 1e-9)):
             current = set(proposals[k])
