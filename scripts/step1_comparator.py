@@ -107,19 +107,34 @@ def _score_edge_set(task):
 
 
 # ------------------------------ driver side ------------------------------
-def _make_scorer(pool, n_folds, n_starts, max_iter, seed, subset=None):
+def _make_scorer(pool, n_folds, n_starts, max_iter, seed, subset=None, memo=None):
+    """Dispatch a batch of edge sets to the pool, reusing anything already scored.
+
+    The backward pass re-scores structures the forward pass has already seen, and
+    annealing revisits states it has left, so a memo on the edge set removes a
+    substantial fraction of the work at no cost to the result.
+    """
+    memo = {} if memo is None else memo
+
     def score_many(edge_sets):
-        tasks = [(tuple(sorted(es)), n_folds, n_starts, max_iter, seed, subset)
-                 for es in edge_sets]
-        return pool.map(_score_edge_set, tasks, chunksize=1)
+        keys = [tuple(sorted(es)) for es in edge_sets]
+        todo = [k for k in dict.fromkeys(keys) if k not in memo]
+        if todo:
+            tasks = [(k, n_folds, n_starts, max_iter, seed, subset) for k in todo]
+            for k, val in zip(todo, pool.map(_score_edge_set, tasks, chunksize=1)):
+                memo[k] = val
+        return [memo[k] for k in keys]
+
     return score_many
 
 
 def run_oracle(pool, mod, seed, *, subset=None, log=print):
     """One seed of the S5 search. Returns the selected edge set and its trace."""
     trace = oracle_search.SearchTrace()
-    score = _make_scorer(pool, SEARCH_FOLDS, SEARCH_STARTS, SEARCH_MAX_ITER, seed, subset)
-    screen = _make_scorer(pool, SCREEN_FOLDS, SEARCH_STARTS, SEARCH_MAX_ITER, seed, subset)
+    score = _make_scorer(pool, SEARCH_FOLDS, SEARCH_STARTS, SEARCH_MAX_ITER, seed, subset,
+                         memo={})
+    screen = _make_scorer(pool, SCREEN_FOLDS, SEARCH_STARTS, SEARCH_MAX_ITER, seed, subset,
+                          memo={})
     pool_pairs = oracle_search.candidate_pool(mod, size=GREEDY_POOL)
 
     t0 = time.time()
