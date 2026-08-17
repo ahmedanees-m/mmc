@@ -1,0 +1,20 @@
+# CUDA build of the MMC environment, for the workloads that are actually GPU-shaped:
+# the deep perturbation comparators (GEARS, DCDI, Bicycle, AVICI) and the unbounded
+# expressivity control. The structural backend runs here too, but whether it is faster
+# than the CPU build is a measurement, not an assumption: the fixed-point solve is small
+# and the optimizer driving it is scipy, so kernel launch overhead can dominate.
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir \
+    "duckdb>=1.0" "polars>=1.0" "pandas>=2.0" "numpy>=1.26" "scipy>=1.11" \
+    "pydantic>=2.6" "cma>=3.3" "anthropic>=0.116" "matplotlib>=3.8" "pytest>=8.0" \
+    "scikit-learn>=1.3" \
+    && pip install --no-cache-dir "jax[cuda12]>=0.4.30"
+
+ENV PYTHONPATH=/app
+# Do not let JAX reserve the whole card; the host shares it with other projects.
+ENV XLA_PYTHON_CLIENT_PREALLOCATE=false
+ENV XLA_PYTHON_CLIENT_MEM_FRACTION=0.5
+CMD ["pytest", "-q"]
