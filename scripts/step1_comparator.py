@@ -196,6 +196,11 @@ def main() -> None:
                          "5,10,16,30,50. Each source is then placed against the band "
                          "nearest its own edge count. Overrides --random-edges.")
     ap.add_argument("--frozen", default="", help="JSON holding the frozen S1 structure")
+    ap.add_argument("--reuse", default="",
+                    help="a previous result JSON. Structures it already selected are "
+                         "re-evaluated from their recorded edge sets rather than searched "
+                         "again, so a second pass can add a source or a wider null without "
+                         "repeating the oracle.")
     ap.add_argument("--module-def", default="", help="JSON registering a dynamic module")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
@@ -244,6 +249,26 @@ def main() -> None:
             json.dump(out, f, indent=2, default=float)
 
     results: dict[str, compare.SourceResult] = {}
+
+    prior: dict = {}
+    if args.reuse:
+        with open(args.reuse) as f:
+            prior = json.load(f)
+        for key in ("oracle_seeds", "oracle_ceiling_spread", "oracle_nested",
+                    "textbook_coverage", "algorithmic_scope"):
+            if key in prior:
+                out[key] = prior[key]
+        if "from_trace" in prior.get("diagnostics", {}):
+            out["diagnostics"]["from_trace"] = prior["diagnostics"]["from_trace"]
+        for name, spec_json in prior.get("specs", {}).items():
+            if name in ("oracle_nested",) or name in sources:
+                continue
+            spec = ModelSpec.model_validate(spec_json)
+            results[name] = evaluate_spec(mod, spec, name)
+            out["specs"][name] = spec_json
+            print(f"  {name} re-evaluated from the recorded structure "
+                  f"({len(spec.edges)} edges)")
+        flush()
 
     # cheap, deterministic sources first so a long run has something on disk early
     if "linear" in sources:
