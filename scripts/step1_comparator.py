@@ -38,14 +38,18 @@ from mmc.data import module_data, module_extract, textbook  # noqa: E402
 from mmc.eval import compare, identifiability, oracle_search, random_null  # noqa: E402
 from mmc.grammar.model_spec import ModelSpec  # noqa: E402
 
-SEARCH_FOLDS = 5          # PREREG_v4 amendment A1
+# PREREG_v4 amendments A1 and A4. The search maximises the same leave-one-out
+# quantity that gets reported, at a cheaper optimizer budget; scoring it on coarser
+# folds made the selected structure fall apart when the folds changed, which is not
+# what a ceiling estimator may do.
+SEARCH_FOLDS = 0          # 0 means leave-one-perturbation-out
 SEARCH_STARTS = 1
 SEARCH_MAX_ITER = 80
 SCREEN_FOLDS = 2
 SCREEN_KEEP = 20
 GREEDY_POOL = 120
 MAX_EDGES = 30
-ANNEAL_STEPS = 800
+ANNEAL_STEPS = 480
 ANNEAL_BATCH = 24
 NESTED_OUTER_FRACTION = 0.30
 
@@ -61,7 +65,8 @@ def _init_worker(genes, perts, observed, de_mask):
 
 
 def _fold_assignment(n: int, n_folds: int, seed: int) -> list[list[int]]:
-    if n_folds >= n:
+    """Fold indices. n_folds <= 0, or at least n, means leave-one-out."""
+    if n_folds <= 0 or n_folds >= n:
         return [[i] for i in range(n)]
     order = np.random.default_rng(seed).permutation(n)
     return [list(map(int, part)) for part in np.array_split(order, n_folds)]
