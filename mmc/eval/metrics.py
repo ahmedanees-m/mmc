@@ -10,6 +10,8 @@ from __future__ import annotations
 import numpy as np
 from scipy.stats import pearsonr, spearmanr
 
+from .holdout import topk_overlap
+
 
 def align(pred: dict[str, float], obs: dict[str, float],
           genes: list[str]) -> tuple[np.ndarray, np.ndarray]:
@@ -42,17 +44,21 @@ def spearman(pred: np.ndarray, obs: np.ndarray) -> float | None:
     return float(spearmanr(pred, obs)[0])
 
 
-def de_overlap(pred: np.ndarray, obs: np.ndarray, k: int) -> dict:
-    """Precision at k and Jaccard of the top-k moved genes, predicted versus observed."""
+def de_overlap(pred: np.ndarray, obs: np.ndarray, k: int, *, seed: int = 0) -> dict:
+    """Precision at k and Jaccard of the top-k moved genes, predicted versus observed.
+
+    Ties in the predicted ranking are broken at random rather than by gene index; see
+    `mmc.eval.holdout.de_overlap` for why that distinction changes the floor of the
+    metric for sparse structural predictions.
+    """
     k = min(k, pred.size)
     if k == 0:
         return {"precision_at_k": 0.0, "jaccard": 0.0, "k": 0}
-    top_p = set(np.argsort(-np.abs(pred))[:k].tolist())
-    top_o = set(np.argsort(-np.abs(obs))[:k].tolist())
-    inter = len(top_p & top_o)
-    union = len(top_p | top_o)
-    return {"precision_at_k": inter / k, "jaccard": inter / union if union else 0.0,
-            "k": k}
+    top_o = set(np.argsort(-np.abs(obs), kind="stable")[:k].tolist())
+    jac, inter = topk_overlap(pred, top_o, k, seed=seed)
+    if jac != jac:
+        return {"precision_at_k": 0.0, "jaccard": 0.0, "k": k}
+    return {"precision_at_k": inter / k, "jaccard": float(jac), "k": k}
 
 
 def bootstrap_ci(metric, pred: np.ndarray, obs: np.ndarray, n: int = 1000,

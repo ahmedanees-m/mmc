@@ -44,14 +44,66 @@ def acc_deg(pred: np.ndarray, obs: np.ndarray, de: np.ndarray) -> float:
     return float((np.sign(pred[idx]) == np.sign(obs[idx])).mean())
 
 
-def de_overlap(pred: np.ndarray, obs: np.ndarray, de: np.ndarray, k: int | None = None) -> float:
-    """Jaccard of predicted top-|delta| genes vs observed DE set."""
+DE_OVERLAP_TIEBREAKS = 64
+
+
+def de_overlap(pred: np.ndarray, obs: np.ndarray, de: np.ndarray, k: int | None = None,
+               *, seed: int = 0, n_tiebreak: int = DE_OVERLAP_TIEBREAKS) -> float:
+    """Jaccard of predicted top-|delta| genes vs observed DE set, ties broken at random.
+
+    Ranking with a plain argsort breaks ties by array index, which is gene order. That
+    is not a harmless detail here: a structural model only moves genes downstream of
+    the perturbed one, so for most perturbations a sparse structure predicts exactly
+    zero everywhere and its whole ranking is a tie. Index-order tie-breaking then hands
+    it the first k genes of the module, and whether that scores well depends on how the
+    gene list happens to be sorted. Measured on TCR_signalosome, a model predicting no
+    change at all scored 0.32 this way, so the floor of the metric was an artifact
+    rather than chance.
+
+    Ties are therefore broken uniformly at random and the score is averaged over
+    `n_tiebreak` draws, which estimates the expected overlap. A prediction with no ties
+    in the top-k is unaffected and stays exactly as before, so dense predictions such as
+    the linear and mean baselines are unchanged. The draw is seeded from `seed` and the
+    prediction itself, so the metric stays deterministic and reproducible.
+    """
     obs_de = set(np.flatnonzero(de).tolist())
     if not obs_de:
         return np.nan
-    k = k or len(obs_de)
-    pred_top = set(np.argsort(-np.abs(pred))[:k].tolist())
-    return len(obs_de & pred_top) / len(obs_de | pred_top)
+    jac, _ = topk_overlap(pred, obs_de, k or len(obs_de), seed=seed, n_tiebreak=n_tiebreak)
+    return jac
+
+
+def topk_overlap(pred: np.ndarray, target: set[int], k: int, *, seed: int = 0,
+                 n_tiebreak: int = DE_OVERLAP_TIEBREAKS) -> tuple[float, float]:
+    """Jaccard and expected intersection of the predicted top-k against `target`.
+
+    Shared by both metric entry points so the tie-break rule cannot drift between them.
+    """
+    mag = np.abs(np.asarray(pred, float))
+    n = mag.size
+    k = min(k, n)
+    if k == 0 or not target:
+        return (np.nan, np.nan)
+
+    order = np.argsort(-mag, kind="stable")
+    # A tie only matters when it straddles the top-k boundary.
+    cutoff = mag[order[k - 1]]
+    sure = set(np.flatnonzero(mag > cutoff).tolist())
+    tied = np.flatnonzero(mag == cutoff)
+    if len(sure) == k or tied.size == 1:
+        top = set(order[:k].tolist())
+        inter = len(target & top)
+        return (inter / len(target | top), float(inter))
+
+    need = k - len(sure)
+    rng = np.random.default_rng([seed, n, k, int(abs(mag).sum() * 1e6) & 0xFFFFFFFF])
+    jac_total, inter_total = 0.0, 0.0
+    for _ in range(n_tiebreak):
+        top = sure | set(rng.choice(tied, size=need, replace=False).tolist())
+        inter = len(target & top)
+        jac_total += inter / len(target | top)
+        inter_total += inter
+    return (jac_total / n_tiebreak, inter_total / n_tiebreak)
 
 
 # ---------------------------- the LOO engine ------------------------------
