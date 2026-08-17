@@ -346,6 +346,21 @@ The only generators that pass are low-rank-plus-noise surrogates with no causal 
 
 One correction to this script's own reporting is recorded for completeness. An earlier version mixed the co-response in as a constant vector added to every row and produced identical diagnostics at every weight. Both diagnostics are computed on the column-centred response matrix, so a constant offset is removed exactly by the centring and cannot change either. The component is now mixed per perturbation as a scaled low-rank term. This also sharpens the reading of the Step 1 decomposition: the low effective rank is not one offset shared by all perturbations but different perturbations producing scaled versions of a few common programs.
 
+**A9, 2026-08-17. Step 10's model classes are respecified, because as written they would not test what they were meant to test.**
+
+Fixed before Step 10 runs. Section 11 named three alternative classes, a signed-linear structural model with no gates, a Boolean model, and a per-node MLP, with the MLP as the unbounded-expressivity control that would separate an interpretability cost from a data limit.
+
+The Step 1 decomposition shows that specification does not do that. A structural prediction is the difference between the clamped and unclamped fixed points, so for any perturbation whose gene has no outgoing edges the prediction is identically zero for every gene, and for a gene that has edges only its descendants move. Seventy-eight percent of what the linear baseline achieves on the cytokine module comes from predicting the mean training response, and no structure can emit a response for a perturbation it does not contain. **All three named classes share the same fixed-point solve, the same `do(x = 0)` clamp and the same in-degree cap, so all three inherit that forfeit.** Running them as written would return the same ceiling for all four classes, which section 11 anticipated as the cleanest possible result, but the reason would be architectural rather than anything to do with interpretability or expressivity. The conclusion would look like "expressivity does not help" while actually demonstrating "none of these classes can represent a shared response", which is a different and much weaker statement.
+
+Two classes are therefore added, both chosen to break the forfeit rather than to vary the logic:
+
+1. **Structural plus offset.** The same structure and the same solve, with a fitted per-gene offset added to every perturbation's predicted delta. This hands the model exactly the component it currently cannot express, the stereotyped bulk response, and nothing else. It is the direct test of the section 2.2 mechanism: if structural-plus-offset closes the gap to linear, the ceiling is the forfeit; if it does not, the shortfall is elsewhere and the mechanism is wrong.
+2. **Unbounded in-degree signed-linear.** A signed linear structural model with the three-regulator cap lifted, so a target may take any number of regulators. This tests whether the cap alone is binding, separately from the offset.
+
+The three original classes are retained, so the comparison is over five classes plus the linear and mean baselines. The pre-registered cap on the step stands: these two modules only, and no further classes.
+
+**The prediction this makes, recorded now so it can be wrong.** Structural-plus-offset is expected to land close to the mean baseline at 0.3712 and short of linear at 0.4451, because the offset supplies the shared response while the ridge map additionally exploits per-perturbation structure in the low-rank subspace. If instead it reaches linear, the ceiling is entirely the forfeit and the interpretable grammar is not itself the limitation. If it stays near the current oracle at 0.2920, the section 2.2 mechanism is wrong and the explanation has to be rebuilt.
+
 ### Outcomes
 
 **Step 1, primary module (Cytokine_production / Stim8hr), 2026-08-17. Branch A.**
