@@ -301,6 +301,24 @@ Four distinct families, as section 7 requires. The reasoning slot substitutes an
 
 One implementation consequence, which the panel adapter has to handle or it will silently score several models as producing nothing: **the models differ in where they put their answer.** `openai/gpt-oss-120b`, `nvidia/nemotron-3-ultra-550b-a55b` and `thinkingmachines/inkling` return a populated `reasoning_content` field alongside `content`, and an early probe that read only `content` recorded `gpt-oss-120b` as returning an empty string. `meta/llama-3.1-70b-instruct` and `z-ai/glm-5.2` use `content` alone. The adapter reads both fields, and the proposal-validity rate in section 7 is reported only after that is verified per model, since a parsing failure would otherwise be indistinguishable from a model that cannot follow the schema.
 
+**A7, 2026-08-17. Norman genetic-interaction subtypes, and two baseline changes to the standard split.**
+
+Fixed before the standard split runs. Section 5.2 names epistasis and suppression as the primary hypothesis, and those are subtype labels rather than a continuous score, so they have to be obtainable before the hypothesis is testable.
+
+*Subtypes.* Norman's published coefficient table is not shipped with the GEO matrix, which the earlier work already hit and worked around by recomputing non-additivity from the data. The subtype definitions themselves are recorded in `PREREG_norman.md` section 2: synergy is two large coefficients, suppression two small, epistasis an asymmetric pair in which one single accounts for the double while the other contributes almost nothing, and neomorphism a large deviation from any additive fit. They are therefore derived here from the additive coefficients fitted per pair, using quantiles of this dataset's own coefficient distribution rather than absolute thresholds, so that no cut can be tuned toward an outcome:
+
+- **neomorphic**: additive-fit deviation in the top decile
+- **epistasis**: coefficient asymmetry min(|c1|,|c2|)/max(|c1|,|c2|) in the bottom tertile, with the coefficient total at or above the lower tertile
+- **suppression**: coefficient total in the bottom tertile
+- **synergy**: coefficient total in the top tertile
+- **additive**: everything else
+
+The labels are operational reconstructions, not Norman's published assignments, and are described that way wherever they appear.
+
+*Two baseline changes, both forced by the Step 1 result.* On the cytokine module 78 percent of everything the linear map achieved came from predicting the mean of the training perturbations. Any protocol that lets a model see some doubles has to be compared against simply averaging them, so **mean-of-training-doubles** joins the comparator set. Without it a model could look strong for reproducing a shared response it never had to reason about, which is precisely the failure the Step 1 decomposition exposed.
+
+Second, the additive baseline is **fitted on the training doubles and applied to the held-out ones**. The compose test fitted the additive coefficients per pair on the pair being predicted, which sees the answer and is an oracle rather than a baseline. That per-pair version is retained under the name `fitted_additive_oracle` so the two cannot be confused, and the honest `additive_trained` is the reference the primary hypothesis is tested against.
+
 ### Outcomes
 
 **Step 1, primary module (Cytokine_production / Stim8hr), 2026-08-17. Branch A.**
