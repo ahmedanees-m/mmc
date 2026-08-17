@@ -5,6 +5,20 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2026-08-17
+
+### Added
+- `prereg/PREREG_v4.md`: the pre-registration for the structure-source comparison and the
+  identifiability ceiling, committed before any of its analysis code exists. Fixes the claim
+  set, the paired-bootstrap advantage statistic, the Benjamini-Hochberg families, the branch
+  rule that decides the comparator outcome, and the stopping rules.
+- `paper/LEDGER_api_spend.md`: running model-call and cost ledger against the pre-registered
+  budget cap.
+
+### Changed
+- The repository is scoped to the research codebase: the presentation layer is removed and
+  `scripts/demo_loop.py` is renamed `scripts/loop_trace.py`.
+
 ## [0.8.0] - 2026-07-11
 
 ### Added

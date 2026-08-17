@@ -171,9 +171,10 @@ The reasoning model is configurable with `MMC_MODEL` and defaults to `claude-opu
 ## Reproducibility
 
 - The test suite is offline and requires no store, key, or GPU: `pytest -q` (62 tests).
-- Pre-registrations are committed before their runs: `prereg/PREREG_discovery.md` (cytokine
-  discovery) and `prereg/PREREG_norman.md` (combinatorial). `prereg/PREREG.md` is the superseded
-  transfer pre-registration, retained as a record.
+- Pre-registrations are committed before their runs: `prereg/PREREG_v4.md` (structure-source
+  comparison and identifiability ceiling), `prereg/PREREG_discovery.md` (cytokine discovery) and
+  `prereg/PREREG_norman.md` (combinatorial). `prereg/PREREG.md` is the superseded transfer
+  pre-registration, retained as a record.
 - Result artifacts and figures are in `paper/`. The held-out evaluation is `mmc/eval/holdout.py`.
 - The atlas is queried, not re-ingested, via `MMC_ZHU_STORE`. No keys or tokens are stored in the
   repository.
