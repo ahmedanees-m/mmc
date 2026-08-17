@@ -260,8 +260,12 @@ def main() -> None:
                 out[key] = prior[key]
         if "from_trace" in prior.get("diagnostics", {}):
             out["diagnostics"]["from_trace"] = prior["diagnostics"]["from_trace"]
+        # a recorded spec is skipped only if this pass is going to rebuild it, and the
+        # source flag that rebuilds it is not always its own name
+        rebuilt_by = {"textbook": "textbook", "claude": "claude", "oracle": "oracle",
+                      "mean_difference": "algorithmic", "grnboost2": "algorithmic"}
         for name, spec_json in prior.get("specs", {}).items():
-            if name in ("oracle_nested",) or name in sources:
+            if name == "oracle_nested" or rebuilt_by.get(name, name) in sources:
                 continue
             spec = ModelSpec.model_validate(spec_json)
             results[name] = evaluate_spec(mod, spec, name)
