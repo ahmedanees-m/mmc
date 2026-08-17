@@ -190,6 +190,10 @@ def main() -> None:
     ap.add_argument("--n-random", type=int, default=1000)
     ap.add_argument("--random-edges", type=int, default=0,
                     help="edge count for S3; 0 matches the oracle's selected count")
+    ap.add_argument("--random-edge-bands", default="",
+                    help="comma-separated edge counts to sweep the null over, for example "
+                         "5,10,16,30,50. Each source is then placed against the band "
+                         "nearest its own edge count. Overrides --random-edges.")
     ap.add_argument("--frozen", default="", help="JSON holding the frozen S1 structure")
     ap.add_argument("--module-def", default="", help="JSON registering a dynamic module")
     ap.add_argument("--out", required=True)
@@ -360,39 +364,64 @@ def main() -> None:
                 flush()
 
             if "random" in sources:
-                # Match the edge count of whichever source the null is being compared
-                # against, preferring the oracle, then the textbook. Never fall through
-                # to zero: a zero-edge null is not a null.
-                n_edges = args.random_edges
-                for candidate in ("oracle", "textbook", "claude"):
-                    if n_edges:
-                        break
-                    if candidate in results:
-                        n_edges = results[candidate].n_edges
-                n_edges = max(4, n_edges or 24)
-                print(f"  random null: {args.n_random} structures at {n_edges} edges")
+                # A single null cannot serve every source. On the cytokine module the
+                # oracle selects 5 to 7 edges, the textbook structure has 16, the
+                # algorithmic arms 30, and the proposal arm 50, and a random structure's
+                # expected score moves with its size. Sweeping bands lets each source be
+                # placed against a null of its own size, and shows how the null itself
+                # varies with edge count.
+                if args.random_edge_bands:
+                    bands = [int(b) for b in args.random_edge_bands.split(",") if b.strip()]
+                    per_band = max(1, args.n_random // max(1, len(bands)))
+                else:
+                    n_edges = args.random_edges
+                    for candidate in ("oracle", "textbook", "claude"):
+                        if n_edges:
+                            break
+                        if candidate in results:
+                            n_edges = results[candidate].n_edges
+                    bands = [max(4, n_edges or 24)]
+                    per_band = args.n_random
+
+                print(f"  random null: {per_band} structures at each of {bands} edges")
                 rng = np.random.default_rng(999)
-                specs = []
-                for _ in range(args.n_random):
-                    try:
-                        specs.append(random_null.sample_spec(mod.genes, mod.perts, n_edges, rng))
-                    except ValueError as e:
-                        print(f"    stopped sampling: {e}")
-                        break
-                tasks = [(tuple(oracle_search.edges_of(s)), len(mod.perts),
-                          compare.FIT_STARTS, compare.FIT_MAX_ITER, 0, None) for s in specs]
-                t0 = time.time()
-                scored = pool.map(_score_edge_set, tasks, chunksize=1)
-                vals = [h for h, _ in scored]
-                out["random_null"] = {
-                    "n_edges": n_edges,
-                    "n_structures": len(vals),
-                    "seconds": round(time.time() - t0, 1),
-                    **random_null.summarise_null(vals),
-                    "values": [round(v, 4) if v == v else None for v in vals],
-                }
-                print(f"  random null done in {time.time() - t0:.0f}s: "
-                      f"mean {out['random_null'].get('mean', float('nan')):.4f}")
+                by_band: dict[int, dict] = {}
+                t_all = time.time()
+                for n_edges in bands:
+                    specs = []
+                    for _ in range(per_band):
+                        try:
+                            specs.append(random_null.sample_spec(mod.genes, mod.perts,
+                                                                 n_edges, rng))
+                        except ValueError as e:
+                            print(f"    band {n_edges}: stopped sampling, {e}")
+                            break
+                    if not specs:
+                        continue
+                    tasks = [(tuple(oracle_search.edges_of(s)), len(mod.perts),
+                              compare.FIT_STARTS, compare.FIT_MAX_ITER, 0, None)
+                             for s in specs]
+                    t0 = time.time()
+                    vals = [h for h, _ in pool.map(_score_edge_set, tasks, chunksize=1)]
+                    by_band[n_edges] = {
+                        "n_edges": n_edges,
+                        "n_structures": len(vals),
+                        "seconds": round(time.time() - t0, 1),
+                        **random_null.summarise_null(vals),
+                        "values": [round(v, 4) if v == v else None for v in vals],
+                    }
+                    print(f"    band {n_edges} edges: mean "
+                          f"{by_band[n_edges].get('mean', float('nan')):.4f} "
+                          f"({time.time() - t0:.0f}s)")
+                    out["random_null_bands"] = by_band
+                    flush()
+                # the band nearest the oracle's size stays the headline null, so the
+                # single-band output shape is preserved for readers of the old field
+                if by_band:
+                    ref = results["oracle"].n_edges if "oracle" in results else bands[0]
+                    nearest = min(by_band, key=lambda b: abs(b - ref))
+                    out["random_null"] = by_band[nearest]
+                    print(f"  random null done in {time.time() - t_all:.0f}s")
                 flush()
 
     # comparator table and the pairwise structure agreement
@@ -400,10 +429,17 @@ def main() -> None:
         out["table"] = compare.comparator_table(results, reference="linear")
         out["table_vs_mean"] = compare.comparator_table(results, reference="mean") \
             if "mean" in results else None
-        if "random_null" in out:
-            for row in out["table"]:
-                row["random_null_percentile"] = round(random_null.percentile_of(
-                    row["de_overlap_mean"], out["random_null"]["values"]), 1)
+        bands = out.get("random_null_bands") or (
+            {out["random_null"]["n_edges"]: out["random_null"]} if "random_null" in out else {})
+        for row in out.get("table", []):
+            if not bands:
+                continue
+            # place each source against the null nearest its own size, so a percentile
+            # compares like with like rather than a 50-edge structure against a 7-edge null
+            band = min(bands, key=lambda b: abs(b - (row["n_edges"] or 0)))
+            row["random_null_band_edges"] = band
+            row["random_null_percentile"] = round(random_null.percentile_of(
+                row["de_overlap_mean"], bands[band]["values"]), 1)
 
     specs_for_jaccard = {k: ModelSpec.model_validate(v) for k, v in out["specs"].items()}
     out["structure_agreement"] = {
