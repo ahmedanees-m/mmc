@@ -146,7 +146,33 @@ def main() -> None:
            "tolerances": {"rank_relative": RANK_TOL_REL, "pc1_absolute": PC1_TOL_ABS},
            "variants": []}
 
-    print("fitting the structural generator to the real module")
+    # Generator density is swept first. A sparse causal graph routes each knockdown to a
+    # small, largely disjoint descendant set, which makes the responses near-orthogonal
+    # and the effective rank high. If density alone brings the rank down to the real
+    # module's, the power curve can proceed on a generator that still has a causal
+    # ground truth, which is what the sweep needs. If it cannot, the only generator that
+    # matches the data has no structure to recover.
+    max_edges = 3 * len(mod.genes)
+    print("generator density sweep")
+    for n_edges in sorted({12, args.edges, 48, max_edges}):
+        try:
+            s, p = fit_generator(mod, n_edges, seed=0)
+        except ValueError as e:
+            print(f"  {n_edges} edges: not representable, {e}")
+            continue
+        sims = [diagnostics_of(simulate(mod, s, p, noise_scale=1.0, shared_weight=0.0,
+                                        seed=k)) for k in range(args.seeds)]
+        avg = {k: float(np.mean([x[k] for x in sims])) for k in sims[0]}
+        verdict = accepts(avg, real)
+        out["variants"].append({"generator": "structural", "n_edges": len(s.edges),
+                                "shared_weight": 0.0, "diagnostics": avg, **verdict})
+        print(f"  {len(s.edges):>3} edges: rank {avg['effective_rank']:6.3f} "
+              f"(err {verdict['effective_rank_relative_error']:5.1%})  "
+              f"PC1 {avg['leading_pc_fraction']:.4f} "
+              f"(err {verdict['leading_pc_absolute_error']:.4f})  "
+              f"{'ACCEPT' if verdict['accepted'] else 'reject'}")
+
+    print("\nfitting the structural generator to the real module")
     spec, params = fit_generator(mod, args.edges, seed=0)
     print(f"  generator: {len(spec.edges)} edges\n")
 
