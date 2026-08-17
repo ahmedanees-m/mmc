@@ -284,6 +284,23 @@ The null is therefore swept: 200 structures at each of 5, 10, 16, 30 and 50 edge
 
 Ordering note: the cytokine module's null had already been reached under the single-band code when this was written, so that module carries a single band at the oracle's edge count and the swept null is run for it separately afterwards. Every module reports the swept version.
 
+**A6, 2026-08-17. The four NGC panel identifiers are locked.**
+
+Section 7 deferred these to a dated amendment because the free-tier catalogue turns over. Availability was established by calling the completions endpoint for each candidate rather than by reading the catalogue, and the two disagree sharply: the key lists 102 models, and of the 41 plausible panel candidates probed, **18 served a completion and 23 did not**, most returning HTTP 404 from the completions endpoint despite being listed. Notably every DeepSeek model failed, so the "DeepSeek-R1 class" slot in section 7 has to be substituted, which section 7 permits provided the substitution is recorded.
+
+The four slots, all verified to return a completion on 2026-08-17:
+
+| Slot (section 7) | Locked identifier | Family |
+|---|---|---|
+| Large open frontier model | `openai/gpt-oss-120b` | OpenAI open-weights |
+| Llama or Nemotron large instruct | `meta/llama-3.1-70b-instruct` | Meta |
+| Reasoning-specialised | `nvidia/nemotron-3-ultra-550b-a55b` | NVIDIA |
+| Further distinct family | `z-ai/glm-5.2` | Z-AI |
+
+Four distinct families, as section 7 requires. The reasoning slot substitutes an NVIDIA Nemotron reasoning model for the intended DeepSeek-R1 because no DeepSeek model is served on this key; `nvidia/nemotron-3-nano-omni-30b-a3b-reasoning` and `thinkingmachines/inkling` were the alternatives and are recorded here as the fallbacks if the locked one is withdrawn.
+
+One implementation consequence, which the panel adapter has to handle or it will silently score several models as producing nothing: **the models differ in where they put their answer.** `openai/gpt-oss-120b`, `nvidia/nemotron-3-ultra-550b-a55b` and `thinkingmachines/inkling` return a populated `reasoning_content` field alongside `content`, and an early probe that read only `content` recorded `gpt-oss-120b` as returning an empty string. `meta/llama-3.1-70b-instruct` and `z-ai/glm-5.2` use `content` alone. The adapter reads both fields, and the proposal-validity rate in section 7 is reported only after that is verified per model, since a parsing failure would otherwise be indistinguishable from a model that cannot follow the schema.
+
 ### Outcomes
 
 *(pending)*
