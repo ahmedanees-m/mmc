@@ -29,11 +29,6 @@ from pathlib import Path
 
 import numpy as np
 
-# One thread per worker; the pool owns the parallelism.
-for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):
-    os.environ.setdefault(_v, "1")
-os.environ.setdefault("XLA_FLAGS", "--xla_cpu_multi_thread_eigen=false")
-
 from mmc.data import module_data, module_extract, textbook  # noqa: E402
 from mmc.eval import compare, identifiability, oracle_search, random_null  # noqa: E402
 from mmc.grammar.model_spec import ModelSpec  # noqa: E402
@@ -58,6 +53,16 @@ _W: dict = {}
 
 # ------------------------------ worker side ------------------------------
 def _init_worker(genes, perts, observed, de_mask):
+    # Pin each worker to one thread so the pool owns the parallelism. This is set here
+    # rather than at module scope on purpose: the parent process also compiles and fits
+    # (every source's reported evaluation runs there), and pinning the parent made each
+    # of those compiles minutes rather than seconds. Workers are spawned and import JAX
+    # lazily inside `_score_edge_set`, so setting the variables here still precedes it.
+    for var in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS",
+                "NUMEXPR_NUM_THREADS"):
+        os.environ[var] = "1"
+    os.environ["XLA_FLAGS"] = (os.environ.get("XLA_FLAGS", "")
+                               + " --xla_cpu_multi_thread_eigen=false").strip()
     _W["genes"] = list(genes)
     _W["perts"] = list(perts)
     _W["observed"] = np.asarray(observed, float)
