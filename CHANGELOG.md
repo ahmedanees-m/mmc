@@ -32,7 +32,7 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 - The engineer-behavior claim is reported with confidence intervals from the powered corpus
   (0 of 76 distinct novel hypotheses beat a linear baseline held-out, Wilson 95% CI [0, 4.8%])
-  in the README, the abstract, and the demo.
+  in the README and the abstract.
 
 ## [0.6.0] - 2026-07-10
 
@@ -59,7 +59,6 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   evaluation (`scripts/norman_pseudobulk.py`, `scripts/norman_epistasis.py`,
   `paper/NORMAN_RESULT.md`).
 - Limit-map field guide (`paper/LIMIT_MAP.md`) and result artifacts under `paper/`.
-- Streamlit presentation of results (`demo/`).
 
 ### Changed
 - Model-versus-baseline claims scoped to held-out predictive advantage; edge-level necessity

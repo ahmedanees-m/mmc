@@ -27,7 +27,7 @@ gate (an edge is REQUIRED only if removing it lowers the model's own held-out AC
 ## Method
 
 One strong-signal module holds the textbook Th2 circuit (GATA3 -> IL5 is the single strongest
-knockdown effect in the atlas) together with the demo's plausible-but-novel STK11 -> chemokine
+knockdown effect in the atlas) together with the loop's plausible-but-novel STK11 -> chemokine
 hypothesis. All 11 genes are perturbed in the atlas, giving 11 leave-one-out folds. The
 structure is hand-built (no model calls); only the store is queried. The same edge-ablation
 gate is run on every edge (`scripts/gate_discrimination.py`).

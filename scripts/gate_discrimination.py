@@ -6,7 +6,7 @@ rejecter: a gate that says no to everything is not demonstrated to say yes to an
 This is the positive control.
 
 One strong-signal module holds the textbook Th2 circuit (GATA3 -> IL5 is the single strongest
-knockdown effect in the atlas) alongside the demo's plausible-but-novel STK11 -> chemokine
+knockdown effect in the atlas) alongside the loop's plausible-but-novel STK11 -> chemokine
 hypothesis. The same edge-ablation gate (an edge is REQUIRED only if removing it lowers the
 model's own held-out ACC_DEG, seed-stable) is run on every edge. Two clean outcomes:
 

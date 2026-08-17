@@ -12,8 +12,8 @@ language-model reasoning step, fits them to the measured perturbation responses,
 each model against simple baselines on held-out data. The reasoning step sets the structure and
 logic of a model; a deterministic optimizer sets its numerical parameters.
 
-The repository contains the loop, a deterministic evaluation harness, pre-registrations, the
-result artifacts, and a Streamlit presentation of the results.
+The repository contains the loop, a deterministic evaluation harness, the pre-registrations, and
+the result artifacts.
 
 ## Contents
 
@@ -121,7 +121,7 @@ non-additive pairs the model does not beat an additive baseline (held-out DE-ove
 0.37), because the pair-specific interaction is not identifiable from single-perturbation
 marginals.
 
-**Principal finding.** The failure mode observed here is not fabrication. The loop's novel
+**Summary.** The failure mode observed here is not fabrication. The loop's novel
 hypotheses are individually supported and pass edge-level necessity and ablation checks like
 established biology, and the reasoning step produces better-fitting structure than random search
 on the informative modules. What the hypotheses do not do is compose into a model that beats a
@@ -157,13 +157,6 @@ Requires Python 3.11 or later.
 
 ## Usage
 
-The Streamlit presentation runs on precomputed results and needs no data or key:
-
-```
-pip install streamlit
-streamlit run demo/app.py
-```
-
 Running the loop against the atlas requires the differential-expression store and a model API
 key:
 
@@ -177,7 +170,7 @@ The reasoning model is configurable with `MMC_MODEL` and defaults to `claude-opu
 
 ## Reproducibility
 
-- The test suite is offline and requires no store, key, or GPU: `pytest -q` (42 tests).
+- The test suite is offline and requires no store, key, or GPU: `pytest -q` (62 tests).
 - Pre-registrations are committed before their runs: `prereg/PREREG_discovery.md` (cytokine
   discovery) and `prereg/PREREG_norman.md` (combinatorial). `prereg/PREREG.md` is the superseded
   transfer pre-registration, retained as a record.
@@ -201,7 +194,6 @@ scripts/        pipelines and analyses
 tests/          offline unit tests
 paper/          result artifacts and figures
 prereg/         pre-registrations
-demo/           Streamlit presentation
 ```
 
 ## Data and references
