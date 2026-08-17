@@ -251,7 +251,10 @@ def main() -> None:
 
     need_pool = ("oracle" in sources) or ("random" in sources)
     if need_pool:
-        ctx = mp.get_context("fork")
+        # spawn, not fork. Evaluating any structural source above initialises JAX in
+        # this process, and forking a process with XLA's thread pool live deadlocks
+        # the children on their first compile. Spawned workers import cleanly.
+        ctx = mp.get_context("spawn")
         with ctx.Pool(args.workers, initializer=_init_worker,
                       initargs=(mod.genes, mod.perts, mod.observed, mod.de_mask)) as pool:
 
