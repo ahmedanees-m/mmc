@@ -380,6 +380,23 @@ One measurement worth recording against amendment A2: the linear baseline recomp
 
 Remaining Step 1 work before the branch is final for the paper: TCR_signalosome, Th2_GATA3 and CD4_lineage_TFs are running, the S1 proposal arm is evaluated in the second pass, and the swept null of amendment A5 replaces the single-band null above for the percentile column.
 
+**Step 7, module extraction, 2026-08-17. Annotation-defined modules are systematically underpowered; data-defined ones are not.**
+
+Extraction and screening only; the comparator runs on the passing set separately. Section 8 requires every extracted candidate be reported including screen failures, and all 59 are in `results/step7_modules.json`.
+
+| Source | Extracted | Passed | Pass rate | Median scoreable folds | Median DE entries |
+|---|---|---|---|---|---|
+| CollecTRI regulon | 40 | 10 | 25% | 6 | 24 |
+| Data-driven co-response | 19 | 18 | 95% | 16 | 52 |
+
+Failure reasons across the 31 rejects: 28 for too few scoreable folds, 26 for too few DE entries, 1 for too few perturbations. The 28 passing modules carry 8 to 19 scoreable folds, median 16, which clears the target of roughly 20 to 25 module-conditions set in section 8.
+
+**The contrast between the two sources is a result, not a nuisance.** A module defined by a transcription factor's annotated regulon usually does not carry enough differential expression to evaluate at all: `regulon_GATA3` assembles 40 genes and 40 perturbations and yields 6 scoreable folds. A module defined by clustering genes on their measured co-response almost always does, at a median of 16.
+
+This is an independent line of evidence for the same conclusion the Step 1 decomposition, the Step 3 calibration and the Step 9 dissociation each reached from a different direction: the atlas's structure is shared response programs, not annotated regulatory neighbourhoods. Here it shows up before any model is fitted, in whether a module built on annotation even has signal to test.
+
+It also has a practical consequence for the regime map. The passing set is dominated by co-response modules, so the fitted relationship between diagnostics and ceiling will be estimated mostly in that regime, and the ten passing regulon modules are the only counterweight. Both sources are carried into the fit and the source is reported as a covariate rather than pooled away.
+
 **Step 9, annotation agreement, 2026-08-17. The dissociation section 10 anticipated, and it is complete.**
 
 CollecTRI via the OmniPath export: 62,404 interactions, 57,914 with an unambiguous sign. Coverage is reported before any score, as section 10 requires. Each source's precision is placed against a permutation chance level drawn from random edge sets of the same size over the same gene universe, because precision against a sparse annotation is not interpretable on its own.
