@@ -395,6 +395,37 @@ One measurement worth recording against amendment A2: the linear baseline recomp
 
 Remaining Step 1 work before the branch is final for the paper: TCR_signalosome, Th2_GATA3 and CD4_lineage_TFs are running, the S1 proposal arm is evaluated in the second pass, and the swept null of amendment A5 replaces the single-band null above for the percentile column.
 
+**Step 1, all four modules, 2026-08-18. The comparison's answer is set by the module's regime, and the ceiling relative to chance is not.**
+
+With CD4_lineage_TFs complete, the four modules can be read together. Held-out DE-overlap, with each module's own random-structure null.
+
+| Module | Folds | Effective rank | Leading-PC | Specific/shared | Null | zero | mean | linear | oracle |
+|---|---|---|---|---|---|---|---|---|---|
+| TCR_signalosome | 7 | 1.60 | 0.654 | 0.989 | 0.2639 | 0.3150 | 0.4541 | 0.3929 | 0.4641 |
+| Cytokine_production | 19 | 3.64 | 0.276 | 1.336 | 0.1082 | 0.1252 | 0.3712 | 0.4451 | 0.2920 |
+| CD4_lineage_TFs | 11 | 5.75 | 0.202 | 1.924 | 0.1033 | 0.1220 | 0.0882 | 0.0706 | 0.3078 |
+| Th2_GATA3 | 2 | 1.49 | 0.288 | 1.959 | 0.1626 | 0.2294 | 0.2500 | 0.2500 | 0.7500 |
+
+Th2 carries two scoreable folds and is excluded from every reading below, per amendment A1.
+
+**The baselines swing with the regime; the ceiling does not.** Expressed as a multiple of each module's own null:
+
+| Module | linear / null | oracle / null |
+|---|---|---|
+| TCR_signalosome | 1.49 | 1.76 |
+| Cytokine_production | 4.11 | 2.70 |
+| CD4_lineage_TFs | 0.68 | 2.98 |
+
+The linear baseline ranges over a factor of six, from four times chance on the cytokine module to below chance on CD4. The oracle ceiling ranges over a factor of 1.7, from 1.8 to 3.0 times chance. **The achievable structural ceiling is roughly invariant relative to chance while the linear baseline's performance is almost entirely a property of the module.**
+
+The ordering that governs it is the perturbation-specific ratio, and its mirror the leading-PC fraction. Where responses are shared (TCR at 0.99 specific/shared, leading-PC 0.65; cytokine at 1.34 and 0.28) the mean and linear baselines are strong, because most of what there is to predict is the common response. Where responses are perturbation-specific (CD4 at 1.92, leading-PC 0.20) both collapse. This is the same mechanism the Step 1 decomposition and the Step 3 calibration identified, now visible as a gradient across modules rather than as a single module's property.
+
+**Consequence for the branch, stated plainly.** On CD4 the oracle's paired advantage over linear is +0.2372 [+0.1114, +0.4154], which clears the section 1.2 rule. Read naively that is Branch B on this module. It should not be read that way: **the linear baseline on CD4 scores 0.0706 against a random-structure null of 0.1033 and a zero baseline of 0.1220, so it is performing below chance and below predicting nothing at all.** An advantage over a comparator that is itself below chance is not evidence that a structure predicts well. The oracle's 0.3078 does clear CD4's null at the 100th percentile, so it is finding real signal, but at 3.0 times chance it is in the same band as the cytokine module's 2.7 times, where the same comparison returned Branch A.
+
+The branch was pre-registered to be read on the cytokine module alone, and it stands as Branch A. CD4 does not overturn it; it shows that the comparator, not the structure, is what varies.
+
+**One item requiring verification before the write-up.** The linear baseline scoring below chance needs to be established as a property of the module rather than a defect in the baseline. Six of its eleven scoreable folds on CD4 score exactly zero, meaning its top-k contained none of the observed DE genes. A prediction carrying no information would score at chance, not below it, so scoring below chance means the ridge map is systematically pointing at the wrong genes, which is plausible on a perturbation-specific module where the typical response is not the response to any particular perturbation. Plausible is not established. Until it is checked, CD4's linear row is reported with the anomaly stated and the module's conclusions are drawn against its null rather than against linear.
+
 **Step 7, module extraction, 2026-08-17. Annotation-defined modules are systematically underpowered; data-defined ones are not.**
 
 Extraction and screening only; the comparator runs on the passing set separately. Section 8 requires every extracted candidate be reported including screen failures, and all 59 are in `results/step7_modules.json`.
