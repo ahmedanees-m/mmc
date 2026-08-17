@@ -380,6 +380,28 @@ One measurement worth recording against amendment A2: the linear baseline recomp
 
 Remaining Step 1 work before the branch is final for the paper: TCR_signalosome, Th2_GATA3 and CD4_lineage_TFs are running, the S1 proposal arm is evaluated in the second pass, and the swept null of amendment A5 replaces the single-band null above for the percentile column.
 
+**Step 9, annotation agreement, 2026-08-17. The dissociation section 10 anticipated, and it is complete.**
+
+CollecTRI via the OmniPath export: 62,404 interactions, 57,914 with an unambiguous sign. Coverage is reported before any score, as section 10 requires. Each source's precision is placed against a permutation chance level drawn from random edge sets of the same size over the same gene universe, because precision against a sparse annotation is not interpretable on its own.
+
+Cytokine module, 6 annotated edges lying within it, 71 percent of its genes appearing in CollecTRI at all:
+
+| Source | Edges | Hits | Precision | Chance | Ratio | p | Held-out Δ vs linear |
+|---|---|---|---|---|---|---|---|
+| textbook | 16 | 4 | 0.2500 | 0.0078 | **32.0** | **0.0005** | -0.3241 |
+| mean difference | 30 | 4 | 0.1333 | 0.0080 | 16.6 | 0.0005 | -0.1983 |
+| oracle | 7 | 0 | 0.0000 | 0.0084 | **0.00** | 1.0000 | -0.1531 |
+| oracle nested | 5 | 0 | 0.0000 | 0.0074 | 0.00 | 1.0000 | n/a |
+| GRNBoost2 | 30 | 0 | 0.0000 | 0.0080 | 0.00 | 1.0000 | -0.3338 |
+
+**On this module the two axes are not merely uncorrelated, they are inverted.** The oracle carries the largest held-out advantage of any structure source, at 0.2920 against a null of 0.1082, and recovers **zero** annotated edges, at a permutation p of 1.0. The textbook structure predicts at the floor, 0.1211 against that same null, and is **32 times enriched** for annotated edges at p = 0.0005. What predicts is not what is annotated, and what is annotated does not predict.
+
+Section 10 named this as the striking outcome to watch for and it has occurred, with a permutation test behind it rather than an eyeball comparison. It is the cleanest available statement of why validating AI-proposed mechanism on annotation agreement is miscalibrated: on this module, agreeing with the literature is anti-correlated with predicting held-out responses.
+
+It also completes the account built up in the Step 1 and Step 3 outcomes. The data is low rank rather than sparse causal (A8), so the structures that predict best are those that happen to capture the dominant shared programs, and those are not regulatory edges. The oracle's selections bear this out directly: `ATP5F1A -> IL22`, `PGS1 -> IL2`, `VARS2 -> IL5`, metabolic and housekeeping genes rather than regulators.
+
+TCR_signalosome, with 22 annotated edges and full gene coverage, shows no significant enrichment for any source: ratios run 0.23 to 2.59 with p from 0.082 to 0.99. Consistent with its low fold count, that module separates nothing, and it is reported as uninformative rather than as a weak version of the cytokine result.
+
 **Step 4, standard additive split, 2026-08-17. H0, the pre-registered null.**
 
 105 singles and 131 scorable doubles, four folds, DE-overlap at k = 50 on the held-out doubles. Subtypes derived per amendment A7: synergy 36, suppression 33, additive 33, epistasis 15, neomorphic 14. The trained-additive baseline's fitted coefficients were stable across folds (0.60 to 0.65 on each single).
