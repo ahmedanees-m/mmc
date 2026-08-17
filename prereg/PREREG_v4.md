@@ -319,6 +319,33 @@ The labels are operational reconstructions, not Norman's published assignments, 
 
 Second, the additive baseline is **fitted on the training doubles and applied to the held-out ones**. The compose test fitted the additive coefficients per pair on the pair being predicted, which sees the answer and is an oracle rather than a baseline. That per-pair version is retained under the name `fitted_additive_oracle` so the two cannot be confused, and the honest `additive_trained` is the reference the primary hypothesis is tested against.
 
+**A8, 2026-08-17. Step 3 calibration fails its acceptance criterion, and the power curve is scoped down.**
+
+Section 4.1 made the power curve conditional on the simulated module matching the real one on effective rank within 15 percent relative and leading-PC variance fraction within 0.05 absolute, both required, and stated that a failure is reported as a finding rather than worked around. It failed. This records the result and the resulting scope change before any sweep is run.
+
+Real cytokine module: effective rank 3.639 of 28 perturbations, leading-PC fraction 0.2758.
+
+| Generator | Effective rank | Leading-PC | Verdict |
+|---|---|---|---|
+| structural, 12 edges | 12.309 (+238%) | 0.0389 (err 0.237) | reject |
+| structural, 24 edges | 12.025 (+231%) | 0.0519 (err 0.224) | reject |
+| structural, 48 edges | 10.274 (+182%) | 0.0837 (err 0.192) | reject |
+| structural, 84 edges (in-degree cap saturated) | 10.968 (+201%) | 0.0779 (err 0.198) | reject |
+| structural + low-rank co-response, weight 2 | 4.511 (+24%) | 0.1955 (err 0.080) | reject |
+| structural + low-rank co-response, weight 4 | 2.648 (+27%) | 0.3151 (err 0.039) | reject |
+| low-rank plus noise, rank 2 | 3.483 (+4.3%) | 0.2779 (err 0.0022) | accept |
+| low-rank plus noise, rank 6 | 3.578 (+1.7%) | 0.2749 (err 0.0008) | accept |
+
+**No generator with a causal ground truth comes within tolerance, at any density or any mixing weight.** Density was swept precisely because a sparse graph routes each knockdown into a small, largely disjoint descendant set, which makes responses near-orthogonal and the rank high; saturating the grammar's in-degree cap at 84 edges moved the effective rank only from 12.3 to 11.0, nowhere near 3.6. Mixing in a low-rank co-response taken from the real data can hit either criterion separately but never both: at weight 2 the rank is close and the leading-PC is off by 0.080, at weight 4 the leading-PC is close and the rank is off by 27 percent.
+
+The only generators that pass are low-rank-plus-noise surrogates with no causal structure at all, and they pass almost exactly, at 1.7 to 4.3 percent rank error. **Those cannot serve the power curve.** The sweep asks how much data is needed before structural modelling begins to win, and that question is meaningless against a generator with no structure to recover. Passing the criterion is necessary, not sufficient; the generator also has to contain the thing being searched for.
+
+**Scope change.** Per section 4.1, the power curve is reported as a qualitative boundary rather than a numerical data budget, and claim C4 in section 1 is downgraded accordingly: the paper will not state "clearing the baseline requires approximately N perturbations at effect size E".
+
+**What replaces it is stronger than the qualitative fallback suggests.** The mismatch is itself the finding, and it explains the Step 1 result rather than merely accompanying it. The Zhu response matrix is well described as a few shared response programs plus noise and badly described as arising from a sparse causal graph. That is why a linear map, which exploits low-rank structure directly, beats every sparse structural source including one selected on the held-out answer, and it is why the identifiability diagnostics of section 3 predict the ceiling. The claim moves from "here is the data budget you would need" to "the data does not have the shape this model class assumes, and here is the measurement showing it".
+
+One correction to this script's own reporting is recorded for completeness. An earlier version mixed the co-response in as a constant vector added to every row and produced identical diagnostics at every weight. Both diagnostics are computed on the column-centred response matrix, so a constant offset is removed exactly by the centring and cannot change either. The component is now mixed per perturbation as a scaled low-rank term. This also sharpens the reading of the Step 1 decomposition: the low effective rank is not one offset shared by all perturbations but different perturbations producing scaled versions of a few common programs.
+
 ### Outcomes
 
 **Step 1, primary module (Cytokine_production / Stim8hr), 2026-08-17. Branch A.**

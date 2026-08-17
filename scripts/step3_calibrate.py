@@ -206,18 +206,35 @@ def main() -> None:
               f"{'ACCEPT' if verdict['accepted'] else 'reject'}")
 
     accepted = [v for v in out["variants"] if v["accepted"]]
+    # Meeting the criterion is necessary but not sufficient. The power curve sweeps data
+    # volume and asks when structural modelling starts to win, which is only a question
+    # you can ask of a generator that has a causal ground truth to recover. A low-rank
+    # surrogate matching the diagnostics does not license a quantitative sweep, because
+    # there is no structure in it for a structural model to find.
+    with_truth = [v for v in accepted if v["generator"].startswith("structural")]
     out["any_accepted"] = bool(accepted)
-    out["accepted_variants"] = [{k: v[k] for k in ("generator", "shared_weight", "rank")
-                                 if k in v} for v in accepted]
+    out["accepted_with_causal_ground_truth"] = bool(with_truth)
+    out["accepted_variants"] = [{k: v[k] for k in ("generator", "shared_weight", "rank",
+                                                   "n_edges") if k in v}
+                                for v in accepted]
     outpath = Path(args.out)
     outpath.parent.mkdir(parents=True, exist_ok=True)
     with open(outpath, "w") as f:
         json.dump(out, f, indent=2, default=float)
 
     print()
-    if accepted:
-        print(f"{len(accepted)} variant(s) meet the section 4.1 criterion; the power "
-              f"curve proceeds quantitatively on those.")
+    if with_truth:
+        print(f"{len(with_truth)} generator(s) with a causal ground truth meet the "
+              f"section 4.1 criterion; the power curve proceeds quantitatively on those.")
+    elif accepted:
+        print(f"{len(accepted)} variant(s) meet the section 4.1 criterion, but all of "
+              f"them are low-rank surrogates with no causal ground truth, so none can "
+              f"serve the sweep: there is no structure in them for a structural model "
+              f"to recover. No generator that does have a ground truth comes within "
+              f"tolerance. Per section 4.1 the power curve is scoped down to a "
+              f"qualitative boundary and the mismatch is reported as a finding: the "
+              f"real response matrix is well described as low rank plus noise and "
+              f"badly described as arising from a sparse causal graph.")
     else:
         print("No variant meets the section 4.1 criterion. Per section 4.1 the power "
               "curve is scoped down to a qualitative boundary and the mismatch is "
