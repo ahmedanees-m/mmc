@@ -36,7 +36,11 @@ import urllib.request
 from dataclasses import dataclass, field
 
 NGC_BASE_URL = "https://integrate.api.nvidia.com/v1"
-DEFAULT_TIMEOUT = 180
+# A structure proposal is a 20,000-token structured generation, not a chat turn. The
+# original 180 seconds was set against a trivial availability probe and timed out every
+# call to the two largest panel models, which then read as "the model did not serve"
+# when it was the client giving up. Sized for the slowest model that has to complete.
+DEFAULT_TIMEOUT = 900
 RETRY_STATUS = (408, 409, 425, 429, 500, 502, 503, 504)
 
 
