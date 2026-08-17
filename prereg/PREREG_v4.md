@@ -352,3 +352,25 @@ Supporting numbers, all pre-registered:
 One measurement worth recording against amendment A2: the linear baseline recomputed under the corrected metric is 0.4451, against 0.45 reported previously. The correction left the baseline where it was, as predicted, and moved only the sparse structural arms. The zero baseline fell to 0.1252 and now sits essentially on the random null, which is where a prediction of no change belongs.
 
 Remaining Step 1 work before the branch is final for the paper: TCR_signalosome, Th2_GATA3 and CD4_lineage_TFs are running, the S1 proposal arm is evaluated in the second pass, and the swept null of amendment A5 replaces the single-band null above for the percentile column.
+
+**Step 4, standard additive split, 2026-08-17. H0, the pre-registered null.**
+
+105 singles and 131 scorable doubles, four folds, DE-overlap at k = 50 on the held-out doubles. Subtypes derived per amendment A7: synergy 36, suppression 33, additive 33, epistasis 15, neomorphic 14. The trained-additive baseline's fitted coefficients were stable across folds (0.60 to 0.65 on each single).
+
+| Method | DE-overlap@50 [95% CI] | Δ vs additive_trained | Advantage |
+|---|---|---|---|
+| fitted additive oracle | 0.5127 [0.4832, 0.5421] | +0.0153 [+0.0084, +0.0229] | yes, but it sees the answer |
+| mean of singles | 0.4979 [0.4687, 0.5269] | +0.0005 [-0.0018, +0.0027] | no |
+| sum of singles | 0.4979 [0.4687, 0.5269] | +0.0005 [-0.0018, +0.0027] | no |
+| additive trained | 0.4974 [0.4682, 0.5264] | reference | n/a |
+| structural | 0.4751 [0.4476, 0.5034] | -0.0223 [-0.0382, -0.0087] | no |
+| mean of training doubles | 0.1879 [0.1745, 0.2009] | -0.3095 [-0.3368, -0.2831] | no |
+| zero | 0.0047 [0.0031, 0.0067] | -0.4927 | no |
+
+**Primary hypothesis (section 5.2), tested uncorrected as pre-registered:** the structural model does not beat the trained-additive baseline on either named subset. Epistasis, n = 15: 0.5560, Δ +0.0013 [-0.0147, +0.0147]. Suppression, n = 33: 0.4739, Δ -0.0424 [-0.0909, -0.0036], which is a significant deficit rather than an advantage. H0 stands, and the null is now reported under the field-standard protocol as well as the stricter compose-only one, stratified by the subtypes where mechanism had the best chance.
+
+Two observations worth carrying into the write-up.
+
+*The shared-response shortcut does not transfer.* On the Zhu cytokine module the mean of the training perturbations reached 78 percent of the linear baseline's achievable range. Here the mean of the training doubles reaches 0.1879 against an additive baseline's 0.4974, so it is a weak predictor. Norman's doubles are heterogeneous combinations of distinct gene pairs and have no dominant common response, whereas the Zhu module's perturbations do. The contrast supports reading the Zhu ceiling as a property of that data regime rather than of held-out perturbation prediction in general.
+
+*An internal consistency check passed.* `sum_of_singles` and `mean_of_singles` score identically, which they must: DE-overlap at k is rank-based and a positive rescaling cannot change the ranking. That the two agree to four decimals confirms the metric is behaving as specified.
