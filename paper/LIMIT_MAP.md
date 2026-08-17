@@ -39,7 +39,7 @@ simple baseline:
 |---|---|---|---|---|
 | Redundant cascade | TCR signalosome | yes | no (mean unbeatable) | perturbations 0.91 correlated; the mean already is the answer, no headroom |
 | Weak specific signal | CD4 TF network | no (~0.2) | no | the specific TF-to-TF signal is swamped by the bulk response; a data ceiling |
-| Strong fit, no prediction | Th2/GATA3; cytokine module | yes (in-sample 0.93) | **no** (model 0.18 < linear 0.45, separated CIs) | fitting is not predicting; capacity does not compose to held-out generalization |
+| Strong fit, no prediction | Th2/GATA3; cytokine module | yes (in-sample 0.93) | **no** (model below linear; the earlier figure predates the metric correction in PREREG_v4 amendment A2 and is superseded by the Step 1 comparator) | fitting is not predicting; capacity does not compose to held-out generalization |
 | Non-additive (combinatorial) | Norman K562 (independent, measured) | yes (represents epistasis) | **no** (model 0.35 vs additive 0.37 on held-out doubles, non-additive pairs) | the interaction is unidentifiable from singles: a logic-gate model fit on the singles predicts doubles no better than additive even where non-additivity is large (0.77) |
 
 The figure encodes provenance explicitly: filled markers are measured held-out DE-overlap on

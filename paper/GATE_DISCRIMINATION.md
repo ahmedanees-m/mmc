@@ -64,7 +64,7 @@ the edge was drawn from. It does not test advantage over a baseline.
 **The calibration that matters is the module-level held-out gate, not edge ablation.** The bar
 that separates a real marginal effect from a predictive model is whether the mechanistic model
 beats a linear baseline on held-out prediction. Every module fails it (0 of 2; the cytokine
-module 0.18 versus linear 0.45, separated CIs). So the individually-grounded edges do not
+module below linear; the earlier figure predates the metric correction in PREREG_v4 amendment A2). So the individually-grounded edges do not
 compose into a model that beats a simple baseline, and it is the module-level gate that refuses
 to certify the STK11-containing model.
 

@@ -86,10 +86,18 @@ intervals. An edge-ablation variant measures whether removing an edge lowers hel
 chemokine regulator. An edge-ablation control confirms the STK11 edges are individually
 supported: removing them lowers the model's held-out accuracy, comparable to textbook edges such
 as GATA3 -> IL5 (`paper/GATE_DISCRIMINATION.md`, `paper/gate_discrimination.json`). The model
-built from these edges nonetheless does not beat a linear baseline on held-out data (DE-overlap
-0.18 versus 0.45, separated confidence intervals). Across the immune modules, edge-level support
-does not imply predictive advantage over a simple baseline; the module-level held-out evaluation
-is the check that distinguishes them.
+built from these edges nonetheless does not beat a linear baseline on held-out data. Across the
+immune modules, edge-level support does not imply predictive advantage over a simple baseline;
+the module-level held-out evaluation is the check that distinguishes them.
+
+The specific DE-overlap figure previously quoted here for the structural model is superseded.
+Held-out DE-overlap resolved ties in the predicted ranking by gene order, which inflated any
+prediction that was partly or wholly tied, and a sparse structural model predicts exactly zero
+for every perturbation whose gene it does not contain. The rule is now a random tie-break; see
+`prereg/PREREG_v4.md` amendment A2 for the correction and its measured effect. Dense predictions
+including the linear baseline are arithmetically unchanged, and the synthetic control and the
+Norman results were recomputed and are identical. The current structure-source comparison, run
+under the corrected metric, is the Step 1 outcome recorded in `prereg/PREREG_v4.md`.
 
 **Scaled characterization.** Across 25 proposals and 76 distinct novel hypotheses (110
 instances) accumulated over 9 runs and two conditions, none is in a model that beats a linear
