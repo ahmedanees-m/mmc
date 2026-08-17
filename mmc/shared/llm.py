@@ -46,8 +46,9 @@ def _text(resp) -> str:
     return "".join(b.text for b in resp.content if b.type == "text").strip()
 
 
-def reason(system: str, user: str, *, effort: str = "high", max_tokens: int = 8000) -> str:
-    """A reasoning call: adaptive thinking on where supported, plain text out."""
+def anthropic_reason(system: str, user: str, *, effort: str = "high",
+                     max_tokens: int = 8000) -> str:
+    """A reasoning call against the Anthropic API: adaptive thinking where supported."""
     m = model()
     kwargs = dict(
         model=m, max_tokens=max_tokens, system=system,
@@ -57,6 +58,22 @@ def reason(system: str, user: str, *, effort: str = "high", max_tokens: int = 80
         kwargs["thinking"] = {"type": "adaptive"}
         kwargs["output_config"] = {"effort": effort}
     return _text(_client().messages.create(**kwargs))
+
+
+def reason(system: str, user: str, *, effort: str = "high", max_tokens: int = 8000) -> str:
+    """A reasoning call, routed to whichever provider serves the configured model.
+
+    The Step 6 panel runs Anthropic and NGC-hosted models through this one function so
+    that the prompt, the structured-output validation in `_emit`, and the retry
+    behaviour are identical across families. Anything model-specific would make the
+    panel a prompt-engineering result rather than a statement about the models.
+    """
+    from ..loop.providers import AnthropicProvider, get_provider
+
+    provider = get_provider(model())
+    if isinstance(provider, AnthropicProvider):
+        return anthropic_reason(system, user, effort=effort, max_tokens=max_tokens)
+    return provider.complete(system, user, max_tokens=max_tokens, effort=effort)
 
 
 def extract(system: str, user: str, schema: dict, *, max_tokens: int = 2000) -> dict:
