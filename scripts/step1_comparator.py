@@ -47,6 +47,7 @@ MAX_EDGES = 30
 ANNEAL_STEPS = 480
 ANNEAL_BATCH = 24
 NESTED_OUTER_FRACTION = 0.30
+NON_STRUCTURE_SOURCES = ("linear", "mean", "zero")
 
 _W: dict = {}
 
@@ -432,7 +433,9 @@ def main() -> None:
         bands = out.get("random_null_bands") or (
             {out["random_null"]["n_edges"]: out["random_null"]} if "random_null" in out else {})
         for row in out.get("table", []):
-            if not bands:
+            # the null is a distribution over structures, so only structures are placed
+            # in it; a linear map has no edge set and no meaningful percentile
+            if not bands or row["source"] in NON_STRUCTURE_SOURCES:
                 continue
             # place each source against the null nearest its own size, so a percentile
             # compares like with like rather than a 50-edge structure against a 7-edge null

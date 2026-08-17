@@ -196,7 +196,7 @@ def main() -> None:
               f"{'delta vs linear':<26}{'null pct':>9}  {'selected from':<14}")
         for r in d.get("table", []):
             prov = PROVENANCE.get(r["source"], ("", ""))[0]
-            pct = r.get("random_null_percentile")
+            pct = None if prov == "not a structure" else r.get("random_null_percentile")
             print(f"  {r['source']:<18}{r['n_edges']:>6}  "
                   f"{r['de_overlap_mean']:.4f} [{r['de_overlap_lo']:.4f}, {r['de_overlap_hi']:.4f}]  "
                   f"{r['delta_vs_linear']:+.4f} [{r['delta_lo']:+.4f}, {r['delta_hi']:+.4f}]  "
