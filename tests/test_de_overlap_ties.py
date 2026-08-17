@@ -32,7 +32,7 @@ def test_a_prediction_of_no_change_scores_at_chance_not_by_gene_order():
 
 
 def test_the_score_does_not_depend_on_gene_order_for_a_degenerate_prediction():
-    n, k = 12, 4
+    n = 12
     pred = np.zeros(n)
 
     def score(de_positions):
