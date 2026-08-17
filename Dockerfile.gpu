@@ -1,8 +1,23 @@
 # CUDA build of the MMC environment, for the workloads that are actually GPU-shaped:
 # the deep perturbation comparators (GEARS, DCDI, Bicycle, AVICI) and the unbounded
-# expressivity control. The structural backend runs here too, but whether it is faster
-# than the CPU build is a measurement, not an assumption: the fixed-point solve is small
-# and the optimizer driving it is scipy, so kernel launch overhead can dominate.
+# expressivity control.
+#
+# The structural backend runs here too but should not be run here. Measured on the
+# cytokine module, one leave-one-out pass over 28 folds:
+#
+#                       CPU (one process)    GPU (RTX A4000)
+#   cheap fit budget          16.1 s             25.5 s
+#   reported fit budget       82.6 s            155.6 s
+#   sustained throughput   224 struct/hr      120 struct/hr
+#
+# The card sat at roughly 22 percent utilisation throughout. The fixed-point solve over
+# 28 genes is far too small to fill it, and scipy L-BFGS-B drives the optimisation from
+# the host, so every step pays a round trip. The comparator also runs twelve of these
+# processes at once, which one card cannot be shared across, so in aggregate the CPU
+# build is around twenty times faster for the search. Batching many candidate structures
+# into a single vmapped solve would suit the GPU, but it needs a JAX optimizer in place
+# of L-BFGS-B, which would change every fitted number and break comparability with the
+# existing record. Not worth it for the structure search; use the CPU image there.
 FROM python:3.11-slim
 
 WORKDIR /app
