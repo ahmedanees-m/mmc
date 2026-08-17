@@ -445,6 +445,28 @@ This confirms the reading in the table above. CD4's oracle advantage over linear
 
 The `dense_linear` class added in amendment A9 for Step 10 is built this way and is therefore **not a usable model class under this evaluation protocol**. It is withdrawn from Step 10. The `structural + offset` class, which is the one that actually tests the section 2.2 mechanism, is unaffected and stands. If an unbounded in-degree comparison is still wanted it has to be built as a structural model with the cap lifted rather than as a one-hot regression, and that is left for the write-up to note as untested rather than added late.
 
+**Step 5, anonymisation ablation, 2026-08-18. Complete on both modules. The structure is name-driven, and the data-conditioning step barely moves it.**
+
+Four arms, three seeds, two modules, 24 runs, no failures. Every A2 and A4 prompt passed the redaction audit before its arm ran. Held-out scores cluster across all four arms in the 0.11 to 0.22 band, so the score does not separate them; edge agreement does, and section 6 named it as the statistic that carries claim C5.
+
+Agreement is read against the within-arm seed ceiling, which is how much two runs of the same arm at different seeds agree.
+
+| Comparison | Cytokine (ceiling 0.360) | TCR (ceiling 0.881) |
+|---|---|---|
+| A1 vs A2, names removed, data intact | 0.023 (ratio 0.06) | 0.112 (ratio 0.13) |
+| **A1 vs A3, names intact, data destroyed** | **0.402 (ratio 1.12)** | **0.790 (ratio 0.90)** |
+| A1 vs A4, both | 0.015 (ratio 0.04) | 0.064 (ratio 0.07) |
+
+**Permuting the perturbation labels leaves the proposed structure at or above the level at which the unperturbed arm agrees with itself across seeds.** Removing the gene names collapses agreement to between 6 and 13 percent of that ceiling. Both modules give the same answer, and the cytokine ratio above 1.0 is itself informative: with the real data destroyed the proposals become *more* self-consistent than with it intact, which is what happens when the data contributes variation rather than signal.
+
+Against the four patterns section 6 anticipated, this is the third and strongest: the proposal barely depends on the data.
+
+**The architectural qualification, which must travel with the result.** The loop's initial proposal function receives the module's gene list and a one-line biological context and does not see the response data at all; data enters only through the repair step as a residual summary. With two loop iterations a structure is therefore one name-driven proposal followed by one or two data-informed repairs. The finding is consequently **not** that the model ignores data placed in front of it. It is that **the data-informed repair step barely moves the structure away from its name-driven starting point.**
+
+That is the more useful statement of the two. It localises the failure to a specific stage of the loop rather than attributing it to the model in general, it is consistent with the Step 1 finding that the achievable ceiling is low regardless of proposer, and it is actionable: a loop of this design would have to be strengthened at the repair step, or restructured so the proposal sees data at all.
+
+It also reframes what A2 measures. Removing the names does not merely withhold a hint, it removes the only input the initial proposal has, which is why aliased runs fail to agree even with each other. A2 is therefore a test of whether this loop can work from data alone, and on this evidence it cannot. Claim C5 is reported with that scope.
+
 **Step 7, module extraction, 2026-08-17. Annotation-defined modules are systematically underpowered; data-defined ones are not.**
 
 Extraction and screening only; the comparator runs on the passing set separately. Section 8 requires every extracted candidate be reported including screen failures, and all 59 are in `results/step7_modules.json`.
