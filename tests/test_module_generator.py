@@ -1,5 +1,4 @@
 import numpy as np
-import pytest
 
 from mmc.data import module_generator as mg
 from mmc.eval.annotation import Regulon
