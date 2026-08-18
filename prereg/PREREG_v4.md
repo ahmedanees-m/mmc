@@ -466,6 +466,33 @@ The proposal arm sits at the 100th percentile of its own null band, so it is fin
 
 **The swept null answers the question amendment A5 raised, and the answer is that the concern was small.** Across 200 draws at each of five sizes the null mean is 0.1076, 0.1088, 0.1092, 0.1091 and 0.1152 for 5, 10, 16, 30 and 50 edges. A random structure's expected score is essentially flat in its edge count on this module, so the single-band null used in the first pass was not materially misleading. That is now measured rather than assumed, which is the point of having run it, and the percentile column is correct for each source's own size. The upper tail does widen with size, from a 95th percentile of 0.1174 at 5 edges to 0.1554 at 50, so a large structure has more room to score well by chance even though its average does not improve.
 
+**Step 6, proposer panel, 2026-08-18. Zero validated across six model families, and schema validity separates them sharply.**
+
+Cytokine module, two seeds per model, one prompt for every model with no per-model tuning, identical schema validation and retry path. Combines the original run with the rerun at the corrected timeout; where a model was rerun, the rerun supersedes.
+
+| Model | Runs served | Schema failures | Validated | Held-out | Fraction of ceiling |
+|---|---|---|---|---|---|
+| claude-opus-4-8 | 2 | 0 | 0 | 0.1562 | 0.53 |
+| claude-sonnet-5 | 2 | 0 | 0 | 0.1744 | 0.60 |
+| openai/gpt-oss-120b | 2 | 0 | 0 | 0.1498 | 0.51 |
+| meta/llama-3.1-70b-instruct | 0 | 2 | n/a | n/a | n/a |
+| nvidia/nemotron-3-ultra-550b-a55b | 1 | 1 | 0 | 0.1946 | 0.67 |
+| z-ai/glm-5.2 | 2 | 1 | 0 | 0.2211 | 0.76 |
+
+**Pooled validated rate 0 of 9, Wilson 95% [0, 29.9%].**
+
+Two findings, and they point in different directions.
+
+*The reliability claim generalises across families.* No model in the panel produced a structure that beat the linear baseline, on a module where the leaky oracle does not either. Combined with Step 1, this closes the objection that the negative reflects one model's weakness: five families that served, spanning Anthropic, OpenAI open-weights, NVIDIA and Z-AI, all land between 0.15 and 0.22 against a linear baseline of 0.4451.
+
+*The panel does not tighten the interval, and should not be presented as if it does.* At n = 9 the pooled Wilson interval is [0, 29.9%], which is far wider than the [0, 4.8%] the existing 76-hypothesis corpus already supports. The panel's contribution is breadth across families, not precision. Claiming a tighter bound from it would be wrong, and section 7's expectation that the pooled interval would tighten substantially is not met at this sample size.
+
+*Schema validity separates the families where held-out score does not.* Four proposals across three models failed the ModelSpec schema after three attempts each. Both Anthropic tiers and `openai/gpt-oss-120b` produced a valid structure on every attempt; `meta/llama-3.1-70b-instruct` failed both of its; `nvidia/nemotron-3-ultra-550b-a55b` failed one of two; `z-ai/glm-5.2` failed one of three. The recurring error is a rule term naming a regulator with no corresponding edge, which is the grammar's coherence constraint rather than JSON validity. This is a concrete, reportable difference between families on a task the held-out metric cannot distinguish them on, and it is the proposal-validity column section 7 asked for.
+
+One counter-intuitive detail worth stating rather than smoothing: among models that did serve, the non-Anthropic ones attained a *higher* fraction of the oracle ceiling (`glm-5.2` 0.76, `nemotron` 0.67) than the Anthropic tiers (0.51 to 0.60), while also being the ones that failed schema validation. Reliability of output format and quality of the structure produced are not the same axis, and on this evidence they are not even positively related.
+
+**A methodological note that belongs in the write-up.** Two of these models were initially recorded as having failed to serve a completion. They had not: the client timeout was 180 seconds, set against an availability probe that asked each model to reply with the word "ok", while the real call is a 20,000-token structured generation. Raising the timeout to 900 seconds recovered `nemotron` entirely and revealed that `llama-3.1-70b`'s failure is schema validity rather than availability. An availability probe must exercise the real workload; verifying that an endpoint answers a trivial prompt establishes almost nothing.
+
 **Step 5, anonymisation ablation, 2026-08-18. Complete on both modules. The structure is name-driven, and the data-conditioning step barely moves it.**
 
 Four arms, three seeds, two modules, 24 runs, no failures. Every A2 and A4 prompt passed the redaction audit before its arm ran. Held-out scores cluster across all four arms in the 0.11 to 0.22 band, so the score does not separate them; edge agreement does, and section 6 named it as the statistic that carries claim C5.
