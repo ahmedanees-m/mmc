@@ -447,6 +447,16 @@ This confirms the reading in the table above. CD4's oracle advantage over linear
 
 The `dense_linear` class added in amendment A9 for Step 10 is built this way and is therefore **not a usable model class under this evaluation protocol**. It is withdrawn from Step 10. The `structural + offset` class, which is the one that actually tests the section 2.2 mechanism, is unaffected and stands. If an unbounded in-degree comparison is still wanted it has to be built as a structural model with the cap lifted rather than as a one-hot regression, and that is left for the write-up to note as untested rather than added late.
 
+### Amendment A10, 2026-08-18. The section 8.1 holdout is designated mid-run, before the modules are run.
+
+Section 8.1 requires five modules to be held out of the fit, their ceilings predicted from diagnostics alone, the predictions committed, and only then run. The scale-up queue was built to run all 28 modules in one pass, which would have left nothing to predict prospectively and reduced the primary test of claim C3 to a retrospective holdout. This was found with 9 modules complete and 19 not yet run, so the test is still available and is being set up now rather than abandoned.
+
+The five are drawn uniformly without replacement from the 18 candidates that had not started, with the seed fixed to the date, and the pool, seed, rule and result recorded in `prereg/step7_holdout.json` and committed before the modules are blocked from running. No comparator result exists for any candidate in the pool, so the draw cannot have been informed by an outcome. The drawn modules are `coresponse_ELP2`, `coresponse_NELFCD`, `coresponse_SRSF10`, `coresponse_TADA1` and `coresponse_TUFM`.
+
+One limitation follows from the timing and is recorded rather than worked around. The unrun pool at the moment of the draw was entirely co-response modules, because `regulon_AHR` is the last regulon candidate and it was already running. The prospective test therefore checks calibration only in the co-response regime, and says nothing about whether the map transfers to regulon modules. Had the holdout been designated before the queue started, it could have spanned both. That option was lost by building the queue without it, and reporting the test on the narrower basis is the honest remainder rather than a repair.
+
+The order of operations from here is fixed: the remaining 13 non-holdout modules complete, the regression is fitted on those plus the 9 already done, the five predictions and their 80 percent intervals are committed to the repository, and only then are the five run. Success remains at least 4 of 5 observed ceilings inside the interval, and the section 12 rule stands that a failure makes the regime map descriptive with no further modules added to rescue it.
+
 **Correction to the Step 7 interim entry, 2026-08-18, on two more modules.**
 
 The entry below was written on seven modules and two of its statements do not survive the ninth. It said the honest ceiling is two to five times smaller on every module. On regulon_DNMT1 the ratio is 0.72, and on regulon_YY1 the honest figure of 0.3075 is larger than the leaky figure of 0.1749. Across the nine modules the ratio ranges from 0.21 to 1.76, so there is no uniform drop and the direction is not even fixed.

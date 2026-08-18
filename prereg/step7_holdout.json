@@ -1,0 +1,34 @@
+{
+  "rule": "uniform sample without replacement from the unrun candidates, seed fixed to the date",
+  "seed": 20260818,
+  "pool_size": 18,
+  "pool": [
+    "coresponse_ACTR2",
+    "coresponse_CFAP298",
+    "coresponse_ELAVL1",
+    "coresponse_ELP2",
+    "coresponse_HCCS",
+    "coresponse_KIF20A",
+    "coresponse_MBD5",
+    "coresponse_MOV10",
+    "coresponse_MTA2",
+    "coresponse_NATD1",
+    "coresponse_NELFCD",
+    "coresponse_PIM1",
+    "coresponse_RPRD2",
+    "coresponse_SHOC2",
+    "coresponse_SRSF10",
+    "coresponse_TADA1",
+    "coresponse_TUFM",
+    "coresponse_UBE2I"
+  ],
+  "holdout": [
+    "coresponse_ELP2",
+    "coresponse_NELFCD",
+    "coresponse_SRSF10",
+    "coresponse_TADA1",
+    "coresponse_TUFM"
+  ],
+  "declared": "2026-08-18",
+  "purpose": "PREREG_v4 section 8.1 prospective calibration test"
+}
