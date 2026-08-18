@@ -282,7 +282,9 @@ Section 2.2 specified S3 as 1000 structures with the edge count matched to S1. O
 
 The null is therefore swept: 200 structures at each of 5, 10, 16, 30 and 50 edges, holding the pre-registered total of 1000, and each source is placed against the band nearest its own edge count. The band nearest the oracle remains the headline null so the figure has one reference distribution. The sweep also answers a question the fixed version could not, which is whether the null itself rises with edge count; if random structures score better simply for being larger, that is worth knowing before any source is credited for a high score.
 
-Ordering note: the cytokine module's null had already been reached under the single-band code when this was written, so that module carries a single band at the oracle's edge count and the swept null is run for it separately afterwards. Every module reports the swept version.
+Ordering note: the cytokine module's null had already been reached under the single-band code when this was written, so that module carries a single band at the oracle's edge count and the swept null was run for it separately afterwards.
+
+**Exception recorded 2026-08-18: CD4_lineage_TFs carries the single-band null, not the swept one.** Its swept null was attempted twice and killed both times by host reboots, which occurred at 11:42 and 15:29 on 2026-08-18, roughly four hours apart. The job needs longer than that window on a 33-gene module. Rather than reduce the draws per band and quietly report a thinner null as though it were the pre-registered one, the second pass for that module was scoped to adding the proposal arm and reuses the 1000-draw single-band null from its first pass. The measured result on the cytokine module is that the null mean is essentially flat in edge count, 0.1076 to 0.1152 across 5 to 50 edges, so the single band is a close approximation; the widening upper tail is the part that is lost, and CD4's percentile column is reported with that stated.
 
 **A6, 2026-08-17. The four NGC panel identifiers are locked.**
 
