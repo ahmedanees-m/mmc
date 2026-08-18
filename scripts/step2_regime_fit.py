@@ -79,14 +79,30 @@ def load(paths):
     return list(seen.values())
 
 
-def fit(x: np.ndarray, y: np.ndarray) -> dict:
-    """Ordinary least squares with an intercept, plus leave-one-out cross-validation."""
+def fit(x: np.ndarray, y: np.ndarray, g: np.ndarray | None = None) -> dict:
+    """Ordinary least squares with an intercept, plus leave-one-out cross-validation.
+
+    Section 8 carries the module source as a covariate rather than pooling it away,
+    because regulon and co-response modules sit in different parts of the diagnostic
+    range and a pooled slope can be produced by the gap between the two groups alone.
+    Passing `g` adds an indicator column for the second level and reports the slope
+    holding source fixed.
+    """
     ok = ~(np.isnan(x) | np.isnan(y))
+    if g is not None:
+        g = np.asarray(g)[ok]
     x, y = x[ok], y[ok]
     n = x.size
     if n < 4:
         return {"n": int(n), "r2": float("nan"), "loo_r2": float("nan")}
-    a = np.stack([np.ones_like(x), x], axis=1)
+    def design(xv, gv):
+        cols = [np.ones_like(xv), xv]
+        if gv is not None and len({*gv.tolist()}) > 1:
+            lev = sorted({*gv.tolist()})[1]
+            cols.append((gv == lev).astype(float))
+        return np.stack(cols, axis=1)
+
+    a = design(x, g)
     coef, *_ = np.linalg.lstsq(a, y, rcond=None)
     pred = a @ coef
     ss_res = float(((y - pred) ** 2).sum())
@@ -97,15 +113,19 @@ def fit(x: np.ndarray, y: np.ndarray) -> dict:
     for i in range(n):
         m = np.ones(n, bool)
         m[i] = False
-        ai = np.stack([np.ones(m.sum()), x[m]], axis=1)
+        ai = design(x[m], None if g is None else g[m])
         ci, *_ = np.linalg.lstsq(ai, y[m], rcond=None)
-        loo.append(ci[0] + ci[1] * x[i])
+        xi = design(x[i:i + 1], None if g is None else g[i:i + 1])
+        # a fold can drop a source level entirely, leaving the row wider than the fit
+        loo.append(float(xi[0, :ci.size] @ ci[:xi.shape[1]]) if xi.shape[1] == ci.size
+                   else float(ci[0] + ci[1] * x[i]))
     loo = np.asarray(loo)
     ss_loo = float(((y - loo) ** 2).sum())
     loo_r2 = 1 - ss_loo / ss_tot if ss_tot > 0 else float("nan")
 
     r = float(np.corrcoef(x, y)[0, 1]) if n > 2 else float("nan")
     return {"n": int(n), "slope": float(coef[1]), "intercept": float(coef[0]),
+            "source_term": float(coef[2]) if coef.size > 2 else None,
             "pearson_r": r, "r2": float(r2), "loo_r2": float(loo_r2)}
 
 
@@ -129,8 +149,38 @@ def main() -> None:
     nominal = sum(1 for r in rows if r["advantage"])
     corrected = sum(flags)
 
+    g = np.array([r["source"] for r in rows])
     y = np.array([r["ceiling_advantage"] for r in rows], float)
-    fits = {d: fit(np.array([r[d] for r in rows], float), y) for d in DIAGNOSTICS}
+    fits = {d: fit(np.array([r[d] for r in rows], float), y, g) for d in DIAGNOSTICS}
+    # The pre-specified target is the ceiling's margin over linear. On modules where the
+    # linear arm sits at or below its own random null that margin carries the baseline's
+    # noise rather than a property of the module, so the margin over the null is fitted
+    # alongside it. The first remains primary; the second is reported, never substituted.
+    y_null = np.array([r["oracle"] - r["null"] for r in rows], float)
+    fits_null = {d: fit(np.array([r[d] for r in rows], float), y_null, g)
+                 for d in DIAGNOSTICS}
+    uninformative = [r["module"] for r in rows if r["linear"] <= r["null"]]
+
+    # Carrying source as a covariate only separates it from the diagnostic if the two
+    # sources overlap on that diagnostic. Where they do not, the indicator and the
+    # diagnostic are the same column twice and neither coefficient means anything on its
+    # own, so the confounding is measured and reported next to every fit.
+    collinearity = {}
+    if len({*g.tolist()}) > 1:
+        lev = sorted({*g.tolist()})[1]
+        ind = (g == lev).astype(float)
+        for d in DIAGNOSTICS:
+            xv = np.array([r[d] for r in rows], float)
+            ok = ~np.isnan(xv)
+            if ok.sum() < 4 or len({*g[ok].tolist()}) < 2:
+                continue
+            lo1, hi1 = xv[ok][ind[ok] == 0].min(), xv[ok][ind[ok] == 0].max()
+            lo2, hi2 = xv[ok][ind[ok] == 1].min(), xv[ok][ind[ok] == 1].max()
+            inter = max(0.0, min(hi1, hi2) - max(lo1, lo2))
+            union = max(hi1, hi2) - min(lo1, lo2)
+            collinearity[d] = {
+                "corr_with_source": float(np.corrcoef(xv[ok], ind[ok])[0, 1]),
+                "range_overlap": float(inter / union) if union > 0 else float("nan")}
     best = max((k for k in fits if fits[k].get("loo_r2") == fits[k].get("loo_r2")),
                key=lambda k: fits[k]["loo_r2"], default=None)
 
@@ -143,6 +193,9 @@ def main() -> None:
                         "n_advantage": sum(1 for r in sub if r["advantage"])}
 
     out = {"n_modules": len(rows), "rows": rows, "fits": fits, "best_diagnostic": best,
+           "fits_vs_null": fits_null,
+           "linear_uninformative": {"modules": uninformative, "n": len(uninformative)},
+           "source_collinearity": collinearity,
            "family_a": {"nominal_advantages": nominal, "bh_rejects": corrected,
                         "q": 0.05, "n_tests": len(rows)},
            "by_source": by_source}
@@ -163,6 +216,11 @@ def main() -> None:
     for s, v in by_source.items():
         print(f"  {s:<12} n={v['n']:<3} median spec/shared {v['median_spec']:.2f}  "
               f"advantages {v['n_advantage']}")
+    for d, v in collinearity.items():
+        if abs(v["corr_with_source"]) > 0.8 or v["range_overlap"] < 0.2:
+            print(f"\n{d}: correlated with source at r={v['corr_with_source']:+.2f} and "
+                  f"range overlap {v['range_overlap']:.2f}. The slope and the source term "
+                  f"are not separable here and neither should be read alone.")
     print(f"wrote {p}")
 
 
