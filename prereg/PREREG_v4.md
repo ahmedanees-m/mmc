@@ -447,6 +447,23 @@ This confirms the reading in the table above. CD4's oracle advantage over linear
 
 The `dense_linear` class added in amendment A9 for Step 10 is built this way and is therefore **not a usable model class under this evaluation protocol**. It is withdrawn from Step 10. The `structural + offset` class, which is the one that actually tests the section 2.2 mechanism, is unaffected and stands. If an unbounded in-degree comparison is still wanted it has to be built as a structural model with the cap lifted rather than as a one-hot regression, and that is left for the write-up to note as untested rather than added late.
 
+**Family A re-read against the linear baseline's own null, 2026-08-19. Branch A holds on the modules where the comparison is meaningful.**
+
+The Family A count recorded above, 14 nominal advantages of the oracle ceiling over linear with 10 surviving Benjamini-Hochberg at q=0.05, sat awkwardly beside the finding that no structure source beats linear. Taken alone it says structure wins on 10 of 27 modules. The two facts are reconciled by cross-tabulating each module's Family A outcome against whether its linear arm clears its own random null, judged at the 95th percentile of that module's null distribution.
+
+| | Linear carries signal | Linear is noise |
+|---|---|---|
+| Oracle clears linear after correction | **2** | 8 |
+| Oracle does not clear linear | 11 | 6 |
+
+Eight of the ten corrected advantages are against a linear arm that does not beat its own null, and beating a comparator with nothing to contribute is not evidence about structure. Those eight are `coresponse_ELAVL1`, `MBD5`, `NATD1`, `RPRD2`, `SHOC2`, `UBE2I`, `regulon_ETS1` and `CD4_lineage_TFs`, the last of which was already set aside on exactly this ground.
+
+Two survive, and one of them barely. `regulon_HIF1A` has linear at 0.0857 against a null 95th percentile of 0.0747, with the oracle at 0.4558 over 8 folds. `coresponse_ACTR2` has linear at 0.1936 against a null 95th percentile of 0.1934, a margin of 0.0002, which is a coin toss rather than a demonstration that its baseline carries signal; it is counted in the surviving cell because the rule was fixed before the numbers were seen, but it should not be read as a second case.
+
+**This strengthens Branch A rather than qualifying it.** On the 13 modules where the linear baseline is worth beating, an oracle that selected its structure on the folds it was scored on, taking the best of three seeds, clears linear on 2 and fails on 11. The comparison is stacked in structure's favour and structure still loses almost everywhere the comparison means anything.
+
+The corresponding weakening is that the 10 BH survivors cannot be reported as a structural result. Family A remains as pre-registered and its count stands, but the interpretation attached to it is now this table, and the count alone will not appear without it.
+
 **Step 7 complete at 23 modules, and the section 8 regression, 2026-08-19. The diagnostics do not predict the ceiling out of sample.**
 
 All 23 non-holdout modules finished, 10 regulon and 13 co-response, and the regression was fitted over those plus the four curated Zhu modules for 27 in total, carrying source as a covariate as section 8 specifies.
