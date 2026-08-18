@@ -447,6 +447,30 @@ This confirms the reading in the table above. CD4's oracle advantage over linear
 
 The `dense_linear` class added in amendment A9 for Step 10 is built this way and is therefore **not a usable model class under this evaluation protocol**. It is withdrawn from Step 10. The `structural + offset` class, which is the one that actually tests the section 2.2 mechanism, is unaffected and stands. If an unbounded in-degree comparison is still wanted it has to be built as a structural model with the cap lifted rather than as a one-hot regression, and that is left for the write-up to note as untested rather than added late.
 
+**Correction, 2026-08-19: claim C3 is untested by this design, not unsupported. The earlier wording is withdrawn.**
+
+The Step 7 entry below concluded that C3 has no support. That conclusion rested on cross-validated R squared values of -0.44 to -0.69, and it does not survive two checks that should have been run before writing it.
+
+**The target carried avoidable variance.** The pre-specified target uses the ceiling, which is the maximum over three search seeds. A maximum is upward-biased with variance that grows as the seed count falls, and the seed spread is wide on several modules. Refitting the same regression against lower-variance summaries of the same runs:
+
+| Target | Cross-validated R squared | Residual SD |
+|---|---|---|
+| ceiling advantage over linear, maximum of seeds, as pre-specified | -0.440 | 0.1119 |
+| ceiling advantage over linear, mean of seeds | -0.032 | 0.0880 |
+| ceiling advantage over linear, median of seeds | -0.006 | 0.0952 |
+| ceiling over its own null, mean of seeds | -0.229 | 0.0514 |
+| raw ceiling, mean of seeds | -0.264 | 0.0683 |
+
+Most of the strongly negative figure was seed noise in a maximum statistic, not evidence against a relationship. On the seed mean and median the cross-validated R squared is -0.032 and -0.006, which is indistinguishable from predicting the module-set mean rather than clearly worse than it. Restricting to the 16 modules whose linear arm beats its own null mean, so that the target is not partly noise, gives +0.043.
+
+**The design could not have detected an effect of the observed size.** Simulating against the observed residual scatter of 0.0880 at n = 27, a slope reaches 80 percent power for a positive cross-validated R squared at +1.068, corresponding to a rise of 0.286 in ceiling advantage across the observed range of the normalised effective rank. The fitted slope is +0.442, a rise of 0.118 across the same range, which is 41 percent of the detectable threshold. A real relationship of the size actually estimated would have been missed by this design more often than not.
+
+**The correct statement is therefore that C3 was not tested.** The point estimate is positive, in the direction C3 predicts, and too small for 27 modules at this scatter to resolve. This is not evidence for C3 either: an underpowered positive point estimate is compatible with no effect. It means the pre-registration's question remains open and the write-up must say so, rather than reporting a negative that the data cannot carry.
+
+Three things bear on any future attempt. The seed count of three, reduced from Step 1's ten for breadth, is a substantial part of the noise and would be the first thing to raise. The target should be the ceiling's margin over the module's own null rather than over linear, since linear is at or below its null on 11 of 27 modules and contributes noise to the pre-specified target. And the module count would need to roughly double, or the residual scatter to halve, before a slope of the observed magnitude became detectable.
+
+Section 12's rule still applies for a different reason than first recorded. The regime map is reported as descriptive, not because the relationship was tested and failed, but because it was not testable here; no modules are added to rescue a fit, since adding them to reach significance after seeing the direction is precisely what the rule forbids.
+
 **Coverage-conditioned re-analysis, 2026-08-19. The architectural forfeit is real but it is not what defeats the proposal arm.**
 
 A structural prediction is the difference between clamped and unclamped fixed points, so perturbing a gene with no outgoing edges predicts identically zero everywhere and scores at chance. A sparse structure's headline number therefore mixes folds where it says something with folds where it says nothing, while linear predicts on every fold. Coverage, the share of scoreable folds whose perturbed gene has an outgoing edge, is now reported as a first-class statistic and the paired comparison repeated on the covered subset.
