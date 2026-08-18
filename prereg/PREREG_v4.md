@@ -447,6 +447,22 @@ This confirms the reading in the table above. CD4's oracle advantage over linear
 
 The `dense_linear` class added in amendment A9 for Step 10 is built this way and is therefore **not a usable model class under this evaluation protocol**. It is withdrawn from Step 10. The `structural + offset` class, which is the one that actually tests the section 2.2 mechanism, is unaffected and stands. If an unbounded in-degree comparison is still wanted it has to be built as a structural model with the cap lifted rather than as a one-hot regression, and that is left for the write-up to note as untested rather than added late.
 
+**Module source is perfectly confounded with module size, recorded 2026-08-18 before the regression is fitted.**
+
+Checking the module definitions behind the scale-up shows the two sources do not merely occupy different parts of the diagnostic range, they have no overlap in shape at all. All 10 regulon modules that passed the screen are 40 genes with 39 or 40 perturbations. All 18 co-response modules are 20 genes with 20 perturbations. There is no 20-gene regulon module and no 40-gene co-response module.
+
+Source therefore cannot be separated from module size, perturbation count, or the fold count that follows from the perturbation count. A coefficient on the source indicator is a coefficient on all four at once. This matters for the metric as well as the model: DE-overlap is a rank agreement over the module's genes, so its chance level depends on how many genes there are, which is why the random nulls will not be on a common scale across the two sources either. Effective rank is bounded above by the smaller matrix dimension, so the regulon modules can reach values the co-response modules cannot attain at all, and only the normalised variant is comparable between them.
+
+Three consequences are fixed now rather than after the numbers are in.
+
+The within-source slopes remain interpretable and are the quantity to read. With 10 regulon modules and 13 co-response modules in the training set, both exceed the four-module minimum the fitting code enforces, so the regression is reported within each source as well as with the pre-specified source covariate. Where the covariate model and the within-source fits agree, the pooled slope can be quoted; where they disagree, the within-source fits are the ones that mean something.
+
+The source coefficient is not interpretable as an effect of source and will not be described as one. It absorbs the size and perturbation-count difference in unknown proportion, and no design in this data set can decompose it.
+
+The section 8.1 prospective test is unaffected on this axis, which is worth stating because the holdout being all co-response looked like a weakness when it was recorded. The five held-out modules are 20-gene co-response modules and 13 further co-response modules sit in the training set, so their predictions are interpolation within one regime rather than extrapolation across the confounded boundary. The test is narrower than intended and it is also cleaner than it would have been with a mixed holdout.
+
+This is a property of how the modules were generated, not a defect introduced during the run: the regulon extractor takes 40-gene transcription-factor neighbourhoods and the co-response clusterer emits 20-gene clusters. It was not noticed when the generators were written and it should have been, because it constrains what the regime map can claim. Reporting it is the remedy available now.
+
 **Step 7 analysis script corrected before any module data reached it, 2026-08-18.**
 
 Reading `scripts/step2_regime_fit.py` against section 8 while the queue ran turned up a mismatch between what the pre-registration specifies and what the code did. Section 8 states that both module sources are carried into the fit and that source is reported as a covariate rather than pooled away. The fit was an ordinary univariate regression of ceiling advantage on one diagnostic at a time, with no source term; source appeared only as separate per-group summary counts, which is not a covariate.
