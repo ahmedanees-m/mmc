@@ -655,6 +655,25 @@ That correction exposes a second problem it cannot solve. A covariate only separ
 
 **Decision, 2026-08-18, recorded before the fit is run.** The pre-specified dependent variable is the ceiling's margin over the linear baseline and it stays primary. On modules where the linear arm sits at or below its own random null that margin carries the baseline's noise rather than a property of the module, and this has now been seen on CD4_lineage_TFs and on four of the nine completed Step 7 modules. The ceiling's margin over the module's own null is therefore fitted alongside it and reported, with the count of modules where linear is uninformative printed next to both. The margin over null is a secondary reported quantity and does not replace the pre-specified target. This is a different case from the nested ceiling withdrawn earlier: the null is estimated from 300 structures and is well determined, whereas the nested ceiling rested on 2 to 4 folds.
 
+**Step 10 replication on three co-response modules, 2026-08-19. The cytokine result does not generalise, and the reading drawn from it is narrowed.**
+
+The entry below recorded, provisionally, that the offset closes the gap to linear and therefore the grammar is not the limitation. Three co-response modules whose linear arm beats its own null have now had the same evaluation. The offset does not help them; it hurts.
+
+| Module | Folds | Mean | Oracle | Oracle + offset | Offset gain | Delta vs linear |
+|---|---|---|---|---|---|---|
+| Cytokine_production | 19 | 0.3712 | 0.2920 | 0.4820 | **+0.1900** | +0.0368 [-0.0783, +0.1877] |
+| coresponse_PIM1 | 18 | 0.3094 | 0.4215 | 0.3506 | -0.0709 | +0.0156 [-0.1465, +0.1757] |
+| coresponse_MOV10 | 16 | 0.1990 | 0.2756 | 0.2583 | -0.0173 | +0.0610 [-0.0043, +0.1321] |
+| coresponse_HCCS | 17 | 0.1004 | 0.2541 | 0.1668 | -0.0873 | +0.0385 [-0.1203, +0.2367] |
+
+The mechanism is visible in the table and it is not subtle. The cytokine module is the only one of the four where the mean baseline beats the oracle structure, 0.3712 against 0.2920. There the shared response carries more of the signal than the structure does, so handing it over as an offset is worth a great deal. On the other three the oracle beats the mean by between 0.08 and 0.15, the shared response is the weaker component, and adding a fitted offset costs between 0.017 and 0.087 by displacing signal the structure was already capturing.
+
+**The conclusion is therefore conditional and is restated as such.** Supplying the shared response repairs a structural model only on modules where the shared response is what the model was missing. That is a property of the module, not a property of the grammar, and the cytokine module was selected as the primary module precisely because its baselines are strong, which is the same feature that makes it the one where the offset pays. Reading it as a general statement about the model class was drawing from one module, and it is withdrawn.
+
+What survives is narrower and still worth having. On a module dominated by a shared response, a bounded sum-of-products structure plus that response reaches a ridge map's performance, so the grammar is not intrinsically incapable there. Nowhere in the four does oracle-plus-offset clear linear under the pre-registered rule; the intervals span zero in all four cases. And the proposal arm gains +0.0085 from the offset on the cytokine module and remains 0.24 below linear, which is unaffected by any of this: whatever the model class can do, the proposer's structures do not reach it.
+
+This is the third time in this record that a reading has been taken from the first instance of a class and then contradicted by the next instances. It was labelled provisional when written and the replication was already running, which is the reason the correction arrives within the hour rather than in review. The standing rule is restated: no reading is attached to a class until more than one member has been observed, and a single-module result is reported as a single-module result even when its mechanism looks clear.
+
 **Step 10 on the cytokine module, 2026-08-19. The pre-registered prediction is wrong, and the grammar is not the limitation.**
 
 Section 11 recorded a prediction so that it could be wrong: that structural-plus-offset would land close to the mean baseline at 0.3712 and short of linear at 0.4451, and that if it instead reached linear, the ceiling is entirely the architectural forfeit and the interpretable grammar is not itself the limitation. The structures are the ones already recorded, re-evaluated with a per-gene offset fitted on each split's training folds, so no search was repeated. 28 genes, 28 perturbations, 19 scoreable folds.
