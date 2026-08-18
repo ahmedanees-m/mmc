@@ -447,6 +447,32 @@ This confirms the reading in the table above. CD4's oracle advantage over linear
 
 The `dense_linear` class added in amendment A9 for Step 10 is built this way and is therefore **not a usable model class under this evaluation protocol**. It is withdrawn from Step 10. The `structural + offset` class, which is the one that actually tests the section 2.2 mechanism, is unaffected and stands. If an unbounded in-degree comparison is still wanted it has to be built as a structural model with the cap lifted rather than as a one-hot regression, and that is left for the write-up to note as untested rather than added late.
 
+**Coverage-conditioned re-analysis, 2026-08-19. The architectural forfeit is real but it is not what defeats the proposal arm.**
+
+A structural prediction is the difference between clamped and unclamped fixed points, so perturbing a gene with no outgoing edges predicts identically zero everywhere and scores at chance. A sparse structure's headline number therefore mixes folds where it says something with folds where it says nothing, while linear predicts on every fold. Coverage, the share of scoreable folds whose perturbed gene has an outgoing edge, is now reported as a first-class statistic and the paired comparison repeated on the covered subset.
+
+For the oracle the forfeit is substantial. Median coverage across 28 module structures is 0.49, ranging from 0.18 to 1.00, with 14 modules below one half. Restricting to covered folds raises its margin over linear on every module, and on the cytokine module reverses the sign, from -0.1531 across all folds to +0.0201 across covered ones.
+
+**That reversal cannot be read as evidence, and the reason needs stating plainly.** The oracle chooses its edges by searching for the structure that scores best on the very folds it is then scored on. Which folds are covered is therefore an outcome of the selection, not a property fixed in advance: the search places edges on genes whose perturbations it can already predict. Conditioning on coverage conditions on the selection, and the resulting interval has no allowance for it. The oracle's covered-fold figures are recorded for completeness and no inference is drawn from them.
+
+The comparison is sound for structures fixed before any fold was scored, which is where the question is properly settled.
+
+| Module | Source | Coverage | Delta over linear, all folds | Delta over linear, covered folds |
+|---|---|---|---|---|
+| Cytokine_production | proposal (claude), 50 edges | 0.95 | -0.2513 | -0.2097 |
+| Cytokine_production | GRNBoost2, 30 edges | 0.68 | -0.3338 | -0.3651 |
+| Cytokine_production | textbook, 16 edges | 0.37 | -0.3241 | -0.3443 |
+| Cytokine_production | mean difference, 30 edges | 0.58 | -0.1983 | -0.0367 |
+| TCR_signalosome | proposal (claude), 15 edges | 1.00 | -0.1337 | -0.1337 |
+| TCR_signalosome | GRNBoost2, 30 edges | 0.86 | -0.1642 | -0.1639 |
+| TCR_signalosome | textbook, 14 edges | 1.00 | -0.1584 | -0.1584 |
+
+**The proposal arm does not forfeit anything.** Its structures carry 50 edges on the cytokine module and 15 on TCR, covering 95 and 100 percent of scoreable folds, and they lose to linear by 0.21 and 0.13 on precisely the folds where they make a prediction. The textbook arm at full coverage on TCR loses by 0.16. Where coverage is low, as for textbook on the cytokine module at 0.37, conditioning makes the result worse rather than better.
+
+The conclusion is the harder of the two the analysis could have reached. Sparsity does cost structural models predictions, measurably, and that is worth reporting as a property of the model class. But it is not the explanation for the negative result on the primary module, because the arm the pre-registration is about makes predictions almost everywhere and still loses by a wide margin. The architectural forfeit is supporting evidence for the low-rank account rather than a confound standing between the data and Branch A.
+
+One number is worth keeping in view. Even under conditioning that favours it, on folds it selected itself, the oracle reaches only +0.0201 over linear on the cytokine module. The ceiling that a search with access to the held-out answer can reach on its own chosen ground is barely above the baseline.
+
 **Family A re-read against the linear baseline's own null, 2026-08-19. Branch A holds on the modules where the comparison is meaningful.**
 
 The Family A count recorded above, 14 nominal advantages of the oracle ceiling over linear with 10 surviving Benjamini-Hochberg at q=0.05, sat awkwardly beside the finding that no structure source beats linear. Taken alone it says structure wins on 10 of 27 modules. The two facts are reconciled by cross-tabulating each module's Family A outcome against whether its linear arm clears its own random null, judged at the 95th percentile of that module's null distribution.
