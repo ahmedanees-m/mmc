@@ -447,6 +447,27 @@ This confirms the reading in the table above. CD4's oracle advantage over linear
 
 The `dense_linear` class added in amendment A9 for Step 10 is built this way and is therefore **not a usable model class under this evaluation protocol**. It is withdrawn from Step 10. The `structural + offset` class, which is the one that actually tests the section 2.2 mechanism, is unaffected and stands. If an unbounded in-degree comparison is still wanted it has to be built as a structural model with the cap lifted rather than as a one-hot regression, and that is left for the write-up to note as untested rather than added late.
 
+**Step 1 complete, CD4_lineage_TFs second pass, 2026-08-18. All four modules, both passes.**
+
+33 genes, 32 perturbations, 70 DE entries, 11 scoreable folds. Single-band null of 1000 draws at 13 edges, mean 0.1033, per the exception recorded in amendment A5.
+
+| Source | DE-overlap [95% CI] | Delta vs linear [95% CI] | Clears the rule |
+|---|---|---|---|
+| mean difference | 0.4339 [0.2547, 0.6270] | +0.3633 [+0.1841, +0.5725] | yes |
+| oracle | 0.3078 [0.1935, 0.4683] | +0.2372 [+0.1114, +0.4154] | yes |
+| **proposal (claude)** | 0.1249 [0.0500, 0.2120] | +0.0542 [-0.0219, +0.1421] | no |
+| zero | 0.1220 [0.0749, 0.1723] | +0.0514 [+0.0038, +0.0985] | yes |
+| GRNBoost2 | 0.1056 [0.0545, 0.1611] | +0.0349 [-0.0128, +0.0805] | no |
+| mean | 0.0882 [0.0312, 0.1550] | +0.0176 [-0.0160, +0.0533] | no |
+| textbook | 0.0783 [0.0359, 0.1232] | +0.0076 [-0.0339, +0.0509] | no |
+| linear | 0.0706 [0.0210, 0.1264] | reference | n/a |
+
+**The zero baseline clears the rule against linear on this module.** A prediction of no change at all beats the ridge map with a separated interval. That is the plainest possible statement of the finding already verified for CD4: the linear comparator carries no usable signal here, recovering 13 DE genes where a random ranking of the same size would recover 19.9. Every "clears the rule" entry in this table has to be read against that, and the module's conclusions are drawn against its null of 0.1033 rather than against linear.
+
+Read that way, the proposal arm at 0.1249 sits essentially on the zero baseline at 0.1220 and barely above the null at 0.1033. It finds nothing on this module. The oracle at 0.3078 is 3.0 times the null and is the only structure source with a real margin over chance, which matches its behaviour on the cytokine module at 2.7 times.
+
+**Step 1 is now complete: four modules, seven structure sources, both passes.** Across all four, no proposer-produced structure clears the linear baseline anywhere the comparator itself is sound. The pre-registered branch, read on the cytokine module as specified, is Branch A, and nothing in the remaining three modules disturbs it: TCR is underpowered at seven scoreable folds, Th2 at two, and CD4's comparator is uninformative. The substantive content of the other three modules is not the branch but the regime gradient they establish, recorded above.
+
 **Step 1 second pass, cytokine module, 2026-08-18. The complete table, with the proposal arm and the swept null.**
 
 The second pass re-evaluated the four structures the first pass had already selected, added the S1 proposal arm, and replaced the single-band null with the swept version of amendment A5. Structures were reused rather than re-searched, so the oracle row is identical to the first pass by construction.
