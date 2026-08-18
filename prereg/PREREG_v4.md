@@ -445,6 +445,27 @@ This confirms the reading in the table above. CD4's oracle advantage over linear
 
 The `dense_linear` class added in amendment A9 for Step 10 is built this way and is therefore **not a usable model class under this evaluation protocol**. It is withdrawn from Step 10. The `structural + offset` class, which is the one that actually tests the section 2.2 mechanism, is unaffected and stands. If an unbounded in-degree comparison is still wanted it has to be built as a structural model with the cap lifted rather than as a one-hot regression, and that is left for the write-up to note as untested rather than added late.
 
+**Step 1 second pass, cytokine module, 2026-08-18. The complete table, with the proposal arm and the swept null.**
+
+The second pass re-evaluated the four structures the first pass had already selected, added the S1 proposal arm, and replaced the single-band null with the swept version of amendment A5. Structures were reused rather than re-searched, so the oracle row is identical to the first pass by construction.
+
+| Source | Edges | DE-overlap [95% CI] | Delta vs linear [95% CI] | Advantage | Null band | Percentile |
+|---|---|---|---|---|---|---|
+| linear (S6) | n/a | 0.4451 [0.3280, 0.5716] | reference | n/a | n/a | n/a |
+| mean (S7) | n/a | 0.3712 [0.2626, 0.4899] | -0.0739 [-0.2555, +0.1055] | no | n/a | n/a |
+| oracle (S5) | 7 | 0.2920 [0.1646, 0.4464] | -0.1531 [-0.2837, +0.0133] | no | 5 | 100.0 |
+| mean difference (S4) | 30 | 0.2468 [0.1530, 0.3529] | -0.1983 [-0.3532, -0.0646] | no | 30 | 100.0 |
+| **proposal, claude-opus-4-8 (S1)** | 50 | **0.1939 [0.1255, 0.2659]** | **-0.2513 [-0.3993, -0.1185]** | **no** | 50 | 100.0 |
+| zero | n/a | 0.1252 [0.0958, 0.1549] | -0.3199 [-0.4549, -0.1967] | no | n/a | n/a |
+| textbook (S2) | 16 | 0.1211 [0.0734, 0.1768] | -0.3241 [-0.4610, -0.2020] | no | 16 | 90.0 |
+| GRNBoost2 (S4) | 30 | 0.1113 [0.0767, 0.1449] | -0.3338 [-0.4717, -0.2080] | no | 30 | 58.5 |
+
+**Branch A is confirmed with every source present.** No structure source clears the linear baseline, and the ordering is stable: the leaky oracle above the algorithmic arms, those above the proposal arm, and the proposal arm above textbook and GRNBoost2.
+
+The proposal arm sits at the 100th percentile of its own null band, so it is finding real signal rather than guessing, and it recovers about 43 percent of the oracle's above-chance advantage ((0.1939 - 0.1152) against (0.2920 - 0.1076)). It is nonetheless below the zero baseline's distance from linear and less than half of the mean baseline. The picture from the earlier record survives intact under the corrected metric and against a properly matched null: the proposals are better than chance and better than textbook structure, and nowhere near a linear map.
+
+**The swept null answers the question amendment A5 raised, and the answer is that the concern was small.** Across 200 draws at each of five sizes the null mean is 0.1076, 0.1088, 0.1092, 0.1091 and 0.1152 for 5, 10, 16, 30 and 50 edges. A random structure's expected score is essentially flat in its edge count on this module, so the single-band null used in the first pass was not materially misleading. That is now measured rather than assumed, which is the point of having run it, and the percentile column is correct for each source's own size. The upper tail does widen with size, from a 95th percentile of 0.1174 at 5 edges to 0.1554 at 50, so a large structure has more room to score well by chance even though its average does not improve.
+
 **Step 5, anonymisation ablation, 2026-08-18. Complete on both modules. The structure is name-driven, and the data-conditioning step barely moves it.**
 
 Four arms, three seeds, two modules, 24 runs, no failures. Every A2 and A4 prompt passed the redaction audit before its arm ran. Held-out scores cluster across all four arms in the 0.11 to 0.22 band, so the score does not separate them; edge agreement does, and section 6 named it as the statistic that carries claim C5.
