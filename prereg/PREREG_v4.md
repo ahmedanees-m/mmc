@@ -466,6 +466,28 @@ The proposal arm sits at the 100th percentile of its own null band, so it is fin
 
 **The swept null answers the question amendment A5 raised, and the answer is that the concern was small.** Across 200 draws at each of five sizes the null mean is 0.1076, 0.1088, 0.1092, 0.1091 and 0.1152 for 5, 10, 16, 30 and 50 edges. A random structure's expected score is essentially flat in its edge count on this module, so the single-band null used in the first pass was not materially misleading. That is now measured rather than assumed, which is the point of having run it, and the percentile column is correct for each source's own size. The upper tail does widen with size, from a 95th percentile of 0.1174 at 5 edges to 0.1554 at 50, so a large structure has more room to score well by chance even though its average does not improve.
 
+**Step 3 calibration on CD4_lineage_TFs, 2026-08-18. A calibrated generator with causal ground truth exists on this module, which partly reverses the scope-down in amendment A8.**
+
+Amendment A8 scoped the power curve down to a qualitative boundary because no generator carrying a causal ground truth met the section 4.1 criterion on the cytokine module. That conclusion was drawn from one module. Repeating the gate on CD4_lineage_TFs gives a different answer.
+
+Real CD4 module: effective rank 5.754, leading-PC fraction 0.2023.
+
+| Generator | Effective rank | Leading-PC | Verdict |
+|---|---|---|---|
+| structural, 12 to 99 edges | 11.9 to 14.4 (+107% to +149%) | 0.023 to 0.067 | reject |
+| structural + low-rank, weight 1.0 | 11.553 (+101%) | 0.1026 | reject |
+| **structural + low-rank, weight 2.0** | **5.410 (+6.0%)** | **0.2049 (err 0.0027)** | **accept** |
+| structural + low-rank, weight 4.0 | 2.679 (+53%) | 0.3346 | reject |
+| low-rank plus noise, ranks 2 to 6 | 4.9 to 5.3 (+8% to +14%) | 0.205 to 0.227 | accept |
+
+**A structural generator mixed with a low-rank co-response at weight 2.0 meets both criteria simultaneously on CD4**, at 6.0 percent rank error and 0.0027 leading-PC error. It carries a causal ground truth, so it can serve the sweep, which the low-rank surrogates cannot.
+
+The reason the two modules differ is mechanical and worth stating. A sparse structural generator produces an effective rank of roughly 12 to 14 on both. CD4's real rank is 5.75 and the cytokine module's is 3.64, so the structural generator has less distance to travel on CD4, and a mixing weight exists that lands both diagnostics inside tolerance at once. On the cytokine module the weight that brought rank close (2.0) left the leading-PC fraction off by 0.080, and the weight that brought the leading-PC close (4.0) put rank off by 27 percent; no weight satisfied both.
+
+**Consequence.** Amendment A8's scope-down stands for the cytokine module and is narrowed rather than withdrawn: the power curve is reported qualitatively there, and **can proceed quantitatively on CD4_lineage_TFs** using the structural-plus-low-rank generator at weight 2.0. Claim C4 is correspondingly restored in scope, limited to the higher-rank module and stated as such. The finding that a purely sparse causal generator cannot reproduce either module's identifiability signature is unaffected and remains the substantive result.
+
+This also sharpens the regime account. The modules where a causal generator can be calibrated at all are the higher-rank ones, which are the same modules where the shared-response baselines are weak. Whether a simulator can be made to look like the data, and whether a linear map can predict it, are governed by the same property.
+
 **Step 9 extended to every module with a proposal arm, 2026-08-18. The dissociation is sharpest where the annotation is densest.**
 
 Supersedes the two-module version above, which is retained as the record of the first pass. CD4_lineage_TFs is absent because its second pass had not completed when this ran, and it is added when that lands.
