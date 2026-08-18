@@ -466,6 +466,28 @@ The proposal arm sits at the 100th percentile of its own null band, so it is fin
 
 **The swept null answers the question amendment A5 raised, and the answer is that the concern was small.** Across 200 draws at each of five sizes the null mean is 0.1076, 0.1088, 0.1092, 0.1091 and 0.1152 for 5, 10, 16, 30 and 50 edges. A random structure's expected score is essentially flat in its edge count on this module, so the single-band null used in the first pass was not materially misleading. That is now measured rather than assumed, which is the point of having run it, and the percentile column is correct for each source's own size. The upper tail does widen with size, from a 95th percentile of 0.1174 at 5 edges to 0.1554 at 50, so a large structure has more room to score well by chance even though its average does not improve.
 
+**Step 9 extended to every module with a proposal arm, 2026-08-18. The dissociation is sharpest where the annotation is densest.**
+
+Supersedes the two-module version above, which is retained as the record of the first pass. CD4_lineage_TFs is absent because its second pass had not completed when this ran, and it is added when that lands.
+
+Th2_GATA3, 17 annotated edges within the module, full gene coverage:
+
+| Source | Edges | Hits | Precision | Chance | Ratio | p | Held-out DE-overlap |
+|---|---|---|---|---|---|---|---|
+| textbook | 9 | 8 | 0.8889 | 0.4056 | 2.19 | **0.0015** | 0.1000 |
+| **proposal (claude)** | 14 | 11 | 0.7857 | 0.4031 | **1.95** | **0.0015** | **0.0000** |
+| mean difference | 5 | 4 | 0.8000 | 0.3996 | 2.00 | 0.0730 | 0.4167 |
+| oracle | 5 | 3 | 0.6000 | 0.3996 | 1.50 | 0.3133 | 0.7500 |
+| GRNBoost2 | 21 | 9 | 0.4286 | 0.4029 | 1.06 | 0.4878 | 0.0000 |
+
+**The proposal arm on Th2 recovers 11 of its 14 edges from the annotated regulon, at nearly twice chance and p = 0.0015, and scores exactly zero on held-out prediction.** That is grounded-but-non-predictive in its purest available form: a structure that agrees with the recorded literature to a degree that would pass any annotation-based validation, and that predicts nothing at all. It is the single clearest illustration the project has produced of why annotation agreement cannot substitute for held-out predictive advantage.
+
+The cytokine module adds the mirror image. There the proposal arm recovers 1 of 50 edges, ratio 2.40 at p = 0.35, so it is not significantly enriched, while the textbook structure is enriched 32-fold at p = 0.0005 and the oracle recovers none at all. On TCR_signalosome nothing reaches significance for any source, ratios running 0.23 to 1.67, consistent with that module separating nothing.
+
+Read together the three modules say that annotation agreement and predictive advantage vary independently: on Th2 the proposal is annotation-rich and prediction-empty, on the cytokine module the oracle is the best predictor and annotation-empty, and the textbook structure is annotation-rich and prediction-poor on both. Two of the four patterns section 10 anticipated appear in the same dataset, on different modules.
+
+Th2's caveat stands throughout: two scoreable folds, so its held-out numbers carry no weight. That does not weaken the annotation reading, which does not depend on fold count, but the pairing of a significant enrichment with a zero held-out score should be presented as illustrative rather than as a measured effect size.
+
 **Step 6, proposer panel, 2026-08-18. Zero validated across six model families, and schema validity separates them sharply.**
 
 Cytokine module, two seeds per model, one prompt for every model with no per-model tuning, identical schema validation and retry path. Combines the original run with the rerun at the corrected timeout; where a model was rerun, the rerun supersedes.
