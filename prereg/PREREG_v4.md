@@ -447,6 +447,43 @@ This confirms the reading in the table above. CD4's oracle advantage over linear
 
 The `dense_linear` class added in amendment A9 for Step 10 is built this way and is therefore **not a usable model class under this evaluation protocol**. It is withdrawn from Step 10. The `structural + offset` class, which is the one that actually tests the section 2.2 mechanism, is unaffected and stands. If an unbounded in-degree comparison is still wanted it has to be built as a structural model with the cap lifted rather than as a one-hot regression, and that is left for the write-up to note as untested rather than added late.
 
+**Step 7 complete at 23 modules, and the section 8 regression, 2026-08-19. The diagnostics do not predict the ceiling out of sample.**
+
+All 23 non-holdout modules finished, 10 regulon and 13 co-response, and the regression was fitted over those plus the four curated Zhu modules for 27 in total, carrying source as a covariate as section 8 specifies.
+
+| Diagnostic | Slope | In-sample R2 | Leave-one-module-out R2 |
+|---|---|---|---|
+| effective rank, normalised | +0.6855 | 0.134 | **-0.440** |
+| leading PC fraction | -0.1960 | 0.065 | **-0.550** |
+| perturbation-specific ratio | +0.0009 | 0.010 | **-0.611** |
+| effective rank | +0.0064 | 0.015 | **-0.689** |
+
+Every cross-validated R squared is negative, meaning the fitted relationship predicts a held-out module's ceiling advantage worse than the module-set mean does. The in-sample figures are small enough that this is not overfitting a strong signal; there is little to fit. The best of them by out-of-sample fit, the normalised effective rank, explains 13 percent in sample and less than nothing out of it.
+
+The same holds for the secondary target. Regressing the ceiling's margin over each module's own null gives cross-validated R squared of -0.245, -0.330, -0.353 and -0.442 across the four diagnostics: uniformly negative, slightly less so than for the margin over linear.
+
+Within each source separately the picture does not improve. Across the 13 co-response modules the cross-validated R squared runs from -0.241 to +0.020, the best being the leading-PC fraction at +0.020, which is indistinguishable from predicting the mean. Across the 10 regulon modules it runs from -0.421 to -0.495. The four curated modules return +0.894 on the normalised effective rank, which is a fit of four points at the code's minimum and is not evidence of anything.
+
+**Under the reading rule fixed on 2026-08-18, there is nothing here to support claim C3.** That rule required a diagnostic relating to the raw ceiling also to relate to a margin before it could count. In the event the question does not arise, because no diagnostic relates to any of the three quantities out of sample.
+
+Two further results from the same fit are worth recording. The linear baseline sits at or below its own random null on 11 of the 27 modules, which is 41 percent and much more than the CD4 case that first raised it: five co-response modules, five regulon modules and CD4_lineage_TFs itself. Reporting every ceiling against its own null was therefore necessary rather than cautious. And in Family A, 14 modules show a nominal advantage of the oracle ceiling over linear and 10 survive the Benjamini-Hochberg correction at q=0.05 over 27 tests, split as 10 of 13 co-response, 3 of 10 regulon and 1 of 4 curated.
+
+**Section 8.1 predictions, committed 2026-08-19 before the held-out modules were run.**
+
+Predictions come from the pre-specified source-covariate fit on all 27 training modules, using the normalised effective rank, the diagnostic selected by cross-validated fit on training modules alone. The interval is an ordinary least squares prediction interval, covering the noise in a new observation as well as the uncertainty in the line, because the criterion asks where an observed ceiling advantage will fall. Its coverage was verified by simulation at 79.7 percent against a nominal 80 before any prediction was generated.
+
+| Module | Diagnostic | Predicted advantage | 80% interval | Within co-response |
+|---|---|---|---|---|
+| coresponse_ELP2 | 0.323 | 0.2470 | [+0.0792, +0.4149] | 0.2102 |
+| coresponse_NELFCD | 0.201 | 0.1635 | [+0.0070, +0.3200] | 0.1629 |
+| coresponse_SRSF10 | 0.276 | 0.2147 | [+0.0538, +0.3756] | 0.1919 |
+| coresponse_TADA1 | 0.383 | 0.2879 | [+0.1074, +0.4684] | 0.2334, extrapolated |
+| coresponse_TUFM | 0.214 | 0.1721 | [+0.0154, +0.3287] | 0.1678 |
+
+The full record with fit coefficients is in `prereg/step7_holdout_predictions.json`, committed before the modules were unblocked.
+
+**How this test must be read when it is scored.** Section 8.1 asks whether at least 4 of 5 observed values fall inside the 80 percent interval, which is a calibration question, and claim C3 names the intercept-only model as the comparator. The regression has already been shown to have no skill over that comparator, so intervals this wide can be well calibrated while the diagnostics contribute nothing: passing would show the intervals are honest about the model's ignorance, not that the diagnostics work. Whichever way the count falls, the finding recorded above stands, and section 12's rule applies, that the regime map is reported as descriptive with no further modules added to rescue the fit.
+
 **Held-out diagnostics computed, 2026-08-18, and the interpolation claim made for them is withdrawn.**
 
 The five held-out modules' diagnostics are now computed and committed. They are predictor variables, defined by section 3 as computed before any modelling, so producing them reveals nothing about the held-out ceilings; a separate script does this so it can run while those modules are still blocked.

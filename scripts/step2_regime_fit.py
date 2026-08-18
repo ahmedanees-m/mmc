@@ -95,11 +95,15 @@ def fit(x: np.ndarray, y: np.ndarray, g: np.ndarray | None = None) -> dict:
     n = x.size
     if n < 4:
         return {"n": int(n), "r2": float("nan"), "loo_r2": float("nan")}
+    levels = sorted({*g.tolist()})[1:] if g is not None else []
+
     def design(xv, gv):
+        # one indicator per source beyond the reference level; with three sources a
+        # single indicator would silently pool two of them into the baseline
         cols = [np.ones_like(xv), xv]
-        if gv is not None and len({*gv.tolist()}) > 1:
-            lev = sorted({*gv.tolist()})[1]
-            cols.append((gv == lev).astype(float))
+        for lev in levels:
+            cols.append((np.asarray(gv) == lev).astype(float)
+                        if gv is not None else np.zeros_like(xv))
         return np.stack(cols, axis=1)
 
     a = design(x, g)
@@ -117,7 +121,7 @@ def fit(x: np.ndarray, y: np.ndarray, g: np.ndarray | None = None) -> dict:
         ci, *_ = np.linalg.lstsq(ai, y[m], rcond=None)
         xi = design(x[i:i + 1], None if g is None else g[i:i + 1])
         # a fold can drop a source level entirely, leaving the row wider than the fit
-        loo.append(float(xi[0, :ci.size] @ ci[:xi.shape[1]]) if xi.shape[1] == ci.size
+        loo.append(float(xi[0] @ ci) if xi.shape[1] == ci.size
                    else float(ci[0] + ci[1] * x[i]))
     loo = np.asarray(loo)
     ss_loo = float(((y - loo) ** 2).sum())
@@ -125,7 +129,8 @@ def fit(x: np.ndarray, y: np.ndarray, g: np.ndarray | None = None) -> dict:
 
     r = float(np.corrcoef(x, y)[0, 1]) if n > 2 else float("nan")
     return {"n": int(n), "slope": float(coef[1]), "intercept": float(coef[0]),
-            "source_term": float(coef[2]) if coef.size > 2 else None,
+            "source_terms": {lev: float(coef[2 + i])
+                             for i, lev in enumerate(levels)} if levels else None,
             "pearson_r": r, "r2": float(r2), "loo_r2": float(loo_r2)}
 
 

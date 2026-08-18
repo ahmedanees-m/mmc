@@ -61,15 +61,17 @@ def _t_quantile(p: float, df: int) -> float:
     return float(z + g1 / df + g2 / df ** 2 + g3 / df ** 3)
 
 
-def design(x, g, level):
+def design(x, g, levels):
+    """One indicator per source beyond the reference level."""
     cols = [np.ones_like(x), x]
-    if g is not None and level is not None:
-        cols.append((np.asarray(g) == level).astype(float))
+    for lev in (levels or []):
+        cols.append((np.asarray(g) == lev).astype(float) if g is not None
+                    else np.zeros_like(x))
     return np.stack(cols, axis=1)
 
 
-def fit_and_predict(x, y, g, level, x_new, g_new, conf=0.80):
-    A = design(np.asarray(x, float), g, level)
+def fit_and_predict(x, y, g, levels, x_new, g_new, conf=0.80):
+    A = design(np.asarray(x, float), g, levels)
     yv = np.asarray(y, float)
     coef, *_ = np.linalg.lstsq(A, yv, rcond=None)
     resid = yv - A @ coef
@@ -80,7 +82,7 @@ def fit_and_predict(x, y, g, level, x_new, g_new, conf=0.80):
     tq = _t_quantile(0.5 + conf / 2, dof)
     out = []
     for xi, gi in zip(x_new, g_new):
-        x0 = design(np.array([float(xi)]), [gi] if g is not None else None, level)[0]
+        x0 = design(np.array([float(xi)]), [gi] if g is not None else None, levels)[0]
         centre = float(x0 @ coef)
         se = float(np.sqrt(s2 * (1.0 + x0 @ XtX_inv @ x0)))
         out.append({"prediction": centre, "lo": centre - tq * se,
@@ -115,17 +117,17 @@ def main() -> None:
     x = [r[chosen] for r in rows]
     y = [target(r) for r in rows]
     g = [r["source"] for r in rows]
-    level = sorted(set(g))[1] if len(set(g)) > 1 else None
+    levels = sorted(set(g))[1:]
 
     names = sorted(hold)
     x_new = [hold[m]["diagnostics"][chosen] for m in names]
     g_new = ["coresponse"] * len(names)
 
-    pooled, pooled_meta = fit_and_predict(x, y, g, level, x_new, g_new)
+    pooled, pooled_meta = fit_and_predict(x, y, g, levels, x_new, g_new)
 
     sub = [(xi, yi) for xi, yi, gi in zip(x, y, g) if gi == "coresponse"]
     within, within_meta = fit_and_predict([a for a, _ in sub], [b for _, b in sub],
-                                          None, None, x_new, g_new)
+                                          None, [], x_new, g_new)
     lo_c = min(a for a, _ in sub); hi_c = max(a for a, _ in sub)
 
     preds = {}

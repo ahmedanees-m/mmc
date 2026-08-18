@@ -1,0 +1,120 @@
+{
+  "committed": "before the held-out modules were run",
+  "target": "ceiling_advantage",
+  "diagnostic": "effective_rank_normalised",
+  "training_modules": 27,
+  "coresponse_training_range": [
+    0.0844435926060689,
+    0.34603389490191244
+  ],
+  "pre_specified_fit": {
+    "n": 27,
+    "dof": 23,
+    "coef": [
+      0.025468513313904307,
+      0.685540276836885,
+      0.02404032028356376,
+      0.04984696374286357
+    ],
+    "residual_sd": 0.11427148128804496,
+    "t_quantile": 1.3194602398161621
+  },
+  "within_coresponse_fit": {
+    "n": 13,
+    "dof": 11,
+    "coef": [
+      0.0847936522921508,
+      0.38813111630939656
+    ],
+    "residual_sd": 0.04754468640614386,
+    "t_quantile": 1.3634303180205407
+  },
+  "criterion": "at least 4 of 5 observed values inside the pre-specified 80 percent interval",
+  "predictions": {
+    "coresponse_ELP2": {
+      "diagnostic": "effective_rank_normalised",
+      "diagnostic_value": 0.32321320481469407,
+      "pre_specified": {
+        "prediction": 0.2470441832199065,
+        "lo": 0.07921869468099171,
+        "hi": 0.4148696717588213,
+        "se": 0.12719253182066145
+      },
+      "within_coresponse": {
+        "prediction": 0.21024275428281564,
+        "lo": 0.1360436039033732,
+        "hi": 0.28444190466225805,
+        "se": 0.054420933287713934,
+        "extrapolated": false
+      }
+    },
+    "coresponse_NELFCD": {
+      "diagnostic": "effective_rank_normalised",
+      "diagnostic_value": 0.20132230910559476,
+      "pre_specified": {
+        "prediction": 0.1634830648315947,
+        "lo": 0.007012085116434974,
+        "hi": 0.3199540445467544,
+        "se": 0.11858711236115801
+      },
+      "within_coresponse": {
+        "prediction": 0.16293310486329068,
+        "lo": 0.09566057210667891,
+        "hi": 0.23020563761990245,
+        "se": 0.049340646065638004,
+        "extrapolated": false
+      }
+    },
+    "coresponse_SRSF10": {
+      "diagnostic": "effective_rank_normalised",
+      "diagnostic_value": 0.2759701180481889,
+      "pre_specified": {
+        "prediction": 0.21465714443936756,
+        "lo": 0.05375365582931574,
+        "hi": 0.3755606330494194,
+        "se": 0.12194644730823431
+      },
+      "within_coresponse": {
+        "prediction": 0.1919062422782303,
+        "lo": 0.12190649735786623,
+        "hi": 0.26190598719859437,
+        "se": 0.05134090389158377,
+        "extrapolated": false
+      }
+    },
+    "coresponse_TADA1": {
+      "diagnostic": "effective_rank_normalised",
+      "diagnostic_value": 0.3828157897760234,
+      "pre_specified": {
+        "prediction": 0.28790415581449014,
+        "lo": 0.10743816008534496,
+        "hi": 0.4683701515436353,
+        "se": 0.13677259100606864
+      },
+      "within_coresponse": {
+        "prediction": 0.23337637211878204,
+        "lo": 0.1516626283570713,
+        "hi": 0.31509011588049274,
+        "se": 0.059932467894908345,
+        "extrapolated": true
+      }
+    },
+    "coresponse_TUFM": {
+      "diagnostic": "effective_rank_normalised",
+      "diagnostic_value": 0.21384366955572576,
+      "pre_specified": {
+        "prediction": 0.1720669617409519,
+        "lo": 0.015439954602385592,
+        "hi": 0.3286939688795182,
+        "se": 0.11870536330855173
+      },
+      "within_coresponse": {
+        "prediction": 0.16779303447251237,
+        "lo": 0.10042394509928008,
+        "hi": 0.23516212384574464,
+        "se": 0.04941146495190181,
+        "extrapolated": false
+      }
+    }
+  }
+}
