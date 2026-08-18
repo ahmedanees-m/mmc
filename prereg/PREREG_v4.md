@@ -655,6 +655,30 @@ That correction exposes a second problem it cannot solve. A covariate only separ
 
 **Decision, 2026-08-18, recorded before the fit is run.** The pre-specified dependent variable is the ceiling's margin over the linear baseline and it stays primary. On modules where the linear arm sits at or below its own random null that margin carries the baseline's noise rather than a property of the module, and this has now been seen on CD4_lineage_TFs and on four of the nine completed Step 7 modules. The ceiling's margin over the module's own null is therefore fitted alongside it and reported, with the count of modules where linear is uninformative printed next to both. The margin over null is a secondary reported quantity and does not replace the pre-specified target. This is a different case from the nested ceiling withdrawn earlier: the null is estimated from 300 structures and is well determined, whereas the nested ceiling rested on 2 to 4 folds.
 
+**Section 8.1 prospective test, scored 2026-08-19. It passes on its stated criterion, and the comparator it was defined against does better.**
+
+All five held-out modules ran after their predictions were committed. Observed values are the oracle ceiling's paired advantage over linear, the pre-specified target.
+
+| Module | Folds | Observed | Predicted | 80% interval | Inside |
+|---|---|---|---|---|---|
+| coresponse_SRSF10 | 19 | +0.2400 | +0.2147 | [+0.0538, +0.3756] | yes |
+| coresponse_TADA1 | 16 | +0.1960 | +0.2879 | [+0.1074, +0.4684] | yes |
+| coresponse_NELFCD | 16 | +0.1666 | +0.1635 | [+0.0070, +0.3200] | yes |
+| coresponse_TUFM | 16 | +0.1086 | +0.1721 | [+0.0154, +0.3287] | yes |
+| coresponse_ELP2 | 16 | +0.0589 | +0.2470 | [+0.0792, +0.4149] | no |
+
+Four of five fall inside, so the criterion of at least 4 of 5 is met and the test passes as written.
+
+**It should not be reported as a pass without the comparison that follows.** Claim C3 names the intercept-only model as its comparator. Fitting an intercept alone to the same 27 training modules predicts +0.1694 for every module with an 80 percent interval of [+0.0146, +0.3242], and that interval contains **5 of the 5** observed values, including `coresponse_ELP2` which the fitted model missed. The intercept-only interval is also narrower, 0.3097 against an average of 0.3289 for the fitted model, because the diagnostic and the source terms cost parameter uncertainty without buying fit.
+
+So the pre-specified regression is worse calibrated than the model it was supposed to improve on, on both coverage and width. Taken with the cross-validated R squared values and the power calculation recorded above, the three results agree: the diagnostics carry no detectable information about the ceiling at this sample size, and adding them to an intercept costs more than it returns.
+
+**This is not evidence that C3 is false.** The power calculation showed that a relationship of the size actually estimated would have been missed more often than not by 27 modules at this residual scatter, and that remains the governing statement. What section 8.1 establishes is narrower and worth having: the prediction intervals are honest about how little the fitted model knows, which is why they pass, and an intercept is the better predictor of a held-out module's ceiling advantage in this data.
+
+Section 12's rule is applied. The regime map is reported as descriptive rather than predictive, and no modules are added to improve the fit.
+
+**Step 7 is complete**, 23 training modules, 5 held out and predicted in advance, the regression fitted three ways, the prospective test scored, and every result recorded with its fold count and interval.
+
 **Step 10 replication on three co-response modules, 2026-08-19. The cytokine result does not generalise, and the reading drawn from it is narrowed.**
 
 The entry below recorded, provisionally, that the offset closes the gap to linear and therefore the grammar is not the limitation. Three co-response modules whose linear arm beats its own null have now had the same evaluation. The offset does not help them; it hurts.
