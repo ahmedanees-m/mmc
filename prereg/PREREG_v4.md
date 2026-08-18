@@ -655,6 +655,30 @@ That correction exposes a second problem it cannot solve. A covariate only separ
 
 **Decision, 2026-08-18, recorded before the fit is run.** The pre-specified dependent variable is the ceiling's margin over the linear baseline and it stays primary. On modules where the linear arm sits at or below its own random null that margin carries the baseline's noise rather than a property of the module, and this has now been seen on CD4_lineage_TFs and on four of the nine completed Step 7 modules. The ceiling's margin over the module's own null is therefore fitted alongside it and reported, with the count of modules where linear is uninformative printed next to both. The margin over null is a secondary reported quantity and does not replace the pre-specified target. This is a different case from the nested ceiling withdrawn earlier: the null is estimated from 300 structures and is well determined, whereas the nested ceiling rested on 2 to 4 folds.
 
+**Step 10 on the cytokine module, 2026-08-19. The pre-registered prediction is wrong, and the grammar is not the limitation.**
+
+Section 11 recorded a prediction so that it could be wrong: that structural-plus-offset would land close to the mean baseline at 0.3712 and short of linear at 0.4451, and that if it instead reached linear, the ceiling is entirely the architectural forfeit and the interpretable grammar is not itself the limitation. The structures are the ones already recorded, re-evaluated with a per-gene offset fitted on each split's training folds, so no search was repeated. 28 genes, 28 perturbations, 19 scoreable folds.
+
+| Source | DE-overlap | Delta vs linear | Clears the rule |
+|---|---|---|---|
+| oracle + offset | 0.4820 | +0.0368 [-0.0783, +0.1877] | no |
+| linear | 0.4451 | reference | n/a |
+| mean | 0.3712 | -0.0739 [-0.2555, +0.1055] | no |
+| textbook + offset | 0.3346 | -0.1106 [-0.2871, +0.0638] | no |
+| oracle | 0.2920 | -0.1531 [-0.2837, +0.0133] | no |
+| proposal (claude) + offset | 0.2024 | -0.2428 [-0.3927, -0.1128] | no |
+| proposal (claude) | 0.1939 | -0.2513 [-0.3993, -0.1185] | no |
+| zero | 0.1252 | -0.3199 [-0.4549, -0.1967] | no |
+| textbook | 0.1211 | -0.3241 [-0.4610, -0.2020] | no |
+
+**The prediction failed in the direction that matters.** Oracle-plus-offset reaches 0.4820 against linear's 0.4451, so it does not land near the mean and short of linear as predicted; it passes linear numerically. The interval on the difference spans zero, so no advantage is claimed under the pre-registered rule and the fair statement is that it reaches linear rather than beats it. By the reading fixed in section 11 before the run, this is the branch where the ceiling is the architectural forfeit and the interpretable grammar is not the limitation.
+
+**The gain is not shared across structures, and that is the finding.** The offset is worth +0.1900 to the oracle, +0.2135 to the textbook structure, and +0.0085 to the proposal. Handing the shared response to a structure that is close to right recovers essentially the whole gap to linear. Handing it to the proposal's structure changes nothing: 0.1939 becomes 0.2024 and stays 0.24 below linear.
+
+So the negative result relocates rather than dissolves. The sum-of-products grammar with a bounded in-degree can represent this data well enough to match a ridge map, once it is not required to express the shared response through structure it does not have. What it cannot do is be found: the proposer's structure is far enough from a workable one that supplying the missing component does not help it. The limitation demonstrated by Steps 1 and 7 is in structure discovery, not in the model class, and every earlier statement of the form "interpretable structure cannot match a linear map on this data" is too strong and is narrowed to the discovery step.
+
+Two cautions travel with this. The oracle selected its structure using the folds it was then scored on, so 0.4820 is a leaky ceiling and the honest attainable value is lower; what the comparison establishes is that the class can get there, not that a search can. And this is one module with 19 folds, so the same evaluation is now running on the co-response modules whose linear arm beats its own null, and the conclusion above is provisional until those return.
+
 **Step 9 at scale, 2026-08-19. The annotation-prediction inversion does not replicate and is withdrawn.**
 
 The inversion, that structures scoring well against CollecTRI predict poorly and the structures that predict best score worst against annotation, was recorded from a single module carrying six annotated edges. It has now been scored across every module with a comparator result, 30 in total, against the full CollecTRI edge set of 62,404.
