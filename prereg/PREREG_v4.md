@@ -447,6 +447,23 @@ This confirms the reading in the table above. CD4's oracle advantage over linear
 
 The `dense_linear` class added in amendment A9 for Step 10 is built this way and is therefore **not a usable model class under this evaluation protocol**. It is withdrawn from Step 10. The `structural + offset` class, which is the one that actually tests the section 2.2 mechanism, is unaffected and stands. If an unbounded in-degree comparison is still wanted it has to be built as a structural model with the cap lifted rather than as a one-hot regression, and that is left for the write-up to note as untested rather than added late.
 
+**First co-response module, 2026-08-18. The two sources sit in different regimes on every diagnostic, and the co-response side is the better powered one.**
+
+`coresponse_ACTR2` is the first module of the second source to complete, so the two can be compared directly for the first time. One module is not a basis for a claim about its source and none is made here; what follows is recorded because it bears on how the regression must be read, not as a result.
+
+| | folds with DE | effective rank | leading PC | pert-specific ratio | random null |
+|---|---|---|---|---|---|
+| coresponse_ACTR2 | 19 | 1.69 | 0.562 | 3.00 | 0.1630 |
+| the 10 regulon modules | 8 to 12 | 3.13 to 9.00 | 0.053 to 0.407 | 2.33 to 35.81 | 0.0461 to 0.1090 |
+
+Two things follow that were anticipated and are now visible. The random null is markedly higher for the smaller module, 0.1630 against a regulon range topping out at 0.1090, which is what a rank agreement over 20 genes rather than 40 does to the chance level. Ceilings and nulls are therefore not on a common scale across the two sources and no cross-source comparison of either will be made. On effective rank and leading-PC fraction this module falls outside the entire regulon range, which is the non-overlap the confound entry above predicted; on the perturbation-specific ratio it does not, since regulon_YY1 at 2.33 sits below it.
+
+The unexpected part is the fold count. This module carries 19 scoreable folds from 20 perturbations, where the 40-perturbation regulon modules carry 8 to 12. Nearly every perturbation in a co-response module produces detectable DE, which follows from how those modules were built, by clustering genes on their co-response across perturbations. The smaller source is thus the better determined one per module, roughly doubling the folds behind each estimate.
+
+That matters for the prospective test. The five held-out modules are co-response, so the section 8.1 calibration check will be run in the better powered of the two regimes and against 13 co-response training modules of the same shape. The holdout composition, recorded as a limitation when it was drawn and then as an advantage on the confound axis, is on the power axis also the favourable side.
+
+It also sets expectations for the ceiling. `coresponse_ACTR2` reaches 0.3388 against its null of 0.1630, a ratio of 2.1, which is within the range the regulon modules show, so the higher null does not by itself make the co-response modules look better or worse. Its nested honest ceiling of 0.0991 falls below its own null, which is the eleventh module for the pooled comparison and the reason that comparison is being kept.
+
 **Module source is perfectly confounded with module size, recorded 2026-08-18 before the regression is fitted.**
 
 Checking the module definitions behind the scale-up shows the two sources do not merely occupy different parts of the diagnostic range, they have no overlap in shape at all. All 10 regulon modules that passed the screen are 40 genes with 39 or 40 perturbations. All 18 co-response modules are 20 genes with 20 perturbations. There is no 20-gene regulon module and no 40-gene co-response module.
