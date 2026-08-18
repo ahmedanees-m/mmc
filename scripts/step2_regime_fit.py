@@ -181,6 +181,20 @@ def main() -> None:
             collinearity[d] = {
                 "corr_with_source": float(np.corrcoef(xv[ok], ind[ok])[0, 1]),
                 "range_overlap": float(inter / union) if union > 0 else float("nan")}
+    # Source is perfectly confounded with module size in this set, every regulon module
+    # being 40 genes and every co-response module 20, so the coefficient on the indicator
+    # is not an effect of source and the pooled slope can be produced by the gap between
+    # the groups. The within-source slopes are the ones that carry a meaning, and they are
+    # fitted separately here so the two can be compared rather than assumed to agree.
+    within = {}
+    for s in sorted({*g.tolist()}):
+        sel = g == s
+        if sel.sum() < 4:
+            within[s] = {"n": int(sel.sum()), "note": "too few modules to fit"}
+            continue
+        within[s] = {d: fit(np.array([r[d] for r in rows], float)[sel], y[sel])
+                     for d in DIAGNOSTICS}
+
     best = max((k for k in fits if fits[k].get("loo_r2") == fits[k].get("loo_r2")),
                key=lambda k: fits[k]["loo_r2"], default=None)
 
@@ -196,6 +210,7 @@ def main() -> None:
            "fits_vs_null": fits_null,
            "linear_uninformative": {"modules": uninformative, "n": len(uninformative)},
            "source_collinearity": collinearity,
+           "within_source_fits": within,
            "family_a": {"nominal_advantages": nominal, "bh_rejects": corrected,
                         "q": 0.05, "n_tests": len(rows)},
            "by_source": by_source}
@@ -213,6 +228,17 @@ def main() -> None:
     print(f"\nbest by out-of-sample fit: {best}")
     print(f"Family A: {nominal} nominal advantages, {corrected} surviving "
           f"Benjamini-Hochberg at q=0.05 over {len(rows)} tests")
+    for s, sv in within.items():
+        if "note" in sv:
+            print("  " + s + ": " + sv["note"])
+            continue
+        print("")
+        print(s + " only (n=" + str(sv[DIAGNOSTICS[0]]["n"]) + "), slope and LOO R2 "
+              "per diagnostic:")
+        for d, v in sv.items():
+            if v.get("n", 0) < 4:
+                continue
+            print("  %-30s slope %+9.5f   LOO R2 %+7.3f" % (d, v["slope"], v["loo_r2"]))
     for s, v in by_source.items():
         print(f"  {s:<12} n={v['n']:<3} median spec/shared {v['median_spec']:.2f}  "
               f"advantages {v['n_advantage']}")
