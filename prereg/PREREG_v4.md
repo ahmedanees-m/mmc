@@ -447,6 +447,27 @@ This confirms the reading in the table above. CD4's oracle advantage over linear
 
 The `dense_linear` class added in amendment A9 for Step 10 is built this way and is therefore **not a usable model class under this evaluation protocol**. It is withdrawn from Step 10. The `structural + offset` class, which is the one that actually tests the section 2.2 mechanism, is unaffected and stands. If an unbounded in-degree comparison is still wanted it has to be built as a structural model with the cap lifted rather than as a one-hot regression, and that is left for the write-up to note as untested rather than added late.
 
+**Correction on two more co-response modules, 2026-08-18. The entry below drew a mechanism from a single module and it does not hold.**
+
+`coresponse_PIM1` and `coresponse_HCCS` have completed, giving three modules of that source.
+
+| Module | folds | effective rank | leading PC | pert-specific ratio | null | ceiling | linear |
+|---|---|---|---|---|---|---|---|
+| coresponse_ACTR2 | 19 | 1.69 | 0.562 | 3.00 | 0.1630 | 0.3388 | 0.1936 |
+| coresponse_PIM1 | 18 | 2.07 | 0.500 | 6.38 | 0.2687 | 0.4215 | 0.3350 |
+| coresponse_HCCS | 17 | 4.37 | 0.208 | 15.25 | 0.0686 | 0.2541 | 0.1284 |
+| the 10 regulon modules | 8 to 12 | 3.13 to 9.00 | 0.053 to 0.407 | 2.33 to 35.81 | 0.0461 to 0.1090 | 0.1524 to 0.4558 | 0.0239 to 0.1975 |
+
+Two statements in the entry below need withdrawing.
+
+It said the first co-response module fell outside the entire regulon range on effective rank and leading-PC fraction, and offered that as the non-overlap the confound predicted. `coresponse_HCCS` falls inside the regulon range on effective rank at 4.37, on leading-PC fraction at 0.208 and on the perturbation-specific ratio at 15.25. The co-response source is not confined to the low-rank corner; it spans a range that overlaps the regulon one. Whether the sources are separable on any diagnostic is an open question to be answered by the collinearity measurement across all modules, not by the first module of a source.
+
+It also explained the higher co-response null as what a rank agreement over 20 genes rather than 40 does to the chance level. That mechanism is not supported. These three modules all have 20 genes and their nulls run from 0.0686 to 0.2687, a spread wider than the entire regulon range, so gene count cannot be what sets the null. The null depends on how many genes are called DE per perturbation as well as on module size, and the co-response modules differ from one another on that far more than the size argument allowed for.
+
+What survives is the operational caution rather than the explanation behind it. Nulls differ enough between and within sources that a ceiling means nothing without the null beside it, and ceilings are still not comparable across modules of different sizes. The instruction to report each ceiling against its own null stands, and it stands for a better reason than the one first given: the null varies by a factor of four within a single source at fixed gene count.
+
+This is the second time this session a mechanism has been asserted from the first instance of a class and then contradicted by the second. Numbers are being recorded as they arrive, which is the point of this file, but the reading attached to them will from here be held until the class has more than one member.
+
 **First co-response module, 2026-08-18. The two sources sit in different regimes on every diagnostic, and the co-response side is the better powered one.**
 
 `coresponse_ACTR2` is the first module of the second source to complete, so the two can be compared directly for the first time. One module is not a basis for a claim about its source and none is made here; what follows is recorded because it bears on how the regression must be read, not as a result.
