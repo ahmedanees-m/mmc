@@ -447,6 +447,18 @@ This confirms the reading in the table above. CD4's oracle advantage over linear
 
 The `dense_linear` class added in amendment A9 for Step 10 is built this way and is therefore **not a usable model class under this evaluation protocol**. It is withdrawn from Step 10. The `structural + offset` class, which is the one that actually tests the section 2.2 mechanism, is unaffected and stands. If an unbounded in-degree comparison is still wanted it has to be built as a structural model with the cap lifted rather than as a one-hot regression, and that is left for the write-up to note as untested rather than added late.
 
+**Reading rule fixed before the regression is fitted, 2026-08-18: a diagnostic that predicts the null is predicting difficulty, not predictability.**
+
+With 15 modules complete, the random null was checked against the diagnostics it will be regressed against. Within the five co-response modules the null tracks them closely, correlating 0.834 with the leading-PC fraction, -0.828 with effective rank and -0.805 with the perturbation-specific ratio. The ceiling tracks the same diagnostics at 0.851, -0.789 and -0.881. Within the ten regulon modules neither does, the null correlating -0.096, -0.495 and -0.160 and the ceiling -0.024, 0.146 and -0.012.
+
+At five modules these correlations carry no weight and none is claimed. They are recorded because of what the pattern would mean if it holds, and because fixing the reading now costs nothing whereas fixing it after the fit would not be credible.
+
+The mechanism is straightforward. A module whose perturbations all produce a similar response is one where any structure, including a random one, predicts held-out perturbations reasonably well, so its null is high. If the ceiling is high on the same modules, then a diagnostic that appears to predict the ceiling may only be predicting how easy the module is for anything at all. That is a statement about module difficulty and not about where structural modelling earns its cost, which is the question section 8 asks.
+
+**The rule, fixed now.** A relationship between a diagnostic and the raw ceiling is not evidence for claim C3 unless the same diagnostic also relates to the ceiling's margin over the module's own null, or over linear. Where the raw ceiling tracks a diagnostic and the margin does not, the finding will be reported as the diagnostic predicting module difficulty, with the ceiling relationship shown and labelled as such. Both margins are already computed and reported by the fitting script, so nothing changes in what is run; what is fixed here is which of the three outputs may be used to support the claim.
+
+This also settles a question left open when the null-referenced target was added as a secondary quantity. It was added because the linear baseline is uninformative on some modules. It now has a second and better reason: the null and the ceiling may move together, and only the margin separates them. It remains a secondary reported quantity and the pre-specified target is still the margin over linear.
+
 **Correction on two more co-response modules, 2026-08-18. The entry below drew a mechanism from a single module and it does not hold.**
 
 `coresponse_PIM1` and `coresponse_HCCS` have completed, giving three modules of that source.
