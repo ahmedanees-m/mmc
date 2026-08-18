@@ -741,6 +741,18 @@ Two observations survive as descriptive and are kept with their counts attached.
 
 This was the sharpest sentence in the project record and it does not survive its own scale-up. Recording that is the point of having run it.
 
+### Amendment A12, 2026-08-19, recorded before the arm is run. Step 5 gains an A5 arm and two more modules.
+
+Step 5's four arms vary two things, whether gene symbols are aliased and whether the perturbation-to-response pairing is permuted, and they established that the proposal is largely invariant to destroying the data while changing substantially when the names are removed. That result has a weakness which the arms as built cannot address: in all four, the initial proposal never sees the response data at all. `propose(genes, context)` receives a gene list and a context sentence, and measurements enter only later through the repair loop. Reporting that a name-only proposal step is name-driven is close to circular, and a reader is entitled to say so.
+
+**A5 is A1 with the training responses described to the proposer before the first structure is emitted.** Symbols are real and the pairing is intact, exactly as A1, and the only change is that the prompt carries a bounded summary of the observed responses: the ten knockdowns that move the module most, the ten genes that respond most, and the twenty strongest individual signed effects. The summary is built from the perturbations passed into the loop, which for any split is the training set, so nothing held out reaches the proposer. Its length is capped so the prompt is comparable across modules.
+
+The comparison this enables is J(A1, A5) against the within-A1 seed ceiling. If A5's structures agree with A1's at the replicate ceiling, then showing the proposer the data changes nothing and the name-driven finding stands with the harness objection answered. If they diverge, the earlier finding is a property of the loop rather than the model and must be restated as such.
+
+**The module set extends from two to four**, adding `CD4_lineage_TFs` and `Th2_GATA3` to `Cytokine_production` and `TCR_signalosome`. All five arms are run on all four modules at three seeds so the comparison is balanced; the existing A1 to A4 results on the first two modules are superseded by the new run rather than pooled with it. `Th2_GATA3` carries only two scoreable folds, so it contributes to the structure-agreement comparison and its prediction scores are reported with that count attached and not read as a performance result.
+
+Budgeted at 5 arms by 4 modules by 3 seeds by 2 proposal iterations, which is 120 calls against 68 already spent and a cap of 1500. The ledger row is appended when the run completes.
+
 ### Amendment A11, 2026-08-19. Step 4 returns to in progress; Step 6 changes what it reports.
 
 **Step 4 is not complete and its status is corrected.** The pre-registered primary hypothesis for Norman names epistasis and suppression as the interaction subtypes to be tested. Amendment A7 substituted subtypes derived from coefficients fitted in this project, because the published genetic-interaction table was not present in the GEO matrix. That substitution was recorded but its consequence was not: a pre-registered hypothesis about named subtypes is then being tested against an operationalisation of those subtypes produced by the analysis itself, which is the one place in this record where the pre-registration stops constraining the result. The step moves from complete to in progress. The Norman 2019 supplementary tables carry the published assignments and are the correct input; until they are obtained and the comparison re-run, the existing Step 4 numbers stand only as a test of a self-derived partition and will be labelled that way wherever they appear.
