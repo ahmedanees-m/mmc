@@ -447,6 +447,34 @@ This confirms the reading in the table above. CD4's oracle advantage over linear
 
 The `dense_linear` class added in amendment A9 for Step 10 is built this way and is therefore **not a usable model class under this evaluation protocol**. It is withdrawn from Step 10. The `structural + offset` class, which is the one that actually tests the section 2.2 mechanism, is unaffected and stands. If an unbounded in-degree comparison is still wanted it has to be built as a structural model with the cap lifted rather than as a one-hot regression, and that is left for the write-up to note as untested rather than added late.
 
+**Held-out diagnostics computed, 2026-08-18, and the interpolation claim made for them is withdrawn.**
+
+The five held-out modules' diagnostics are now computed and committed. They are predictor variables, defined by section 3 as computed before any modelling, so producing them reveals nothing about the held-out ceilings; a separate script does this so it can run while those modules are still blocked.
+
+| Module | genes | perts | folds | effective rank | leading PC | pert-specific ratio |
+|---|---|---|---|---|---|---|
+| coresponse_ELP2 | 20 | 20 | 16 | 6.46 | 0.077 | 5.21 |
+| coresponse_NELFCD | 20 | 20 | 16 | 4.03 | 0.221 | 9.39 |
+| coresponse_SRSF10 | 20 | 20 | 19 | 5.52 | 0.111 | 7.83 |
+| coresponse_TADA1 | 20 | 20 | 16 | 7.66 | 0.060 | 8.30 |
+| coresponse_TUFM | 20 | 20 | 16 | 4.28 | 0.228 | 3.00 |
+
+Comparing these against the training modules completed so far, using diagnostics only and consulting no ceiling, shows the holdout is not where it was assumed to be.
+
+| Diagnostic | Holdout | Co-response training, n=10 | All training, n=20 |
+|---|---|---|---|
+| effective rank | 4.03 to 7.66 | 1.69 to 5.02, does not cover | 1.69 to 9.00, covers |
+| leading PC | 0.060 to 0.228 | 0.136 to 0.562, does not cover | 0.053 to 0.562, covers |
+| pert-specific ratio | 3.00 to 9.39 | 3.00 to 21.28, covers | 2.33 to 35.81, covers |
+
+Three of the five sit outside the co-response training range on effective rank and three on the leading-PC fraction. The claim recorded earlier, that predicting these five is interpolation inside one regime rather than extrapolation, is therefore withdrawn. It is interpolation only for the pooled training set, which includes the regulon modules and covers the holdout on every diagnostic. Within the co-response source alone it is extrapolation for most of the five on two of the three diagnostics.
+
+This was not avoidable once the holdout was drawn, since it was drawn uniformly from the unrun pool and this is where chance put it, but it was avoidable earlier: a holdout designated before the queue started could have been stratified to span the training range on the diagnostics, which are computable without running anything. That is the cost of having found the section 8.1 requirement late, and it is recorded as such.
+
+**Decision, before any prediction is generated.** Predictions come from the pre-specified fit, which section 8 defines as carrying source as a covariate over all training modules, and which covers the holdout range on every diagnostic. The within-source co-response predictions are generated and committed alongside them, with the three modules that fall outside the co-response training range marked as extrapolated. The pre-specified fit supplies the primary test at 4 of 5 inside the 80 percent interval; the within-source predictions are reported for comparison and their extrapolated members are not counted against a calibration criterion they were never designed to meet.
+
+The coverage figures above rest on the 20 modules complete at the time of writing and will be restated against all 23 when the predictions are generated.
+
 **Reading rule fixed before the regression is fitted, 2026-08-18: a diagnostic that predicts the null is predicting difficulty, not predictability.**
 
 With 15 modules complete, the random null was checked against the diagnostics it will be regressed against. Within the five co-response modules the null tracks them closely, correlating 0.834 with the leading-PC fraction, -0.828 with effective rank and -0.805 with the perturbation-specific ratio. The ceiling tracks the same diagnostics at 0.851, -0.789 and -0.881. Within the ten regulon modules neither does, the null correlating -0.096, -0.495 and -0.160 and the ceiling -0.024, 0.146 and -0.012.
