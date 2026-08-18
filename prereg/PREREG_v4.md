@@ -447,6 +447,30 @@ This confirms the reading in the table above. CD4's oracle advantage over linear
 
 The `dense_linear` class added in amendment A9 for Step 10 is built this way and is therefore **not a usable model class under this evaluation protocol**. It is withdrawn from Step 10. The `structural + offset` class, which is the one that actually tests the section 2.2 mechanism, is unaffected and stands. If an unbounded in-degree comparison is still wanted it has to be built as a structural model with the cap lifted rather than as a one-hot regression, and that is left for the write-up to note as untested rather than added late.
 
+**Step 7 interim, 7 of 28 modules, 2026-08-18. The honest ceiling behaves very differently from the leaky one.**
+
+Seven generated modules have completed the scale-up, each 40 genes and 40 perturbations with 8 to 11 scoreable folds. Two quantities are recorded per module: the leaky ceiling, where the oracle selects structure and is scored on the same folds, and the nested honest ceiling, where it selects on an inner set of perturbations and is scored on a held-out outer set.
+
+| Module | Leaky ceiling | Honest ceiling | Null mean | Honest over null | Linear |
+|---|---|---|---|---|---|
+| regulon_HIF1A | 0.4558 | 0.1154 | 0.0628 | 1.8 | 0.0857 |
+| regulon_NFE2L2 | 0.3315 | 0.0681 | 0.0710 | 0.96 | 0.0925 |
+| regulon_EGR1 | 0.2948 | 0.1273 | 0.0487 | 2.6 | 0.0411 |
+| regulon_STAT3 | 0.2432 | 0.0728 | 0.0461 | 1.6 | 0.1726 |
+| regulon_ETS1 | 0.2431 | 0.1503 | 0.0602 | 2.5 | 0.0319 |
+| regulon_CREB1 | 0.2147 | 0.1112 | 0.1090 | 1.0 | 0.0981 |
+| regulon_USF1 | 0.1524 | 0.0623 | 0.0563 | 1.1 | 0.0239 |
+
+The honest ceiling is two to five times lower than the leaky one on every module. Three of the seven land at or below their own random null once selection and scoring are separated, and the best of them reaches 2.6 times the null where the leaky figure reached 7.3. The ranking is not preserved either: HIF1A has the highest leaky ceiling and a middling honest one, while ETS1 is mid-table on the leaky measure and highest on the honest one.
+
+Both estimators are biased and in opposite directions, so neither is the quantity of interest on its own. The leaky one is biased up because the structure is chosen using the folds it is then scored on. The nested one is biased down because it selects on fewer perturbations than the full set, so some of the drop reflects a smaller selection sample rather than leakage alone. The attainable ceiling lies between them, and the gap is wide enough that a claim resting on either alone would be unsafe.
+
+The consequence for the regime map is that it must be fitted against both. **Decision, 2026-08-18: the Step 7 regression will be reported for the leaky and the nested ceiling separately, using the pre-specified linear form unchanged in both cases.** This adds a second dependent variable rather than altering the model, so no change of form is being made, and the pre-specified form stands as written. If the two regressions disagree in sign or in which diagnostic carries the relation, that disagreement is the result and will be reported as such rather than resolved by preferring one estimator.
+
+Two further points are recorded now so that they are not read back into the data later. First, the leaky ceiling is a maximum over three search seeds and Step 1 used ten, so the two are not directly comparable and no Step 7 ceiling should be set beside a Step 1 ceiling. The spread across seeds is zero on four of the seven modules and large on the other three, reaching 0.099 to 0.456 on HIF1A, so the maximum is a stable statistic on some modules and an optimistic one on others. Second, the linear comparator is at or below the random null on four of these seven modules, which is the same failure already documented for CD4_lineage_TFs. On generated modules the linear arm is frequently uninformative, so the advantage rule against it carries little weight here and the null is the meaningful reference throughout Step 7.
+
+**Defect found and corrected, 2026-08-18.** The scale-up skipped a module whose result file existed, and a result file appears at the first flush rather than at completion. The host reboot recorded below killed regulon_YY1 part-way through and the restart skipped it as though it were finished, leaving a parseable file with an empty comparison table. The guard now tests the content of the file, requiring a populated table and the random null it is judged against, rather than testing that the file exists. An audit of all Step 7 outputs against the corrected test found regulon_YY1 to be the only module affected, and it has been re-queued and is running. No completed module was disturbed.
+
 **Step 1 complete, CD4_lineage_TFs second pass, 2026-08-18. All four modules, both passes.**
 
 33 genes, 32 perturbations, 70 DE entries, 11 scoreable folds. Single-band null of 1000 draws at 13 edges, mean 0.1033, per the exception recorded in amendment A5.
