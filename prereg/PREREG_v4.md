@@ -655,6 +655,25 @@ That correction exposes a second problem it cannot solve. A covariate only separ
 
 **Decision, 2026-08-18, recorded before the fit is run.** The pre-specified dependent variable is the ceiling's margin over the linear baseline and it stays primary. On modules where the linear arm sits at or below its own random null that margin carries the baseline's noise rather than a property of the module, and this has now been seen on CD4_lineage_TFs and on four of the nine completed Step 7 modules. The ceiling's margin over the module's own null is therefore fitted alongside it and reported, with the count of modules where linear is uninformative printed next to both. The margin over null is a secondary reported quantity and does not replace the pre-specified target. This is a different case from the nested ceiling withdrawn earlier: the null is estimated from 300 structures and is well determined, whereas the nested ceiling rested on 2 to 4 folds.
 
+**Step 9 at scale, 2026-08-19. The annotation-prediction inversion does not replicate and is withdrawn.**
+
+The inversion, that structures scoring well against CollecTRI predict poorly and the structures that predict best score worst against annotation, was recorded from a single module carrying six annotated edges. It has now been scored across every module with a comparator result, 30 in total, against the full CollecTRI edge set of 62,404.
+
+The first thing the scale-up shows is that most of these modules cannot test it. Within-module annotated edge counts have a median of 5 and a minimum of 0, and 17 of the 30 modules carry fewer than 10. Gene-level coverage is better, a median of 0.71, but an annotation edge has to fall between two module genes to be scoreable and few do. The generated modules are the worst served, which follows from how they were built: co-response clusters and transcription-factor neighbourhoods are not chosen to be well annotated.
+
+Restricting to modules with at least 10 annotated edges gives 24 source-module pairs, over which the correlation between annotation precision and prediction advantage is -0.237. Those pairs are not independent, since each module contributes several sources, so the honest version is the within-module rank correlation, which requires a module to carry at least four sources and more than five scoreable folds. Two modules qualify.
+
+| Module | Sources | Folds | Rank correlation |
+|---|---|---|---|
+| CD4_lineage_TFs | 4 | 11 | -0.200 |
+| TCR_signalosome | 5 | 7 | +0.100 |
+
+The mean is -0.050. A real inversion would put these near -1 and consistently negative. **The claim is withdrawn.** What remains is a weak pooled negative that is not distinguishable from no relationship at this number of modules, and a design limitation: CollecTRI is too sparse within these gene sets to support the test, so a proper version would need modules selected for annotation density, which is a different study.
+
+Two observations survive as descriptive and are kept with their counts attached. The oracle structures on regulon modules frequently score zero annotation precision, on HIF1A, NFE2L2, EGR1, ETS1, STAT3 and USF1, while carrying the largest prediction advantages on those same modules. And the textbook structure on CD4_lineage_TFs reaches 0.8421 precision over 38 edges while adding +0.0076 over linear. Both point the way the inversion claimed, and neither is a basis for the claim once the modules that cannot test it are counted honestly rather than dropped.
+
+This was the sharpest sentence in the project record and it does not survive its own scale-up. Recording that is the point of having run it.
+
 ### Amendment A11, 2026-08-19. Step 4 returns to in progress; Step 6 changes what it reports.
 
 **Step 4 is not complete and its status is corrected.** The pre-registered primary hypothesis for Norman names epistasis and suppression as the interaction subtypes to be tested. Amendment A7 substituted subtypes derived from coefficients fitted in this project, because the published genetic-interaction table was not present in the GEO matrix. That substitution was recorded but its consequence was not: a pre-registered hypothesis about named subtypes is then being tested against an operationalisation of those subtypes produced by the analysis itself, which is the one place in this record where the pre-registration stops constraining the result. The step moves from complete to in progress. The Norman 2019 supplementary tables carry the published assignments and are the correct input; until they are obtained and the comparison re-run, the existing Step 4 numbers stand only as a test of a self-derived partition and will be labelled that way wherever they appear.
