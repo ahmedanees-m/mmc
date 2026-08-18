@@ -28,20 +28,17 @@ reuse structures frozen earlier and cost nothing here.
 
 | Date | Step | Model | Calls | Retry rate | Note |
 |---|---|---|---|---|---|
-| | | | | | |
+| 2026-08-17 | 5 anonymisation | claude-opus-4-8 | 48 | 0 | reconstructed: 24 runs over 2 modules, 4 arms, 3 seeds, 2 proposal iterations each |
+| 2026-08-18 | 6 proposer panel | claude-opus-4-8 | 4 | not recorded | reconstructed from run records |
+| 2026-08-18 | 6 proposer panel | claude-sonnet-5 | 4 | not recorded | reconstructed from run records |
+| 2026-08-18 | 6 proposer panel | openai/gpt-oss-120b | 4 | not recorded | via NVIDIA |
+| 2026-08-18 | 6 proposer panel | z-ai/glm-5.2 | 6 | not recorded | 2 in the first pass, 4 in the rerun |
+| 2026-08-18 | 6 proposer panel | nvidia/nemotron-3-ultra-550b-a55b | 2 | not recorded | recovered after the timeout was raised to 900s |
+| 2026-08-18 | 6 proposer panel | meta/llama-3.1-70b-instruct | 0 | all failed | no schema-valid response, recorded as a failure not a spend |
+| 2026-08-18 | 1, 3, 4, 7 | none | 0 | n/a | these steps make no model calls |
 
-**Running total:** 0 calls.
+**Running total: 68 calls**, against a hard cap of 1500.
 
-## Budget by step
+**This table was reconstructed on 2026-08-19 and is not a contemporaneous record.** Section 12 requires the ledger to be committed as spend accrues, and it was not: the file sat empty while Steps 5 and 6 ran. The counts above are rebuilt from the run records in `results/step5.json`, `results/step6.json` and `results/step6b.json`, which record one entry per proposal iteration. Two limitations follow and are stated rather than smoothed over. Retry counts are not recoverable for Step 6, because the first pass predated the fix that routed Anthropic calls through the counting provider and recorded `calls = 0` for the models the panel was built on. And a call that failed schema validation and was retried inside the harness may be counted once rather than twice, so 68 is a lower bound on calls issued, though an accurate count of proposals obtained.
 
-Planned allocation from the v4 plan. Actuals fill in above as each step runs.
-
-| Step | Planned calls | Planned USD |
-|---|---|---|
-| 1 structure-source comparator | 100 | 5 to 8 |
-| 3 power curve | 250 | 12 to 20 |
-| 4 Norman standard split | 150 | 8 to 12 |
-| 5 anonymisation ablation | 360 | 18 to 25 |
-| 6 proposer panel (Anthropic share) | 300 | 15 to 25 |
-| 7 scale-up | 300 | 15 to 25 |
-| 10 model-class robustness | 100 | 5 to 8 |
+Going forward the counter in the provider is authoritative and each step appends its own row on completion.
