@@ -900,6 +900,52 @@ With 109 DE entries across 28 perturbations on the primary module, a low rank co
 reflect a matrix that is mostly zeros with a weak shared trend, and that alternative should
 be excluded by measurement rather than left to the reader.
 
+### Amendment A16, 2026-08-19, recorded before the extension runs. A5 is extended, and stratified by what A1 was given.
+
+The A5 arm under amendment A12 is four modules at three seeds, and the early held-out
+figures make it load-bearing: at two seeds on the cytokine module A1 averages 0.1608 and A5
+averages 0.2358. A gain of that size, if it holds, is the first partial answer to the
+question the project is named for, and four modules by three seeds cannot carry it. The
+extension is therefore run, and the design has one constraint that has to be stated before
+any number is produced.
+
+**A1 does not receive the same information on every module.** The four curated modules carry
+hand-written biological context of a hundred words or more, naming the regulators, their
+known antagonisms and their expected outputs. Every generated module, regulon and
+co-response alike, falls through to a single sentence of the form "Module X in CD4+ T
+cells." A1 on a generated module is therefore a proposal from gene symbols and almost
+nothing else, while A1 on a curated module is a proposal from gene symbols and a
+paragraph of regulatory biology.
+
+If A5 were extended onto generated modules and the results pooled, A5's advantage would be
+measured partly against a handicapped A1 and the headline gain would be inflated by the
+context gap rather than by the data. That is not a hypothetical: most modules whose linear
+arm beats its own null, which is where the review asks for the extension, are generated.
+
+**The extension is therefore stratified and the two strata are never pooled.**
+
+*Curated stratum, the primary one.* The four modules with real context, extended from three
+seeds to five. A1 and A5 only, since the anonymisation arms are established and add nothing
+to this question. This is the comparison where A1 and A5 differ in exactly one thing, the
+presence of the response data, and it is the only stratum from which a claim about the value
+of showing data is drawn.
+
+*Generated stratum, reported separately.* Six modules whose linear arm beats its own null,
+five seeds, A1 and A5 only. Here A1 sees gene symbols and a generic sentence, so the
+contrast measures data against names alone rather than data against names plus biology.
+Reported as its own comparison with that stated, and useful precisely because it bounds the
+other end: if A5 does not beat A1 even where A1 has no biological prior, the case that
+showing data helps is in serious trouble.
+
+**Stated in advance.** A5's advantage is expected to be larger in the generated stratum than
+in the curated one, because A1 has less to work with there. If the opposite is observed, or
+if the curated stratum shows no advantage while the generated one does, the finding is about
+the context sentence rather than about the data, and it will be reported that way.
+
+Roughly 76 additional runs at a median of 25 minutes, parallelised with the two-worker
+pattern already used in Step 7. Against 68 calls spent and a cap of 1500, budget is not the
+constraint and wall time is.
+
 ### Amendment A15, 2026-08-19, recorded before the data is fetched. Step 4's power is stated in advance.
 
 Amendment A7 substituted interaction subtypes derived from coefficients fitted in this
