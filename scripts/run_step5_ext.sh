@@ -61,13 +61,21 @@ run_module() {
     return 0
 }
 
-note "A5 extension started, $SEEDS seeds, arms A1 and A5"
+note "A5 extension started, stratum ${STRATUM:-generated}, $SEEDS seeds, arms A1 and A5"
 
-# curated stratum, the primary one: real biological context in the prompt
-run_module Cytokine_production "--module-def /work/cytokine_module_def.json"
-for m in TCR_signalosome CD4_lineage_TFs Th2_GATA3; do
-    run_module "$m" ""
-done
+# Curated stratum, the primary one: real biological context in the prompt.
+#
+# Skipped while the four-module A5 job is still producing seeds 0 to 2 on these same
+# modules, because running both would draw the same arm-seeds twice against the model API
+# for no gain. Pass "curated" once that job is finished to extend them to five seeds.
+if [ "${STRATUM:-generated}" = "curated" ]; then
+    run_module Cytokine_production "--module-def /work/cytokine_module_def.json"
+    for m in TCR_signalosome CD4_lineage_TFs Th2_GATA3; do
+        run_module "$m" ""
+    done
+    note "curated stratum finished"
+    exit 0
+fi
 
 # generated stratum, reported separately: generic context, chosen because their linear arm
 # beats its own null so the comparison against linear stays meaningful on them

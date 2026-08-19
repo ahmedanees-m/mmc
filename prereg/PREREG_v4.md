@@ -497,6 +497,60 @@ The conclusion is the harder of the two the analysis could have reached. Sparsit
 
 One number is worth keeping in view. Even under conditioning that favours it, on folds it selected itself, the oracle reaches only +0.0201 over linear on the cytokine module. The ceiling that a search with access to the held-out answer can reach on its own chosen ground is barely above the baseline.
 
+**Amendment A13, scoring on the perturbation-specific residual, cytokine module at k = 1, 2026-08-19. Structure still loses, and the metric objection is answered.**
+
+The shared component was removed from every held-out response and from every prediction, and
+all sources rescored on what remained. The subspace is the leading right singular vector of
+each fold's training responses, so it never sees the held-out response it decomposes. 28
+genes, 28 perturbations, 19 scoreable folds, with the null recomputed in residual space from
+200 random structures at 16 edges.
+
+| Source | Residual score | Against the residual null | Delta vs linear | Clears the rule |
+|---|---|---|---|---|
+| linear | 0.5331 | +0.1544 | reference | n/a |
+| oracle | 0.4500 | +0.0714 | -0.0831 [-0.2626, +0.0700] | no |
+| mean difference | 0.4231 | +0.0445 | -0.1100 [-0.3138, +0.0656] | no |
+| textbook | 0.3937 | +0.0150 | -0.1394 [-0.3376, +0.0333] | no |
+| GRNBoost2 | 0.3300 | -0.0487 | -0.2031 [-0.3863, -0.0467] | no |
+| mean | 0.3195 | -0.0592 | -0.2136 [-0.4051, -0.0477] | no |
+| proposal (claude) | 0.2938 | -0.0848 | -0.2393 [-0.4124, -0.0888] | no |
+| zero | 0.1247 | -0.2540 | -0.4084 [-0.5473, -0.2797] | no |
+
+**This is the first of the three outcomes recorded in advance, and it is the one that hardens
+the negative.** The component a `do()`-style structural model cannot express by construction
+has been removed from the target, and the linear map still wins: it leads the oracle by
+0.0831 and the proposal by 0.2393. The objection that the primary metric was one this model
+class cannot win does not survive. It was a reasonable objection, section 2.2 made it in this
+project's own words, and it is now answered by measurement rather than by argument.
+
+**The third outcome, that everything collapses to chance, did not occur, and that has to be
+checked before the first outcome means anything.** The residual carries signal: linear sits
+0.1544 above the residual null of 0.3787 and above its 95th percentile of 0.4086. The
+measurement is therefore informative rather than degenerate. The projection removed 29.1
+percent of the DE mass at k = 1, so most of the signal remains and the residual is not a thin
+remainder.
+
+Two further things the table says.
+
+**The proposal arm scores below the residual null.** At 0.2938 against a null mean of 0.3787,
+the structures the proposer produces predict the perturbation-specific component worse than
+random structures of the same size do. On the full response it at least cleared the zero
+baseline; on the residual it does not clear chance.
+
+**The ordering among structural sources is preserved but compressed.** The oracle, which
+selected on the answer, is the only structural source above the null, and only by 0.0714,
+which is inside the null's own range up to a maximum of 0.4500. Nothing here suggests that
+some structure source was quietly capturing perturbation-specific regulation and being masked
+by the shared component.
+
+Absolute values are not comparable to the full-response tables elsewhere in this record,
+because the residual DE set is defined as the genes of largest absolute residual rather than
+the DE mask, so the target differs. Only comparisons within this table are meaningful.
+
+Pre-registered sensitivity at k = 2 and k = 3 is still to run, and the other six modules
+follow. The reading above is for one module at the primary k and is not extended to the class
+until they land.
+
 **Effective rank is invariant to the DE threshold, and the response matrix is not mostly zeros, 2026-08-19.**
 
 Amendment A14 required the write-up to state which matrix the effective rank is computed on
