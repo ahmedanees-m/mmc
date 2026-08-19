@@ -834,6 +834,17 @@ All three respect the existing in-degree cap and the grammar, and all use the sa
 simulation, noise bootstrap and acceptance test as the existing arm, so the only thing that
 changes is how the edges are placed.
 
+**One parameter was fixed after the amendment was filed and before anything was run, and
+the basis was a degree statistic rather than an outcome.** The scale-free sampler starts
+each regulator with a prior weight, and at the obvious value of 1.0 the preference never
+takes hold over 48 draws: its top-three out-degree share is 0.33 against uniform's 0.31, so
+the arm would have been a second uniform arm under another name. At 0.2 the share is 0.71.
+The value is 0.2. For the record the three families now sit at a top-three out-degree share
+of 0.60 for hub and 0.71 for scale-free against uniform at 0.31, and a within-block edge
+fraction of 0.78 for modular against uniform at 0.24 with a chance level of 0.25. Those
+separations are asserted in `tests/test_topology_samplers.py` so a later parameter change
+cannot quietly collapse a family back onto uniform.
+
 **Both outcomes, stated now.** If the new families also fail the tolerances, claim 2
 strengthens considerably: no causal generator in any of four topology families reproduces
 the signature at any density, and the low-rank account survives the most obvious objection
