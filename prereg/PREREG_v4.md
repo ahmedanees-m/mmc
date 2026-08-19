@@ -632,6 +632,61 @@ or in any of four topology families, while a structureless low-rank surrogate re
 to within 1.7 percent on rank and 0.0008 on the leading-PC fraction. The restatement as an
 identifiability claim, which amendment A14 prepared for, is not needed.
 
+**Amendment A16, the A5 extension at five seeds, 2026-08-19. The structure result is unambiguous, the prediction gain is stratum-dependent as predicted, and the three-seed numbers recorded earlier today are superseded.**
+
+Both strata now run at five seeds with arms A1 and A5. One curated module and one generated
+module remain to be discussed separately, and regulon_YY1 is still running.
+
+**The comparison statistic changed, and the change matters.** Earlier entries compared the
+range of A1-versus-A5 pairwise Jaccard against the range of within-A1 pairs, and called a
+module separated when the ranges did not touch. That criterion turns on a single extreme
+replicate pair. On the cytokine module at five seeds the within-A1 pairs run 0.196 to 0.391
+and the A5 pairs 0.149 to 0.229, so the ranges overlap and the criterion calls it ambiguous,
+while every A5 pair sits below the within-A1 median of 0.315. The statistic reported from
+here is the count of A1-versus-A5 pairs falling below their own module's within-A1 median,
+which is what the question actually asks.
+
+| Stratum | Module | Within-A1 median | A5 median | Pairs below median | A1 held-out | A5 held-out | Change |
+|---|---|---|---|---|---|---|---|
+| curated | Cytokine_production | 0.315 | 0.194 | 5 of 5 | 0.1667 | 0.2302 | +38.1% |
+| curated | CD4_lineage_TFs | 0.626 | 0.532 | 5 of 5 | 0.1228 | 0.1188 | -3.3% |
+| curated | TCR_signalosome | 0.824 | 0.500 | 5 of 5 | 0.2911 | 0.2900 | -0.4% |
+| curated | Th2_GATA3, 2 folds | 0.917 | 0.400 | 5 of 5 | 0.1000 | 0.3400 | +240.0% |
+| generated | regulon_STAT3 | 0.569 | 0.394 | 4 of 4 | 0.0588 | 0.0900 | +53.1% |
+| generated | coresponse_MOV10 | 0.323 | 0.074 | 5 of 5 | 0.1140 | 0.1665 | +46.1% |
+| generated | coresponse_HCCS | 0.377 | 0.115 | 5 of 5 | 0.0933 | 0.1343 | +44.0% |
+| generated | regulon_AHR | 0.549 | 0.455 | 5 of 5 | 0.1068 | 0.1312 | +22.8% |
+| generated | coresponse_PIM1 | 0.389 | 0.212 | 5 of 5 | 0.2710 | 0.2674 | -1.3% |
+
+**Structure: 44 of 44 pairs fall below their module's within-A1 median.** Every pair, every
+module, both strata. Showing the proposer the training responses moves the structure it emits
+further than reseeding does, without exception. Set against A3, where permuting the
+perturbation-to-response pairing leaves the proposal inside the replicate range, the pair of
+results says the proposer conditions on the data when the data is in front of it and ignores
+it when it is not.
+
+**Prediction: the gain is stratum-dependent, in the direction stated before the run.**
+Excluding Th2_GATA3, whose 240 percent rests on two scoreable folds and is noise, the
+generated stratum averages +32.9 percent with four of five modules gaining, and the curated
+stratum averages +11.5 percent with one of three. Amendment A16 recorded in advance that A5's
+advantage should be larger in the generated stratum because A1 there sees a generic sentence
+rather than a paragraph of regulatory biology. That is what happened, and it is the first
+pre-registered directional prediction in this project to be confirmed rather than falsified.
+
+**The three-seed figures recorded earlier today are superseded and are restated here.**
+Cytokine_production was reported at +56.6 percent and is +38.1 at five seeds.
+TCR_signalosome was reported at -17.6 percent and is -0.4. CD4_lineage_TFs was +1.4 and is
+-3.3. Th2_GATA3 was -24.3 and is +240.0 on two folds, which is the clearest demonstration
+that the module cannot support the measurement at all. Both the positive and the negative
+three-seed readings were noise: per-seed held-out varies nearly twofold within a single arm,
+with the cytokine module's five A1 seeds spanning 0.125 to 0.232.
+
+**What this does not do.** It does not disturb Branch A. The best A5 held-out score on any
+curated module is 0.2900 on TCR_signalosome against a linear baseline of 0.2646 on that
+module, and 0.2302 on the cytokine module against linear at 0.4451. Showing the proposer the
+data makes it a better proposer without making its structures competitive with a ridge map
+where that map is sound.
+
 **Step 5 A5 complete on the curated stratum, 2026-08-19. The structure changes; the held-out gain does not generalise, and the cytokine result is qualified.**
 
 All four curated modules finished at five arms and three seeds. The entry recorded earlier
