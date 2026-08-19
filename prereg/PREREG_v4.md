@@ -497,6 +497,41 @@ The conclusion is the harder of the two the analysis could have reached. Sparsit
 
 One number is worth keeping in view. Even under conditioning that favours it, on folds it selected itself, the oracle reaches only +0.0201 over linear on the cytokine module. The ceiling that a search with access to the held-out answer can reach on its own chosen ground is barely above the baseline.
 
+**Effective rank is invariant to the DE threshold, and the response matrix is not mostly zeros, 2026-08-19.**
+
+Amendment A14 required the write-up to state which matrix the effective rank is computed on
+and to show the value is stable to the DE threshold, because with 109 DE entries across 28
+perturbations a low rank could in principle reflect a matrix that is mostly zeros carrying a
+weak shared trend. Both halves are now answered by measurement on Cytokine_production.
+
+| FDR threshold | DE entries | Folds with DE | Matrix non-zero | Effective rank | Leading PC |
+|---|---|---|---|---|---|
+| 0.01 | 51 | 16 | 96.4% | 3.6386 | 0.2758 |
+| 0.05 | 86 | 18 | 96.4% | 3.6386 | 0.2758 |
+| 0.10, as pre-registered | 109 | 19 | 96.4% | 3.6386 | 0.2758 |
+| 0.25 | 155 | 20 | 96.4% | 3.6386 | 0.2758 |
+
+**The diagnostics do not move at all**, and the reason is structural rather than fortunate.
+The response matrix is assembled from every effect size the store holds for a
+perturbation-gene pair, and the FDR threshold is applied afterwards to build the DE mask
+alone. Effective rank and leading-PC fraction are computed on the response matrix, so the
+threshold cannot reach them. Across a twenty-five-fold range of thresholds the values are
+identical to four decimal places.
+
+What the threshold does move is the metric rather than the diagnostic: DE entries run from 51
+to 155 and scoreable folds from 16 to 20. Every DE-overlap number in this record therefore
+depends on the pre-registered threshold of 0.10 and is reported with it, while the
+identifiability diagnostics do not.
+
+**The matrix is dense.** 96.4 percent of its cells are non-zero at every threshold, so the
+alternative reading, that low rank reflects sparsity with a weak trend on top, does not
+apply. The rank of 3.64 over a 28 by 28 matrix that is almost entirely filled is a statement
+about the responses being alike, not about most of them being absent.
+
+Both points belong in the write-up beside the claim they support, since a reader assuming the
+diagnostics were computed on a thresholded matrix would draw a different conclusion about
+what low rank means here.
+
 **Step 3 topology sweep, 2026-08-19, amendment A14. Every causal topology fails, and hub structure fails worse than uniform.**
 
 The calibration previously varied only how many edges a generator carried, never how they
