@@ -741,6 +741,66 @@ Two observations survive as descriptive and are kept with their counts attached.
 
 This was the sharpest sentence in the project record and it does not survive its own scale-up. Recording that is the point of having run it.
 
+### Amendment A13, 2026-08-19, recorded in full before the experiment is written or run. Scoring on the perturbation-specific residual.
+
+Section 2.2 established two things that together make the primary metric hard to interpret.
+Seventy-eight percent of what the linear baseline achieves on the cytokine module comes from
+predicting the mean training response, and a structural prediction is the difference between
+a clamped and an unclamped fixed point, which cannot express a response shared across
+perturbations. The primary metric therefore rewards reproducing a stereotyped bulk response
+that the model class forfeits by construction. Section 2.27's offset experiment is a fitted
+approximation to the correction and moved the oracle from 0.2920 to 0.4820 on that module,
+past linear at 0.4451, without clearing the advantage rule.
+
+This amendment specifies the clean version: split each held-out response into a shared
+component and a perturbation-specific residual, and score every source on the residual
+alone. It is filed before any code is written so that the analysis cannot be shaped by its
+outcome, and it is a **secondary** analysis throughout. The pre-specified primary metric of
+section 1.2 is unchanged and remains the basis of every claim already recorded.
+
+**The decomposition.** For each fold, let R be the matrix of observed responses for that
+fold's training perturbations, genes in columns. Take the singular value decomposition of R
+without centring, and let V_k be its top k right singular vectors. The shared component of
+any response vector v is its projection onto span(V_k) and the residual is v minus that
+projection. R is built from training perturbations only, so the subspace never sees the
+held-out response it is used to decompose.
+
+**Fixed choices.** k = 1 is primary, since section 2.6 found a single dominant component,
+with k = 2 and k = 3 reported as sensitivity and no others computed. Both the observation
+and each source's prediction are projected onto the orthogonal complement before scoring, so
+a prediction consisting only of the shared program scores at the floor rather than being
+compared against a quantity it does not address. The DE set in residual space is the m genes
+of largest absolute residual, where m is that perturbation's DE count under the existing
+threshold, so the metric keeps its scale and its tie-break rule from amendment A2. Sources,
+folds, seeds and the paired bootstrap of section 1.2 are otherwise unchanged.
+
+**The three outcomes, stated now.**
+
+*No source beats linear on the residual.* The negative result hardens. The objection that
+the comparison was built on a metric this model class cannot win is answered directly, since
+the component it cannot express has been removed and it still does not win. This is the
+outcome the existing record leads me to expect.
+
+*A structure source beats linear on the residual.* This is the project's first positive and
+it carries a clean reading: a linear map captures the shared program, structural models
+capture perturbation-specific regulation, and a benchmark that scores the sum conflates two
+different things. It would be reported as a secondary finding with the primary metric's
+result stated beside it, not as a reversal of Branch A.
+
+*Every source collapses to chance on the residual.* This is a real possibility that the
+proposal above does not remove, and it is recorded so it cannot later be presented as an
+inconvenience. The cytokine module carries 109 DE entries across 28 perturbations, so
+removing the dominant component may leave too little signal for any source to score above
+its null. If the residual null and every source overlap, the experiment is uninformative
+rather than negative, and it will be reported as a failed measurement with the fraction of
+DE mass removed by the projection stated, not as evidence that structure fails on the
+residual.
+
+**Where it runs.** The four curated modules, which are the only ones carrying a proposal
+arm, plus the three co-response modules already used in Step 10. Reported alongside the
+random null recomputed in residual space, because a metric this different needs its own null
+rather than the one computed on the full response.
+
 ### Amendment A12, 2026-08-19, recorded before the arm is run. Step 5 gains an A5 arm and two more modules.
 
 Step 5's four arms vary two things, whether gene symbols are aliased and whether the perturbation-to-response pairing is permuted, and they established that the proposal is largely invariant to destroying the data while changing substantially when the names are removed. That result has a weakness which the arms as built cannot address: in all four, the initial proposal never sees the response data at all. `propose(genes, context)` receives a gene list and a context sentence, and measurements enter only later through the repair loop. Reporting that a name-only proposal step is name-driven is close to circular, and a reader is entitled to say so.
