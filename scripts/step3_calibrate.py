@@ -64,11 +64,19 @@ def accepts(sim: dict, real: dict) -> dict:
     }
 
 
-def fit_generator(mod, n_edges: int, seed: int):
-    """A structural model fitted to the real module, used as the data generator."""
+def fit_generator(mod, n_edges: int, seed: int, topology: str = "uniform"):
+    """A structural model fitted to the real module, used as the data generator.
+
+    `topology` selects how the edges are arranged (PREREG_v4 amendment A14). The density
+    sweep alone varies only how many edges a generator has, so it can only show that
+    sparse uniform causal graphs fail to reproduce the signature. Hub, scale-free and
+    modular families are drawn here through the same fitting and simulation path, so the
+    only thing that differs between arms is edge placement.
+    """
     genes = list(mod.genes)
     rng = np.random.default_rng(seed)
-    spec = random_null.sample_spec(genes, mod.perts, n_edges, rng)
+    sampler = random_null.TOPOLOGIES[topology]
+    spec = sampler(genes, mod.perts, n_edges, rng)
     observed = {
         mod.perts[i]: {genes[j]: float(mod.observed[i, j])
                        for j in range(len(genes)) if genes[j] != mod.perts[i]}
@@ -167,6 +175,37 @@ def main() -> None:
         out["variants"].append({"generator": "structural", "n_edges": len(s.edges),
                                 "shared_weight": 0.0, "diagnostics": avg, **verdict})
         print(f"  {len(s.edges):>3} edges: rank {avg['effective_rank']:6.3f} "
+              f"(err {verdict['effective_rank_relative_error']:5.1%})  "
+              f"PC1 {avg['leading_pc_fraction']:.4f} "
+              f"(err {verdict['leading_pc_absolute_error']:.4f})  "
+              f"{'ACCEPT' if verdict['accepted'] else 'reject'}")
+
+    # Density alone cannot answer the objection that real regulatory networks are not
+    # uniform random graphs. A generator with a few master regulators driving most of a
+    # module would produce a low-rank response matrix by construction, so the families
+    # below vary edge placement at fixed density (PREREG_v4 amendment A14).
+    print("\ngenerator topology sweep, at the density that best matched above")
+    dens = sorted({12, args.edges, 48, max_edges})
+    best_edges = args.edges
+    if out["variants"]:
+        best = min(out["variants"],
+                   key=lambda v: v["effective_rank_relative_error"] + v["leading_pc_absolute_error"])
+        best_edges = best["n_edges"]
+    print(f"  density {best_edges} edges, chosen as the closest match from the sweep above")
+    for topology in ("uniform", "hub", "scale_free", "modular"):
+        try:
+            s, p_ = fit_generator(mod, best_edges, seed=0, topology=topology)
+        except (ValueError, KeyError) as e:
+            print(f"  {topology:<12}: not representable, {e}")
+            continue
+        sims = [diagnostics_of(simulate(mod, s, p_, noise_scale=1.0, shared_weight=0.0,
+                                        seed=k)) for k in range(args.seeds)]
+        avg = {k: float(np.mean([x[k] for x in sims])) for k in sims[0]}
+        verdict = accepts(avg, real)
+        out["variants"].append({"generator": f"structural[{topology}]",
+                                "n_edges": len(s.edges), "topology": topology,
+                                "shared_weight": 0.0, "diagnostics": avg, **verdict})
+        print(f"  {topology:<12}: rank {avg['effective_rank']:6.3f} "
               f"(err {verdict['effective_rank_relative_error']:5.1%})  "
               f"PC1 {avg['leading_pc_fraction']:.4f} "
               f"(err {verdict['leading_pc_absolute_error']:.4f})  "

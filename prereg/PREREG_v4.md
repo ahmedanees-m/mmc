@@ -896,6 +896,21 @@ in the record that relies on the broader reading is corrected.
 
 **A related reporting fix, not a new analysis.** The write-up must state exactly which
 matrix the effective rank is computed on, and show the value is stable to the DE threshold.
+
+The first half is answered from the code and is recorded here so it does not have to be
+rediscovered: effective rank is the participation ratio of the covariance spectrum, the
+square of the sum of eigenvalues over the sum of their squares, computed on the
+**column-centred perturbation-by-gene response matrix** of observed log fold changes. It is
+not computed on the DE mask, on a thresholded matrix, or on the raw uncentred responses.
+Centring matters and is not incidental: it is why a constant offset added to every row
+leaves both diagnostics unchanged, which is the mistake an earlier version of the Step 3
+simulator made and which section 2.6 records.
+
+The second half needs the response matrices and is run when the store is reachable. The
+check is the effective rank and leading-PC fraction recomputed at DE thresholds either side
+of the pre-registered one, reported as a small table, so that a reader can see whether "low
+rank" survives the choice of threshold or is partly an artefact of a matrix that is mostly
+zeros with a weak shared trend.
 With 109 DE entries across 28 perturbations on the primary module, a low rank could in part
 reflect a matrix that is mostly zeros with a weak shared trend, and that alternative should
 be excluded by measurement rather than left to the reader.
