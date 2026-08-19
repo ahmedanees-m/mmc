@@ -497,6 +497,52 @@ The conclusion is the harder of the two the analysis could have reached. Sparsit
 
 One number is worth keeping in view. Even under conditioning that favours it, on folds it selected itself, the oracle reaches only +0.0201 over linear on the cytokine module. The ceiling that a search with access to the held-out answer can reach on its own chosen ground is barely above the baseline.
 
+**Step 3 topology sweep, 2026-08-19, amendment A14. Every causal topology fails, and hub structure fails worse than uniform.**
+
+The calibration previously varied only how many edges a generator carried, never how they
+were arranged, so it could show that sparse uniform causal graphs do not reproduce the
+module's identifiability signature but not that no causal structure does. Amendment A14
+added hub, scale-free and modular families and stated both outcomes before they ran. The
+concern was that a generator with a few master regulators would produce a low-rank response
+matrix by construction, which would have forced claim 2 to be restated as an identifiability
+statement.
+
+Cytokine_production, 28 genes and 28 perturbations. The real matrix has an effective rank of
+3.639 and a leading-PC fraction of 0.2758. Acceptance is within 15 percent relative on rank
+and 0.05 absolute on the leading-PC fraction. All four families were drawn at 48 edges, the
+density that came closest in the existing sweep, through the same fitting, simulation, noise
+bootstrap and acceptance test.
+
+| Generator | Effective rank | Relative error | Leading PC | Absolute error | Verdict |
+|---|---|---|---|---|---|
+| real module | 3.639 | | 0.2758 | | |
+| uniform | 10.274 | 182.4% | 0.0837 | 0.1921 | reject |
+| hub | 12.046 | 231.1% | 0.0445 | 0.2313 | reject |
+| scale-free | 12.433 | 241.7% | 0.0283 | 0.2474 | reject |
+| modular | 12.764 | 250.8% | 0.0284 | 0.2473 | reject |
+| low-rank surrogate, rank 2 | 3.483 | 4.3% | 0.2779 | 0.0022 | accept |
+| low-rank surrogate, rank 6 | 3.578 | 1.7% | 0.2749 | 0.0008 | accept |
+
+**The objection is answered in the direction that strengthens the claim.** None of the three
+new families comes near tolerance, and all three are further from the real module than the
+uniform generator they were added to challenge. Concentrating out-degree raises the effective
+rank rather than lowering it, from 10.3 under uniform placement to between 12.0 and 12.8.
+
+The mechanism is worth stating because the expectation was reasonable and wrong. A hub with
+high out-degree does make its own targets move together, but the diagnostic is computed on
+the perturbation-by-gene response matrix, where each row is a different knockdown. Giving a
+few regulators most of the out-edges makes the rows less alike, not more: knocking down a hub
+moves a great deal and knocking down any of the many non-hubs moves almost nothing, so the
+rows become more heterogeneous and the participation ratio rises. Low rank in this matrix
+requires different perturbations to produce similar responses, which sparse causal wiring of
+any topology works against.
+
+Claim 2 therefore stands in its stronger form and is now stated with the sweep behind it: no
+causal generator reproduces the identifiability signature at any density from 12 to 84 edges
+or in any of four topology families, while a structureless low-rank surrogate reproduces it
+to within 1.7 percent on rank and 0.0008 on the leading-PC fraction. The restatement as an
+identifiability claim, which amendment A14 prepared for, is not needed.
+
 **Step 5 A5 on the cytokine module, 2026-08-19. Showing the proposer the data changes what it proposes; destroying the data does not.**
 
 The cytokine block completed all five arms at three seeds before a VPN drop killed the API
