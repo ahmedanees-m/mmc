@@ -497,6 +497,63 @@ The conclusion is the harder of the two the analysis could have reached. Sparsit
 
 One number is worth keeping in view. Even under conditioning that favours it, on folds it selected itself, the oracle reaches only +0.0201 over linear on the cytokine module. The ceiling that a search with access to the held-out answer can reach on its own chosen ground is barely above the baseline.
 
+**The ceiling moves to the seed median, 2026-08-19, and the maximum becomes an upper bound.**
+
+Every ceiling in this record is a maximum over search seeds. A maximum is upward biased and
+its bias grows with the seed count, so Step 1 at ten seeds and Step 7 at three have never
+been on a common scale, and section 2.23 already showed that most of the strongly negative
+cross-validated R squared was seed noise carried by that statistic. The median is the stable
+summary. It becomes the primary ceiling from here, with the maximum reported beside it and
+labelled as an upper bound on what a search of that budget found.
+
+Across the 25 modules that record a seed spread, the median is below the maximum on 18, with
+a mean drop of 0.0614 and a worst case of 0.4189.
+
+| Module | Seeds | Max | Median | Change | Linear |
+|---|---|---|---|---|---|
+| regulon_HIF1A | 3 | 0.4558 | 0.1329 | -0.3230 | 0.0857 |
+| CD4_lineage_TFs | 10 | 0.3078 | 0.2298 | -0.0781 | 0.0706 |
+| coresponse_NATD1 | 3 | 0.2033 | 0.1349 | -0.0684 | 0.0586 |
+| coresponse_MBD5 | 3 | 0.2268 | 0.1668 | -0.0600 | 0.0668 |
+| coresponse_HCCS | 3 | 0.2541 | 0.2026 | -0.0515 | 0.1284 |
+| Cytokine_production | 10 | 0.2920 | 0.2461 | -0.0460 | 0.4451 |
+
+Two consequences matter for claims already recorded.
+
+**On the primary module the negative hardens.** The cytokine ceiling falls from 0.2920 to
+0.2461 against a linear baseline of 0.4451, so the gap the oracle fails to close widens from
+0.1531 to 0.1990. Branch A was read on this module and it is read the same way, with more
+room to spare.
+
+**The one clear case in the section 2.22 cross-tab loses most of its margin.**
+`regulon_HIF1A` was the single module where the oracle cleared a linear arm that beats its
+own null, and it is the worst affected here: 0.4558 on the maximum against 0.1329 on the
+median, with linear at 0.0857. The margin falls from +0.3701 to +0.0472. One of its three
+seeds found a structure the other two did not come close to, which is what a maximum over a
+small seed count is built to surface and what a median is built to discount.
+
+**The exact re-derivation of Family A is blocked by what the runs stored, and that is worth
+stating rather than working around.** The Family A test is the paired permutation of section
+1.2 over per-fold scores, and the runs recorded per-fold scores only for the reported
+structure, not for each seed. Recomputing the corrected count on the median seed therefore
+needs a re-run, not a re-analysis. What can be said without one is the direction: every
+module's oracle-minus-linear margin is smaller on the median than on the maximum, or equal
+where seeds tied, so the corrected count of 10 can only fall. It will be recomputed properly
+when the modules are next run, and until then the count is reported as having been derived
+on the maximum, with that stated.
+
+The retention gap is fixed going forward. Per-seed per-fold scores are cheap to store and
+their absence blocked an analysis a reviewer asked for, so future comparator runs record
+them.
+
+**Effective N, reported plainly from here.** Twenty-seven modules were run, and the linear
+baseline beats its own null on 13. The remaining 14 cannot inform a comparison against
+linear, and eight of the ten corrected Family A advantages fall among them. The corpus is
+smaller than its headcount suggests and the write-up leads with the smaller number: thirteen
+modules where the contest is real, the oracle clearing linear on two of them under the
+maximum-seed ceiling, one of those by 0.0002 on the linear-versus-null test and the other
+losing most of its margin under the median.
+
 **Family A re-read against the linear baseline's own null, 2026-08-19. Branch A holds on the modules where the comparison is meaningful.**
 
 The Family A count recorded above, 14 nominal advantages of the oracle ceiling over linear with 10 surviving Benjamini-Hochberg at q=0.05, sat awkwardly beside the finding that no structure source beats linear. Taken alone it says structure wins on 10 of 27 modules. The two facts are reconciled by cross-tabulating each module's Family A outcome against whether its linear arm clears its own random null, judged at the 95th percentile of that module's null distribution.
