@@ -798,6 +798,88 @@ Two observations survive as descriptive and are kept with their counts attached.
 
 This was the sharpest sentence in the project record and it does not survive its own scale-up. Recording that is the point of having run it.
 
+### Amendment A14, 2026-08-19, recorded before the generators are written. Step 3 sweeps topology as well as density.
+
+Step 3's calibration sweeps causal generators over density, at 12, 24, 48 and 84 edges, and
+concludes that no causal generator reproduces the module's identifiability signature while a
+structureless low-rank surrogate reproduces it to within 2 percent. That conclusion is
+load-bearing: it is the reason the negative result is read as a statement about the shape of
+the data rather than about the search.
+
+The sweep varies only how many edges a generator has, never how they are arranged. Every
+draw comes from `random_null.sample_spec`, which picks each regulator uniformly from the
+perturbed genes, so the generators are uniform random graphs under an in-degree cap. Real
+regulatory networks are not: they have master regulators with high out-degree, and a
+generator with a few hubs driving most of a module would produce a low-rank response matrix
+by construction. As it stands the calibration shows that sparse uniform causal graphs do not
+reproduce the signature, which is a narrower claim than the one being made.
+
+**Three further generator families are added to the sweep**, each drawn at the same edge
+counts and evaluated against the same tolerances of 15 percent relative on effective rank
+and 0.05 absolute on the leading-PC fraction:
+
+*Hub.* A fixed number of regulators, three, receive a stated share of the out-edges, 0.7,
+with the remainder drawn uniformly. This is the direct test of the master-regulator
+objection.
+
+*Scale-free.* Out-degree is grown by preferential attachment, so the degree distribution is
+heavy-tailed rather than set by hand. This covers the objection without the hub count and
+share being chosen by us.
+
+*Modular block.* Genes are partitioned into four blocks and edges fall within a block with
+probability 0.8. This is the other common departure from uniformity and produces
+block-diagonal structure rather than a dominant direction.
+
+All three respect the existing in-degree cap and the grammar, and all use the same fitting,
+simulation, noise bootstrap and acceptance test as the existing arm, so the only thing that
+changes is how the edges are placed.
+
+**Both outcomes, stated now.** If the new families also fail the tolerances, claim 2
+strengthens considerably: no causal generator in any of four topology families reproduces
+the signature at any density, and the low-rank account survives the most obvious objection
+to it. If any family passes, claim 2 is restated rather than withdrawn: hub-dominated causal
+structure and structureless low rank are not distinguishable from this data by these
+diagnostics, which is an identifiability statement, is more accurate than what is currently
+written, and is still worth reporting. It would also mean the diagnostics cannot be used to
+argue against a causal generator in general, only against uniform ones, and every sentence
+in the record that relies on the broader reading is corrected.
+
+**A related reporting fix, not a new analysis.** The write-up must state exactly which
+matrix the effective rank is computed on, and show the value is stable to the DE threshold.
+With 109 DE entries across 28 perturbations on the primary module, a low rank could in part
+reflect a matrix that is mostly zeros with a weak shared trend, and that alternative should
+be excluded by measurement rather than left to the reader.
+
+### Amendment A15, 2026-08-19, recorded before the data is fetched. Step 4's power is stated in advance.
+
+Amendment A7 substituted interaction subtypes derived from coefficients fitted in this
+project because the published genetic-interaction table was not in the GEO matrix, and
+section 2.28 moved Step 4 back to in progress on the ground that this cannot test a
+hypothesis pre-registered about the published labels.
+
+The published labels exist and are reachable: they are in the Norman 2019 supplement and are
+carried in the GEARS data release and the `pertpy` loaders, so no reconstruction is needed.
+Their counts are also known in advance, and they are small. The non-overlapping assignments
+are synergy 30, suppression 12, redundancy 8, neomorphism 13 and epistasis 9, covering 72 of
+the 131 double perturbations. The self-derived partition this project used gives suppression
+33 and epistasis 15, so the substitution was not a close approximation and the difference is
+not cosmetic.
+
+**The consequence is recorded before the test is run.** The pre-registered primary hypothesis
+names epistasis and suppression, which carry 9 and 12 doubles. A paired comparison on 9 folds
+cannot resolve anything but a very large effect, and Step 4 will in all likelihood return a
+null that reflects the sample size rather than the biology. Reporting that as a test of the
+hypothesis would repeat, with published labels, the error section 2.23 corrected for claim
+C3.
+
+Step 4 therefore reports three things together: the comparison on each named subtype with its
+fold count attached, a power statement computed the same way as for C3 saying what effect
+size those fold counts could have detected, and the comparison on the pooled labelled set of
+72 doubles, which is better powered but is not the pre-registered hypothesis and is labelled
+as secondary. If the named-subtype tests return nulls at the power stated, the step is
+reported as underpowered rather than as evidence, and the pre-registered hypothesis is
+recorded as untested on this dataset.
+
 ### Amendment A13, 2026-08-19, recorded in full before the experiment is written or run. Scoring on the perturbation-specific residual.
 
 Section 2.2 established two things that together make the primary metric hard to interpret.
