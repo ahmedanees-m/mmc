@@ -497,6 +497,53 @@ The conclusion is the harder of the two the analysis could have reached. Sparsit
 
 One number is worth keeping in view. Even under conditioning that favours it, on folds it selected itself, the oracle reaches only +0.0201 over linear on the cytokine module. The ceiling that a search with access to the held-out answer can reach on its own chosen ground is barely above the baseline.
 
+**Step 5 A5 on the cytokine module, 2026-08-19. Showing the proposer the data changes what it proposes; destroying the data does not.**
+
+The cytokine block completed all five arms at three seeds before a VPN drop killed the API
+connection and failed the remaining three modules, which are being re-run. This is one
+module and is recorded as such.
+
+| Arm | J(A1, arm) per seed | Mean | Mean edges | Held-out DE-overlap |
+|---|---|---|---|---|
+| A1, the status quo | 0.342, 0.478, 0.253 | 0.358 | 49.3 | 0.1518 [0.0852, 0.2234] |
+| A2, names removed | 0.013, 0.034, 0.039 | 0.029 | 42.7 | 0.1398 [0.0828, 0.2083] |
+| A3, data permuted | 0.452, 0.222, 0.357 | 0.344 | 57.0 | 0.1700 [0.1005, 0.2435] |
+| A4, both | 0.012, 0.049, 0.049 | 0.036 | 44.0 | 0.1236 [0.0803, 0.1667] |
+| A5, data shown | 0.321, 0.220, 0.186 | 0.242 | 56.0 | 0.2377 [0.1470, 0.3423] |
+
+The first row is the replicate ceiling: two runs of the unchanged arm at different seeds
+agree at 0.342, 0.478 and 0.253. Those three values are the reference distribution, and
+comparing against their mean alone would hide that it spans nearly a factor of two.
+
+**Read against that distribution, A3 and A5 separate cleanly.** A3's pairs, 0.452, 0.222 and
+0.357, fall inside the replicate range: permuting which response belongs to which
+perturbation leaves the proposed structure where reseeding would leave it, which is the
+result the original four-arm run reported. A5's pairs, 0.321, 0.220 and 0.186, fall largely
+below it, with two of three under the smallest replicate pair. Showing the proposer the
+training responses moves the structure further than changing the random seed does, and
+further than destroying the data does.
+
+That answers the objection recorded on 2026-08-19 in the scope limitation above, and it
+answers it against the earlier finding rather than for it. The proposal step was built blind
+to the data, so the original name-driven result was partly a property of the harness. Given
+the data, the proposer uses it.
+
+**The held-out score moves in the same direction and is the more interesting quantity.** A5
+reaches 0.2377 [0.1470, 0.3423] against A1's 0.1518 [0.0852, 0.2234], a relative gain of 57
+percent. The intervals overlap substantially at three seeds and this is not a paired test
+across folds, so the gain is reported as an observation on one module and not as an
+established effect. It is the reason amendment A16 extends the arm.
+
+**None of this disturbs Branch A.** The linear baseline on this module scores 0.4451. A5 at
+0.2377 is the best proposal-derived structure this project has produced and it remains 0.21
+below the cheap baseline. Showing the model the data makes it a better proposer without
+making it competitive, which is a sharper statement of the negative than the record carried
+before.
+
+Three modules remain. TCR_signalosome, CD4_lineage_TFs and Th2_GATA3 failed on the
+connection drop with 44 recorded errors and are being re-run, and no claim about the arm is
+made across modules until they land.
+
 **Scope limitation recorded 2026-08-19: the loop tested a name-based prior, lightly repaired, and that is not what the project set out to test.**
 
 This is not an arm-level caveat and it is recorded here rather than left to the discussion.
