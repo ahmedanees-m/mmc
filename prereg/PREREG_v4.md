@@ -497,6 +497,45 @@ The conclusion is the harder of the two the analysis could have reached. Sparsit
 
 One number is worth keeping in view. Even under conditioning that favours it, on folds it selected itself, the oracle reaches only +0.0201 over linear on the cytokine module. The ceiling that a search with access to the held-out answer can reach on its own chosen ground is barely above the baseline.
 
+**Scope limitation recorded 2026-08-19: the loop tested a name-based prior, lightly repaired, and that is not what the project set out to test.**
+
+This is not an arm-level caveat and it is recorded here rather than left to the discussion.
+
+The discovery loop calls `propose(genes, context)` for its initial structure. That call
+receives a list of gene symbols and a sentence of biological context, and nothing else. No
+response data reaches the proposer at that point. Measurements enter only afterwards,
+through the repair step, which is handed a summary of structural residuals and asked for the
+smallest edit that addresses them. Section 2.9 measured how much the repair step moves the
+structure and the answer is very little: agreement between the initial and final structures
+stays near the within-seed replicate ceiling.
+
+Put together, every structure this project has produced through the loop is a name-based
+prior with a small number of local repairs applied to it. That has three consequences which
+apply to work already reported.
+
+The 76-hypothesis corpus, and every statement in this record about what an LLM proposes from
+perturbation data, describes that object and not a model reasoning from the data. Where the
+record says the proposal is name-driven, the honest reading is that the proposal step was
+built to be name-driven and the measurement confirmed the construction behaved as built.
+The finding is real and worth reporting, but it is a finding about this harness.
+
+The comparison in Step 1 is therefore between a linear map fitted on the data and a
+structure proposed largely without it. That does not weaken Branch A, since the question was
+whether interpretable structure from this pipeline beats a cheap baseline and it does not,
+but it does narrow what the negative licenses. It does not license a claim that language
+models cannot propose useful structure from perturbation data, because the pipeline never
+asked one to.
+
+The project's own framing question, whether an LLM can compile a mechanistic model from
+perturbation data, has therefore not been tested in the form it is usually read. Amendment
+A12's A5 arm is the first test of it, and it is one arm on four modules at three seeds.
+
+The write-up states this in the setup, before any result, rather than as a limitation at the
+end. Any sentence claiming a property of LLM mechanistic reasoning is scoped to "a proposal
+step that sees gene names and a context sentence, with residual-driven repair", and the A5
+arm is reported as the beginning of the harder question rather than as a robustness check on
+the easier one.
+
 **The ceiling moves to the seed median, 2026-08-19, and the maximum becomes an upper bound.**
 
 Every ceiling in this record is a maximum over search seeds. A maximum is upward biased and
