@@ -632,6 +632,60 @@ or in any of four topology families, while a structureless low-rank surrogate re
 to within 1.7 percent on rank and 0.0008 on the leading-PC fraction. The restatement as an
 identifiability claim, which amendment A14 prepared for, is not needed.
 
+**Step 5 A5 complete on the curated stratum, 2026-08-19. The structure changes; the held-out gain does not generalise, and the cytokine result is qualified.**
+
+All four curated modules finished at five arms and three seeds. The entry recorded earlier
+today on the cytokine module alone is qualified by this, and one reading proposed on partial
+data is withdrawn before it reached the record.
+
+Structure agreement, as the range of pairwise Jaccard across seed pairs rather than a ratio
+of means, since the within-A1 distribution spans nearly a factor of two on some modules.
+
+| Module | Within-A1 | A1 vs A3, data permuted | A1 vs A5, data shown | A1 vs A2, names removed |
+|---|---|---|---|---|
+| CD4_lineage_TFs | 0.660 to 0.684 | 0.598 to 0.644 | 0.510 to 0.638 | 0.033 to 0.089 |
+| Cytokine_production | 0.253 to 0.478 | 0.222 to 0.452 | 0.186 to 0.321 | 0.013 to 0.039 |
+| TCR_signalosome | 0.833 to 0.938 | 0.842 to 0.938 | 0.407 to 0.483 | 0.094 to 0.143 |
+| Th2_GATA3 | 0.647 to 0.857 | 0.733 to 0.800 | 0.400 to 0.667 | 0.087 to 0.238 |
+
+**The structure finding holds on all four.** Permuting which response belongs to which
+perturbation leaves the proposal inside the replicate range on every module. Removing the
+gene names collapses it to between 0.013 and 0.238. Showing the data moves it below the
+replicate range, completely so on TCR_signalosome where 0.407 to 0.483 sits far under a
+replicate range of 0.833 to 0.938, and on CD4_lineage_TFs where the ranges do not touch. On
+the cytokine module and Th2_GATA3 the ranges overlap at their edges.
+
+**The held-out gain does not generalise.**
+
+| Module | A1 | A5 | Change |
+|---|---|---|---|
+| Cytokine_production | 0.1518 | 0.2377 | +56.6% |
+| CD4_lineage_TFs | 0.1462 | 0.1483 | +1.4% |
+| TCR_signalosome | 0.2898 | 0.2387 | -17.6% |
+| Th2_GATA3, 2 folds | 0.2056 | 0.1556 | -24.3% |
+
+Taken with the three completed generated modules, where HCCS gained 44.0 percent, MOV10
+46.1 percent and PIM1 lost 1.3 percent, seven modules have now been measured. Three gain
+substantially, four do not, and one loses 17.6 percent on a module with 7 scoreable folds.
+The 56.6 percent gain on the cytokine module is one module's result and is reported as such.
+
+**A reading proposed on three modules is withdrawn here rather than recorded.** With HCCS,
+MOV10 and PIM1 in hand it looked as though the data helps where the name prior is weak and
+adds nothing where it is already strong, since the only module without a gain was the one
+with the strongest A1. CD4_lineage_TFs refutes it directly: its A1 baseline of 0.1462 is
+within 0.006 of the cytokine module's 0.1518, so on that account it should have gained
+comparably, and it gained 1.4 percent. Whatever governs the gain, it is not the strength of
+the name-based prior.
+
+**What the arm establishes and what it does not.** It establishes that the proposer conditions
+on the response data when the data is put in front of it, which the four original arms could
+not test because the proposal step never saw data. It does not establish that doing so
+improves held-out prediction. And on every module the best A5 score remains far below the
+linear baseline for that module, so none of this disturbs Branch A.
+
+Two seeds are being added to each curated module under amendment A16, which will tighten the
+held-out comparison from three seeds to five without changing what is compared.
+
 **Step 5 A5 on the cytokine module, 2026-08-19. Showing the proposer the data changes what it proposes; destroying the data does not.**
 
 The cytokine block completed all five arms at three seeds before a VPN drop killed the API
