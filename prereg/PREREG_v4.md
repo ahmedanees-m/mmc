@@ -632,6 +632,52 @@ or in any of four topology families, while a structureless low-rank surrogate re
 to within 1.7 percent on rank and 0.0008 on the leading-PC fraction. The restatement as an
 identifiability claim, which amendment A14 prepared for, is not needed.
 
+**The published Norman subtype labels are not obtainable from the sources named, 2026-08-19. Step 4 stays in progress, and the blocker is now specific.**
+
+Amendment A15 recorded that Step 4's pre-registered hypothesis names epistasis and
+suppression, that amendment A7 substituted subtypes derived from this project's own fitted
+coefficients because the published table is absent from the GEO matrix, and that the published
+labels should be recoverable because they ship with the GEARS release and the `pertpy`
+loaders. That last part is wrong and is corrected here, with what was tried recorded so the
+attempt is not repeated.
+
+**What was checked.**
+
+The GEO deposit was inspected directly. `GSE133344_filtered_cell_identities.csv.gz` carries
+`cell_barcode`, `guide_identity`, `read_count`, `UMI_count`, `coverage`, `gemgroup`,
+`good_coverage` and `number_of_cells`, and no interaction classification. A7's substitution
+was therefore not avoidable at the time it was made.
+
+`pertpy.data.norman_2019` was downloaded and its observation columns enumerated. They are
+`guide_identity`, `read_count`, `UMI_count`, `coverage`, `gemgroup`, `good_coverage`,
+`number_of_cells`, one `guide_<gene>` indicator per targeted gene, `guide_ids`, `n_genes`,
+`n_genes_by_counts`, `total_counts`, `total_counts_mt`, `pct_counts_mt`, `leiden`,
+`perturbation_name`, `perturbation_type`, `perturbation_value` and `perturbation_unit`. There
+is no genetic-interaction subtype among them. The extraction script was written to find a
+subtype column rather than assume its name, and to accept one only if its values contained the
+published category names, so it reported the absence rather than binding to `leiden` or
+another column that happens to be categorical.
+
+`pertpy`'s dataset inventory holds 56 loaders, of which two are Norman, `norman_2019` and
+`norman_2019_raw`. There is no interaction-labelled variant.
+
+The `cell-gears` distribution was downloaded and its contents listed. The wheel holds 13
+files and ships no CSV, TSV, JSON or pickle at all, so the labels are not in the package; it
+fetches its data at run time.
+
+**The blocker, stated precisely.** The published assignments exist in the Norman 2019
+supplementary material accompanying the Science paper, doi 10.1126/science.aax4438, and that
+supplement needs to be downloaded by hand. It is a small table, of the order of 72 rows
+covering the labelled subset of the 131 doubles, and once it is on the VM the Step 4 re-run
+is short.
+
+**Step 4 remains in progress**, and the existing numbers continue to be labelled as a test of
+a self-derived partition rather than of the pre-registered hypothesis. No other label source
+was substituted, because substituting a convenient stand-in for the published labels is
+precisely the error A7 made and that A15 exists to prevent. The counts to check against when
+the supplement arrives are synergy 30, suppression 12, redundancy 8, neomorphism 13 and
+epistasis 9, against this project's self-derived suppression 33 and epistasis 15.
+
 **Amendment A13 complete, seven modules, 2026-08-19. Structure does not clear linear on the residual anywhere the measurement means anything, and three modules do not measure anything.**
 
 All seven modules have been scored on the perturbation-specific residual at the pre-specified
