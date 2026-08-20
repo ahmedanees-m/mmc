@@ -632,6 +632,34 @@ or in any of four topology families, while a structureless low-rank surrogate re
 to within 1.7 percent on rank and 0.0008 on the leading-PC fraction. The restatement as an
 identifiability claim, which amendment A14 prepared for, is not needed.
 
+**Step 8's readiness was overstated in the record, 2026-08-19. GEARS has never been installed.**
+
+The status table has carried "CUDA image built and verified" against Step 8 since the image
+was built, and Review 2 read that as meaning the comparator is one work block away. Checking
+the image before running it shows otherwise.
+
+`mmc:gpu` contains JAX with CUDA 12 and the project's ordinary scientific stack. It has no
+`torch`, no `torch_geometric` and no `gears`, confirmed by import inside the image.
+`Dockerfile.gpu` installs `jax[cuda12]` and nothing else beyond the CPU image's packages, and
+its header documents the CPU-versus-GPU timing of the structural search. That is what the
+image was built and verified for: the measurement recorded in section 7.1 which established
+that the GPU is the wrong tool for the structure search. It was never a GEARS environment.
+
+The status line was accurate about an image and misleading about a step. It is corrected to
+say that no GEARS environment exists.
+
+**What running GEARS actually requires.** A separate image with PyTorch and
+`torch_geometric` at versions matched to the CUDA runtime, plus `cell-gears`, plus its data
+release fetched at run time. Geometric's wheels are pinned against specific torch and CUDA
+builds and are the usual failure point. This is an environment build with a real chance of
+not working, not a work block, and the pre-registration was right to call the environment
+build the risk when it scoped Step 8 as defensive.
+
+The scoping question the review raised still stands on its merits: claim 1 is exactly the
+claim a reader will want a foundation-model comparator against, and the honest reason Step 8
+has not run is that it was deprioritised, not that it was cheap and forgotten. What changes
+is the cost estimate attached to that decision.
+
 **The published Norman subtype labels are not obtainable from the sources named, 2026-08-19. Step 4 stays in progress, and the blocker is now specific.**
 
 Amendment A15 recorded that Step 4's pre-registered hypothesis names epistasis and
