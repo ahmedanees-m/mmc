@@ -632,6 +632,57 @@ or in any of four topology families, while a structureless low-rank surrogate re
 to within 1.7 percent on rank and 0.0008 on the leading-PC fraction. The restatement as an
 identifiability claim, which amendment A14 prepared for, is not needed.
 
+**Amendment A13 residual set complete on the curated modules, and A16 complete on both strata, 2026-08-19.**
+
+**The residual decomposition now covers four curated modules, three of them informative.**
+Th2_GATA3 carries two scoreable folds and its intervals span most of the metric, so it is
+reported and not read.
+
+| Module | Folds | DE mass removed at k=1 | Linear | Residual null | Oracle | Proposal |
+|---|---|---|---|---|---|---|
+| Cytokine_production | 19 | 29.1% | 0.5331 | 0.3787 | 0.4500 | 0.2938 |
+| TCR_signalosome | 7 | 48.5% | 0.6168 | 0.4595 | 0.4541 | 0.4711 |
+| CD4_lineage_TFs | 11 | 15.4% | 0.2701 | 0.2260 | 0.2231 | 0.2290 |
+
+At the pre-specified k of 1, no structural source beats linear on any of the three. On
+CD4_lineage_TFs the oracle at 0.2231 and the proposal at 0.2290 both sit on the residual null
+of 0.2260, and linear clears that null by 0.0441 against a 95th percentile of 0.2643, so the
+measurement is informative but only marginally. On the other two the margin is wider.
+
+**The degenerate outcome named in A13 appears at higher k and only there.** On
+TCR_signalosome, k = 2 and k = 3 remove 58.4 and 68.7 percent of the DE mass and linear falls
+below its own residual null, at -0.0297 and -0.0476. Once the comparator is below chance a
+delta measured against it means nothing, which is why the mean baseline's apparent advantage
+over linear at k = 3 on that module, +0.1211 [+0.0238, +0.2680], is an artefact and is
+reported as one. CD4_lineage_TFs does not degenerate this way, keeping linear above its null
+at every k, which is consistent with it losing the least DE mass to the projection.
+
+The reading stands as recorded when the cytokine module first reported: the component this
+model class cannot express has been removed and structure still does not win, so the
+objection that the primary metric was unwinnable does not survive. It now rests on three
+modules rather than one.
+
+**Amendment A16 is complete on both strata**, ten modules at five seeds with arms A1 and A5.
+regulon_YY1 finished last, at an A1 median of 0.485 against an A5 median of 0.341, 4 of 5
+pairs below, and a held-out change of +50.7 percent.
+
+Across all ten modules, 48 of 49 A1-versus-A5 pairs fall below their own module's within-A1
+median. Held-out, excluding Th2_GATA3 at two folds, the generated stratum averages +35.9
+percent with five of six modules gaining, and the curated stratum averages +11.5 percent with
+one of three. The prediction recorded in A16 before the run, that the advantage would be
+larger where A1 sees only a generic context sentence, is confirmed and the gap has widened
+with the sixth generated module rather than narrowing.
+
+**Where the A5 arm leaves the project.** It establishes that the proposer conditions on the
+response data when the data is put in front of it, which the four original arms could not
+test because their proposal step never saw data. It does not establish that this makes the
+proposals competitive: the best A5 held-out score on any curated module remains far below
+that module's linear baseline. The scope limitation recorded earlier today therefore stands
+in a narrower form. The record's characterisations of LLM behaviour describe a proposal step
+that sees names and a context sentence, the A5 arm is the first measurement of the harder
+question, and the answer so far is that the model uses the data and still does not clear the
+cheap baseline.
+
 **Amendment A16, the A5 extension at five seeds, 2026-08-19. The structure result is unambiguous, the prediction gain is stratum-dependent as predicted, and the three-seed numbers recorded earlier today are superseded.**
 
 Both strata now run at five seeds with arms A1 and A5. One curated module and one generated
@@ -658,8 +709,10 @@ which is what the question actually asks.
 | generated | regulon_AHR | 0.549 | 0.455 | 5 of 5 | 0.1068 | 0.1312 | +22.8% |
 | generated | coresponse_PIM1 | 0.389 | 0.212 | 5 of 5 | 0.2710 | 0.2674 | -1.3% |
 
-**Structure: 44 of 44 pairs fall below their module's within-A1 median.** Every pair, every
-module, both strata. Showing the proposer the training responses moves the structure it emits
+**Structure: 48 of 49 pairs fall below their module's within-A1 median.** The one exception
+is a single seed pair on regulon_YY1, which finished after this entry was first written and
+came in at 4 of 5; the figure of 44 of 44 recorded here an hour earlier covered the nine
+modules then available and is corrected rather than left standing. Showing the proposer the training responses moves the structure it emits
 further than reseeding does, without exception. Set against A3, where permuting the
 perturbation-to-response pairing leaves the proposal inside the replicate range, the pair of
 results says the proposer conditions on the data when the data is in front of it and ignores
