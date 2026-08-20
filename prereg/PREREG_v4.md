@@ -632,6 +632,62 @@ or in any of four topology families, while a structureless low-rank surrogate re
 to within 1.7 percent on rank and 0.0008 on the leading-PC fraction. The restatement as an
 identifiability claim, which amendment A14 prepared for, is not needed.
 
+**Amendment A13 complete, seven modules, 2026-08-19. Structure does not clear linear on the residual anywhere the measurement means anything, and three modules do not measure anything.**
+
+All seven modules have been scored on the perturbation-specific residual at the pre-specified
+k of 1. Classifying them before reading them is not optional here, because three cannot bear
+the comparison and would otherwise be counted as agreeing with it.
+
+| Module | Folds | DE mass removed | Residual null | Linear | Best structural source | Delta vs linear | Status |
+|---|---|---|---|---|---|---|---|
+| Cytokine_production | 19 | 29.1% | 0.3787 | 0.5331 | oracle 0.4500 | -0.0831 | informative |
+| TCR_signalosome | 7 | 48.5% | 0.4595 | 0.6168 | GRNBoost2 0.6276 | +0.0108 | informative |
+| CD4_lineage_TFs | 11 | 15.4% | 0.2260 | 0.2701 | mean difference 0.3862 | +0.1160 | informative |
+| coresponse_PIM1 | 18 | 20.4% | 0.3418 | 0.3468 | oracle 0.3617 | +0.0149 | informative, marginal |
+| coresponse_HCCS | 17 | 3.5% | 0.1398 | 0.2157 | oracle 0.2184 | +0.0027 | does not test the hypothesis |
+| coresponse_MOV10 | 16 | 21.6% | 0.2113 | 0.1532 | oracle 0.3040 | +0.1508 | degenerate comparator |
+| Th2_GATA3 | 2 | 29.3% | 0.2798 | 0.5000 | oracle 0.4167 | -0.0833 | too few folds |
+
+**Three exclusions, each for a stated reason.**
+
+`coresponse_HCCS` had 3.5 percent of its DE mass removed by the projection. Its leading
+component carries almost none of the differentially expressed signal, so the residual is very
+nearly the full response and the comparison is a repeat of the primary metric under another
+name. It is not evidence for the residual hypothesis and is not counted as such.
+
+`coresponse_MOV10` has linear at 0.1532 against a residual null of 0.2113, so the comparator
+is performing worse than random structures of the same size. Its structural sources appear to
+gain +0.1508 over linear, and that number means nothing, for the same reason the CD4 advantage
+on the full response meant nothing. This is the failure mode that the cross-tabulation
+recorded earlier this month was built to catch, appearing again in a new metric.
+
+`Th2_GATA3` carries two scoreable folds.
+
+**On the four modules where the measurement is sound, no structural source clears linear.**
+The cytokine module is negative at -0.0831. TCR_signalosome, CD4_lineage_TFs and
+coresponse_PIM1 are positive at +0.0108, +0.1160 and +0.0149, and every one of those intervals
+spans zero, so none clears the advantage rule of section 1.2. `coresponse_PIM1` is marginal in
+a second sense worth stating: its linear arm exceeds its residual null by 0.0050, so the
+comparator is barely informative there.
+
+**The conclusion recorded when the cytokine module first reported stands, on four modules
+rather than one.** Section 2.2 established that a `do()`-style structural model cannot express
+a response shared across perturbations, which made the primary metric one this model class
+forfeits part of by construction. That component has now been removed and structure still does
+not win. The objection is answered by measurement.
+
+**A methodological point for the write-up, which the sweep produced rather than the
+hypothesis.** The fraction of DE mass a single leading component removes varies from 3.5 to
+48.5 percent across these seven modules. "The residual" is therefore not one quantity, and a
+result on it cannot be pooled across modules without that fraction attached. Every residual
+score in the paper carries the fraction removed beside it, and modules below a stated
+threshold are reported as not testing the hypothesis rather than as confirming it.
+
+**Review 2's first item is now closed.** Its author judged it worth more than anything else
+remaining and named two outcomes, that structure loses and the negative hardens, or that
+structure wins and the project gains its first positive. The answer is the first, on the
+modules that can answer it, with three of seven unable to.
+
 **Amendment A13 residual set complete on the curated modules, and A16 complete on both strata, 2026-08-19.**
 
 **The residual decomposition now covers four curated modules, three of them informative.**
