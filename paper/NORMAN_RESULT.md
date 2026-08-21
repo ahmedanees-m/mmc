@@ -30,7 +30,12 @@ non-additivity is real?
   additive control (n=43, mean 0.40). The two tertiles separate cleanly. Operationalization
   note: the paper's precomputed genetic-interaction distance-correlation table is not shipped
   with the GEO matrix, so the same additive-fit deviation is recomputed from the pseudobulk;
-  this is a stated deviation from the letter of the pre-registration.
+  this is a stated deviation from the letter of the pre-registration (amendment A7).
+  **Corrected 2026-08-22:** that table is published in the supplementary material rather than
+  in GEO. Table S9 carries `emap`, `dcor`, `dcor_singles`, `dcor_ratio` and `ts_score` for 125
+  doubles, extracted to `results/norman_supp/`. The selection reported below still rests on the
+  recomputed deviation. Re-running it on the published quantities would repair A7 rather than
+  repeat it, and is recorded as open work, not as done.
 - **Compose test (held-out).** The signed-logistic sum-of-products structural model (the mmc
   kernel, reduced to the bipartite A,B to readout topology) was informed only by the singles
   and the global response scale, then predicted the double via the activation operator with
