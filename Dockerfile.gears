@@ -1,0 +1,48 @@
+# GEARS comparator environment (Step 8).
+#
+# Separate from mmc:v4 and mmc:gpu on purpose. mmc:gpu carries JAX with CUDA and was built
+# for one measurement, the CPU-versus-GPU timing of the structural search recorded in
+# section 7.1; it has never held torch or gears, and the status line that implied otherwise
+# was corrected on 2026-08-19.
+#
+# The known failure point is torch_geometric's compiled companions, torch-scatter and
+# torch-sparse, whose wheels are built against a specific torch and CUDA pair. This image
+# pins torch from the base image rather than installing it, and installs torch_geometric
+# alone, which since 2.4 no longer requires those extensions for the message-passing layers
+# GEARS uses. If a model path turns out to need them, that is the point at which this is
+# dropped and the scoping is stated, per the time box.
+FROM pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PIP_NO_CACHE_DIR=1 \
+    PYTHONUNBUFFERED=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        git build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# torch_geometric without the compiled extensions, then GEARS and the data stack it reads
+# through. Versions are left to the resolver except where the base image already pins them,
+# so that a resolver conflict surfaces as a build failure rather than as a silent downgrade
+# of torch, which would break the CUDA pairing.
+RUN pip install --no-deps torch_geometric==2.5.3 \
+    && pip install \
+        scanpy==1.10.2 \
+        anndata==0.10.8 \
+        scipy \
+        pandas \
+        numpy \
+        scikit-learn \
+        tqdm \
+        dcor \
+        requests
+
+RUN pip install --no-deps cell-gears==0.1.2
+
+# fail the build rather than the run if the pairing is wrong
+RUN python -c "import torch, torch_geometric, gears; \
+print('torch', torch.__version__, 'cuda build', torch.version.cuda); \
+print('torch_geometric', torch_geometric.__version__); \
+print('gears imported OK')"
+
+WORKDIR /app
