@@ -59,6 +59,10 @@ CHECK
 
 note "worker started"
 for name in $MODULES; do
+    # host-side path, used only for the completeness check. The container is given the
+    # path under its own /work mount: passing this one through would make the container
+    # create the tree inside itself and lose the result on --rm, which is what happened
+    # on 2026-08-22 and cost four module-runs that had actually succeeded.
     out="$WORK/results/a20/step1_${name}.json"
     complete "$out" && continue
     mkdir "$CLAIMS/$name" 2>/dev/null || continue      # already taken by another worker
@@ -74,7 +78,7 @@ for name in $MODULES; do
             --module "$name" --condition Stim8hr $(defarg "$name") \
             --sources linear,mean,zero,oracle,random \
             --workers "$CPUS" --seeds "$SEEDS" --n-random "$NRAND" \
-            --out "$out" \
+            --out "/work/results/a20/step1_${name}.json" \
         > "$LOGS/${name}.log" 2>&1
     if complete "$out"; then
         note "done $name"
