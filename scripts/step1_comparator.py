@@ -346,6 +346,10 @@ def main() -> None:
                     ev = evaluate_spec(mod, spec, f"oracle_seed{s}")
                     final = compare.bootstrap_mean(ev.scores["de_overlap"])
                     res["final_de_overlap"] = final
+                    # amendment A20: the per-seed mean alone cannot be re-aggregated onto the
+                    # seed median at fold level, which is what section 2.31 recorded as a gap
+                    res["per_fold_de_overlap"] = [None if v != v else round(float(v), 4)
+                                                  for v in ev.scores["de_overlap"]]
                     seeds_out.append(res)
                     if final["mean"] > best_score:
                         best_score, best_overall = final["mean"], (res, spec, ev, trace)
