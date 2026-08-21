@@ -632,6 +632,58 @@ or in any of four topology families, while a structureless low-rank surrogate re
 to within 1.7 percent on rank and 0.0008 on the leading-PC fraction. The restatement as an
 identifiability claim, which amendment A14 prepared for, is not needed.
 
+**The published Norman subtype labels do not exist in tabulated form, 2026-08-21. The supplement resolves the question and Step 4 is not testable in its pre-registered form.**
+
+The Norman 2019 supplementary material has been obtained and examined in full: tables S1
+through S9, which the supplementary text confirms is the complete set, together with the 52
+page supplementary PDF. The earlier entry recorded the blocker as a manual download. That
+download has happened and the blocker resolves into a negative finding rather than into data.
+
+**The category names appear nowhere in the tables.** A byte level search of every XML part of
+all nine workbooks for synergy, suppression, redundancy, neomorphism and epistasis returns
+zero matches. This is a stronger check than a search of parsed cells, since it covers shared
+string tables, headers, and any sheet a parser might skip. The supplementary PDF mentions the
+concepts only in prose, on two pages, and never as an assignment per gene pair.
+
+**What the supplement does publish.** Table S9, GI_model_fits, carries 125 doubles with 16
+continuous columns: `emap`, the published fitness GI score; `ts_coef_first` and
+`ts_coef_second`, the Theil-Sen coefficients; `ts_norm2`; `abs_log_ts_ratio`; `de_double`,
+`de_first` and `de_second`; and the distance correlation family, `dcor`, `dcor_singles`,
+`dcor_ratio`, `ts_linear_dcor` and `ts_score`. Every column is numeric and none is
+categorical. Table S5 separately carries gene level GI scores and profile correlations for
+6,658 pairs across 116 genes. These are the features the categories were derived from,
+published without the derived labels.
+
+**The categories cannot be reconstructed from a published rule, and that is the substantive
+finding.** The supplementary methods for Fig. 4F describe an adaptation of OneSENSE using UMAP
+over these features. The number of clusters was fixed by qualitative judgement, in the
+authors' description an assessment of the tradeoff between interpretability and granularity,
+and the projection shown was chosen from 10,000 random seed iterates. A grouping produced by a
+seed dependent embedding with a hand chosen cluster count has no deterministic rule behind it,
+so it cannot be regenerated from the published data even in principle. The only fully
+specified numeric criterion in the methods, the buffering rule of asymmetry above 1.25 together
+with a GI score of 3 or more, is an annotation used to orient arrows in a figure rather than
+the classification, and applied to Table S9 it selects 1 of 125 doubles.
+
+**Consequence for Step 4.** The pre-registered hypothesis names published epistasis and
+suppression subtypes. Those assignments were never tabulated and the procedure that produced
+them is not reproducible. Step 4 as pre-registered therefore cannot be tested against the
+published labels, and this is a property of the source rather than of the search for it. No
+derived partition is substituted. Deriving categories from the published coefficients would
+repeat the error amendment A7 made and A15 exists to prevent, differing from it only in using
+another group's features rather than this project's own fitted ones.
+
+The counts quoted in the second review, synergy 30, suppression 12, redundancy 8, neomorphism
+13 and epistasis 9, sum to 72. The supplement carries 125 doubles and no labels, so those
+counts did not come from it. Where they did come from has not been established and is not
+assumed.
+
+**What remains available, as a decision rather than an assumption.** Table S9's `emap` column
+is a published, deterministic, continuous measure of genetic interaction for 125 doubles, and
+it requires no derivation. Recasting Step 4 around it would test a different hypothesis from
+the pre-registered one and would need an amendment recorded before any outcome is examined.
+That is a decision about scope and is left open rather than taken here.
+
 **Step 8's readiness was overstated in the record, 2026-08-19. GEARS has never been installed.**
 
 The status table has carried "CUDA image built and verified" against Step 8 since the image
