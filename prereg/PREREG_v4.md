@@ -632,6 +632,123 @@ or in any of four topology families, while a structureless low-rank surrogate re
 to within 1.7 percent on rank and 0.0008 on the leading-PC fraction. The restatement as an
 identifiability claim, which amendment A14 prepared for, is not needed.
 
+**Amendments A17 and A18 complete, 2026-08-22. A18 is refuted by its own pre-registered rule, A17 narrows claim 2, and one supporting claim in the draft is withdrawn.**
+
+Both ran after the rule and the module selection were committed, and neither outcome is
+reinterpreted here to fit the expectation that preceded it.
+
+---
+
+**A18 is refuted.** The rule fixed in advance was that the full ridge map clears the
+reduced-rank map on at most 4 of the 13 sound modules, and that the median ratio of
+reduced-rank to full-rank held-out DE-overlap is at least 0.90. The first holds and the
+second does not, and the rule as written makes failure of either a refutation.
+
+| Module | n | Effective rank | Adaptive k | Ridge | Reduced | Ratio | Ridge clears |
+|---|---|---|---|---|---|---|---|
+| regulon_STAT3 | 40 | 8.13 | 9 | 0.1726 | 0.0674 | 0.390 | no |
+| regulon_HIF1A | 40 | 7.83 | 8 | 0.0857 | 0.0542 | 0.633 | no |
+| regulon_AHR | 40 | 5.03 | 6 | 0.1975 | 0.1264 | 0.640 | no |
+| regulon_NFE2L2 | 40 | 4.43 | 5 | 0.0925 | 0.0677 | 0.731 | no |
+| coresponse_KIF20A | 20 | 3.87 | 4 | 0.0996 | 0.0795 | 0.798 | no |
+| coresponse_ACTR2 | 20 | 1.69 | 2 | 0.1936 | 0.1583 | 0.818 | no |
+| coresponse_PIM1 | 20 | 2.07 | 3 | 0.3350 | 0.2898 | 0.865 | no |
+| coresponse_HCCS | 20 | 4.37 | 5 | 0.1284 | 0.1135 | 0.885 | no |
+| regulon_YY1 | 40 | 3.63 | 4 | 0.1066 | 0.0989 | 0.927 | no |
+| coresponse_CFAP298 | 20 | 5.92 | 6 | 0.1618 | 0.1563 | 0.966 | no |
+| Cytokine_production | 28 | 3.64 | 4 | 0.4451 | 0.4619 | 1.038 | no |
+| coresponse_MOV10 | 20 | 3.63 | 4 | 0.1973 | 0.2057 | 1.043 | no |
+| TCR_signalosome | 11 | 1.60 | 2 | 0.3929 | 0.4365 | 1.111 | no |
+
+Median ratio 0.865 against a floor of 0.90. **Refuted.**
+
+**What the refutation does and does not say.** The primary criterion held completely: the
+ridge map does not clear the reduced-rank map on a single module, 0 of 13, so no loss from
+truncation is statistically established anywhere. The refutation rests entirely on the
+secondary criterion, which is a median of point estimates with no uncertainty attached. That
+was a weaker construction than the primary and it is the one that decided the outcome. It is
+recorded as a defect in how the rule was written, not as grounds for setting the rule aside.
+
+A second defect: as written, confirmation required both criteria and refutation followed from
+either failing, which left the stated third category of mixed unreachable. The verdict stands
+as refuted because that is what the rule returns.
+
+**Where the failure sits, and the likely mechanism.** The four modules with the lowest ratios
+are the 40-perturbation regulon modules, and the descriptive sweep shows they do not recover
+the ridge's score until rank 24 to 32, which is close to full rank. The modules the low-rank
+account was built on behave as predicted: Cytokine_production reaches 1.038 at its adaptive
+rank of 4, and TCR_signalosome exceeds the ridge at every rank up to 6.
+
+The sweep curves are not monotone. `coresponse_ACTR2` runs 0.92, 0.82, 0.89, 0.88, 0.82, 0.93,
+0.96 across ranks 1 to 12, which is not the signature of a rank threshold but of a metric
+moving inside its own noise, and it is consistent with nothing clearing the paired test.
+
+The substantive lesson is that the participation ratio measures how concentrated the variance
+is, while DE-overlap is a ranking metric over the top 50 genes. A component carrying little
+variance can still change which genes enter that ranking. The two quantities are therefore not
+interchangeable, and the paper must not claim the effective rank is the number of components
+needed to predict. That claim was never made in the record, and A18 is what stops it being made.
+
+**Claim 2's diagnostic evidence is untouched.** A18 tested a bridge from the diagnostic to the
+prediction metric. The bridge does not hold in the form proposed. The calibration evidence,
+that no causal generator reproduces the signature while a structureless low-rank surrogate
+does, is a separate measurement and is addressed by A17.
+
+---
+
+**A17 narrows claim 2 rather than confirming it.** Six modules were named in advance and all
+six ran, one after a stated deviation recorded below.
+
+| Module | Effective rank | Leading PC | Causal generator accepted | Low-rank surrogate accepts |
+|---|---|---|---|---|
+| CD4_lineage_TFs | 5.75 | 0.202 | no | yes, 4 rank settings |
+| coresponse_ACTR2 | 1.69 | 0.562 | no | yes, 5 |
+| coresponse_HCCS | 4.37 | 0.208 | no | yes, 2 |
+| regulon_STAT3 | 8.13 | 0.122 | no | yes, 4 |
+| TCR_signalosome | 1.60 | 0.654 | **yes**, structural+lowrank at shared weight 8.0 | yes, 4 |
+| coresponse_PIM1 | 2.07 | 0.500 | **yes**, structural+lowrank at shared weight 4.0 | yes, 5 |
+
+On four of six, claim 2 replicates exactly: no causal generator meets the section 4.1 criterion
+and the structureless low-rank surrogate does. On two of six a causal generator accepts, and in
+both cases only the variant carrying a shared component four to eight times the structural
+contribution. A purely structural generator accepts nowhere, at any density or topology, on any
+of the six.
+
+Following the amendment, claim 2 is narrowed to what the measurement supports rather than the
+two modules being explained away. The defensible statement is that no purely structural
+generator reproduces the identifiability signature on any module tested, and that on two of
+seven modules a structural generator does reproduce it once a dominant shared component is
+added. The shared component is the part of the response the structural grammar cannot express,
+which is the same quantity section 2.27 measured as an offset, so the two accepting cases are
+consistent with the account rather than counterexamples to it. That reading is offered as an
+interpretation and the acceptance itself is reported as the primary fact.
+
+**One supporting claim is withdrawn.** Section 2.34 recorded that hub, scale-free and modular
+generators all land further from the real module than uniform ones, and gave a mechanism: that
+concentrating out-degree makes knockdown responses less alike and so raises the participation
+ratio. That does not replicate.
+
+| Module | Real | Uniform | Hub | Scale-free | Modular | Direction |
+|---|---|---|---|---|---|---|
+| CD4_lineage_TFs | 5.75 | 11.91 | 13.51 | 12.61 | 11.54 | mixed |
+| TCR_signalosome | 1.60 | 4.04 | 5.19 | 3.50 | 3.88 | mixed |
+| coresponse_ACTR2 | 1.69 | 5.81 | 6.81 | 6.43 | 5.09 | mixed |
+| coresponse_HCCS | 4.37 | 6.55 | 7.72 | 6.40 | 8.80 | mixed |
+| regulon_STAT3 | 8.13 | 14.19 | 13.90 | 15.82 | 15.88 | mixed |
+| coresponse_PIM1 | 2.07 | 8.23 | 5.81 | 5.80 | 6.66 | **reversed**, all three closer than uniform |
+
+The direction is mixed on five modules and reversed on one. The cytokine result was real and it
+was module-specific, and the mechanism written around it is withdrawn as a general statement.
+What survives is narrower and still sufficient: every topology family rejects on every module,
+so the sweep continues to show that the signature is not reachable by concentrating out-degree,
+without supporting a claim about which topology fails worst.
+
+**Deviation, recorded.** A17 specified 48 edges for every family, copied from 2.34. That is not
+representable on TCR_signalosome, which has 11 genes and a grammar in-degree cap of 3, giving at
+most 33 edges; the run failed with that error rather than producing a degenerate result. It was
+re-run at 19 edges, which preserves the edges-per-gene ratio of the original sweep, 48 over 28
+genes. The other five modules ran at 48 as specified.
+
 **Amendments A17 to A20, recorded 2026-08-22, before any of the work they govern.**
 
 The third review names four items. All four are recorded here before running, and A18 in

@@ -28,13 +28,14 @@ the comparison uninformative. On the thirteen modules where the linear baseline 
 beating, the leaky oracle clears it on two, one of them by 0.0002.
 
 The reason is a property of the data rather than of the model class. The perturbation-by-gene
-response matrix has an effective rank of 3.64 out of 28 perturbations and a leading-principal-
-component fraction of 0.276. No sparse causal generator reproduces that signature at any edge
-density from 12 to 84, or in any of four topology families including hub, scale-free and
-modular. A structureless low-rank surrogate reproduces it to within 1.7 percent on effective
-rank and 0.0008 on the leading-component fraction. Sparse causal wiring of any topology works
-against low rank, because low rank requires different perturbations to produce similar
-responses.
+response matrix on the primary module has an effective rank of 3.64 out of 28 perturbations and
+a leading-principal-component fraction of 0.276. Across seven modules, no purely structural
+generator reproduces that signature at any edge density or in any of four topology families
+including hub, scale-free and modular, while a structureless low-rank surrogate reproduces it
+on every module, to within 1.7 percent on effective rank and 0.0008 on the leading-component
+fraction on the primary one. On two of the seven a structural generator does reproduce it, but
+only once a shared component four to eight times the structural contribution is added, which is
+the component the sparse grammar cannot express.
 
 Three objections are answered by measurement rather than by argument: that the metric is one
 sparse models forfeit by construction, that the model class rather than the structure is the
@@ -184,22 +185,54 @@ the real module. Acceptance was fixed in advance at 15 percent relative on effec
 No causal generator reproduces the signature at any density from 12 to 84 edges, or in any of
 the four topology families. A structureless low-rank surrogate reproduces it closely.
 
-**The topology families were added to challenge this claim and strengthened it.** The
-expectation was that concentrating out-degree would produce a low-rank response matrix, since a
-few master regulators driving most targets is the standard picture. All three concentrated
-families are further from the real module than the uniform generator they were added to
-challenge, raising the effective rank from 10.3 to between 12.0 and 12.8. The mechanism is
-worth stating because it is not obvious. A hub does make its own targets move together, but the
-diagnostic is computed on a matrix whose rows are different knockdowns. Giving a few regulators
-most of the out-edges makes the rows less alike: knocking down a hub moves a great deal, while
-knocking down any of the many non-hubs moves almost nothing, so the rows grow more heterogeneous
-and the participation ratio rises. Low rank here requires different perturbations to produce
-similar responses, which sparse causal wiring of any topology works against.
+**The topology families were added to challenge this claim.** The expectation was that
+concentrating out-degree would produce a low-rank response matrix, since a few master regulators
+driving most targets is the standard picture. On the primary module all three concentrated
+families land further from the real module than the uniform generator, raising the effective
+rank from 10.3 to between 12.0 and 12.8.
+
+That ordering is module-specific and no general claim is made from it. Replicated across six
+further modules, the direction is mixed on five and reversed on one, where all three
+concentrated families sit closer to the real module than uniform. What holds everywhere is the
+weaker and sufficient statement: every topology family rejects on every module tested, so the
+signature is not reachable by concentrating out-degree, and which topology fails worst is not a
+stable property.
+
+**The sweep was replicated on six modules chosen before it ran.** The core result holds on four
+of the six: no causal generator meets the acceptance criterion and the low-rank surrogate does.
+On the remaining two, TCR_signalosome and coresponse_PIM1, a structural generator accepts, in
+both cases only the variant carrying a shared component at four to eight times the structural
+weight. A purely structural generator accepts nowhere, on any of the seven modules, at any
+density or topology.
+
+The claim is therefore narrowed to what the measurement supports. Sparse causal structure alone
+does not reproduce the identifiability signature of this data. Sparse structure plus a dominant
+shared component sometimes does, and that shared component is precisely what the grammar cannot
+express and what section 5.2 supplies as a fitted offset.
 
 **The diagnostics are not a thresholding artefact.** They are computed on the response matrix
 rather than on a differential-expression call, so the differential-expression threshold cannot
 reach them, and that matrix is 96.4 percent non-zero. An effective rank of 3.64 on an almost
 fully populated 28 by 28 matrix is not a statement about sparsity.
+
+**A prediction that did not hold.** If the response matrix is effectively low rank, then
+truncating the ridge map near that rank should cost little held-out performance. That was
+registered as a directional prediction with a rule fixed in advance, and on the 13 sound
+modules it is refuted: the median ratio of reduced-rank to full-rank held-out DE-overlap is
+0.865 against a pre-specified floor of 0.90.
+
+The failure is informative rather than fatal. The ridge map does not clear the reduced-rank map
+on a single one of the 13 modules, so no truncation loss is statistically established anywhere;
+the refutation rests on a median of point estimates, which was the weaker of the two
+pre-specified criteria. The modules that fail are the 40-perturbation regulon modules, which do
+not recover the ridge's score until rank 24 to 32, while the modules the low-rank account was
+built on behave as predicted, with the primary module at a ratio of 1.038 by rank 4.
+
+The reason the bridge does not hold is worth stating, because it constrains how the diagnostic
+should be read. The participation ratio measures how concentrated the variance is, while
+DE-overlap ranks the top 50 genes, and a component carrying little variance can still change
+which genes enter that ranking. The effective rank is therefore not the number of components
+needed to predict, and this paper does not claim it is.
 
 **Consistency with the model-level result.** Within the near-optimal class of structures, 107
 lie within 5 percent of the best training loss, and their held-out scores span 0.188 to 0.304.
@@ -409,6 +442,10 @@ section 6 are under `results/norman_supp/`.
 ## Open items in this draft
 
 - Section 4 would be materially stronger with the diagnostics computed on a second dataset.
+  This is in progress as a diagnostics-only measurement, with no comparator attached.
+- The two modules where a structural generator accepts deserve their own short treatment rather
+  than a sentence, since they are the closest thing in this study to a positive result for
+  sparse structure.
 - Section 8's GEARS gap is the most likely reviewer objection and has no measurement behind it.
 - Section 6's pair selection can be re-run on published quantities and has not been.
 - Figures are not yet drawn. The candidates are the calibration table as a two-panel scatter,

@@ -243,3 +243,30 @@ def jaccard_edges(spec_a, spec_b) -> float:
     if not ea and not eb:
         return float("nan")
     return len(ea & eb) / len(ea | eb)
+
+
+def bind_reduced_rank(mod: ModuleData, rank: int | None = None, l2: float = 1.0):
+    """A18: the ridge map truncated to a low rank.
+
+    `rank=None` selects the rank per fold from the training rows alone, as the ceiling of
+    their effective rank, so no fold's own response informs the rank used to predict it.
+    """
+    from ..baselines import linear as linear_bl
+    from . import identifiability
+
+    genes = list(mod.genes)
+
+    def fn(train_idx, held_idx):
+        train_idx = list(train_idx)
+        td = {mod.perts[i]: {genes[j]: float(mod.observed[i, j]) for j in range(len(genes))}
+              for i in train_idx}
+        held = mod.perts[held_idx]
+        if rank is None:
+            k = int(np.ceil(identifiability.effective_rank(mod.observed[train_idx])))
+        else:
+            k = int(rank)
+        pred = linear_bl.reconstruct_reduced_rank(
+            td, genes, [mod.perts[i] for i in train_idx], [held], rank=k, l2=l2)[held]
+        return np.array([pred.get(g, 0.0) for g in genes], float)
+
+    return fn

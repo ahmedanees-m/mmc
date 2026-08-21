@@ -52,3 +52,39 @@ def reconstruct(train_deltas: dict[str, dict[str, float]], genes: list[str],
         pred = _signature(train_deltas, p, sig_perts) @ W
         out[p] = {g: float(pred[gi[g]]) for g in genes}
     return out
+
+
+def reconstruct_reduced_rank(train_deltas: dict[str, dict[str, float]], genes: list[str],
+                             train_perts: list[str], held_out_perts: list[str],
+                             rank: int, l2: float = 1.0) -> dict[str, dict[str, float]]:
+    """Reduced-rank regression: the ridge map of `reconstruct`, truncated to `rank`.
+
+    Amendment A18. If the response matrix is effectively low rank, truncating the ridge
+    map near that rank should cost little held-out performance. The truncation is the
+    classical reduced-rank solution: project the ridge coefficients onto the leading
+    right singular subspace of the fitted training responses, which is the rank-constrained
+    minimiser of the same squared error rather than an independent decomposition of Y.
+    """
+    sig_perts = list(train_perts)
+    gi = {g: i for i, g in enumerate(genes)}
+
+    X = np.vstack([_signature(train_deltas, p, sig_perts) for p in train_perts])
+    Y = np.zeros((len(train_perts), len(genes)))
+    for r, p in enumerate(train_perts):
+        for g, v in train_deltas.get(p, {}).items():
+            if g in gi:
+                Y[r, gi[g]] = v
+
+    A = X.T @ X + l2 * np.eye(X.shape[1])
+    W = np.linalg.solve(A, X.T @ Y)
+
+    k = max(1, min(int(rank), min(W.shape)))
+    _, _, vt = np.linalg.svd(X @ W, full_matrices=False)
+    V = vt[:k]                                          # (k, n_genes)
+    W = W @ V.T @ V
+
+    out: dict[str, dict[str, float]] = {}
+    for p in held_out_perts:
+        pred = _signature(train_deltas, p, sig_perts) @ W
+        out[p] = {g: float(pred[gi[g]]) for g in genes}
+    return out

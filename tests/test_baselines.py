@@ -37,3 +37,32 @@ def test_consensus_leans_toward_the_similar_neighbour():
     pred = consensus.predict(train, test_visible, ["G"], ["H"], ["D1", "D2"], ["S1", "S2"])
     assert pred["H"]["G"] > 0        # weighted toward D1, the neighbour H resembles
 
+
+
+def _rank_of_predictions(rank):
+    """Fit the reduced-rank map on a rank-2 response matrix and return the predictions."""
+    rng = np.random.default_rng(0)
+    genes = [f"g{i}" for i in range(12)]
+    basis = rng.normal(size=(2, len(genes)))
+    perts = genes[:9]           # a perturbation is identified by the gene it targets
+    loads = rng.normal(size=(len(perts), 2))
+    obs = loads @ basis                                  # exactly rank 2 by construction
+    train = {p: {g: float(obs[i, j]) for j, g in enumerate(genes)}
+             for i, p in enumerate(perts)}
+    pred = linear.reconstruct_reduced_rank(train, genes, perts, perts, rank=rank, l2=1e-6)
+    return np.vstack([[pred[p][g] for g in genes] for p in perts])
+
+
+def test_reduced_rank_truncation_holds_the_requested_rank():
+    for k in (1, 2):
+        s = np.linalg.svd(_rank_of_predictions(k), compute_uv=False)
+        assert np.sum(s > 1e-8 * s[0]) <= k
+
+
+def test_reduced_rank_at_the_true_rank_matches_the_full_ridge():
+    # the responses are exactly rank 2, so truncating at 2 should cost essentially nothing
+    full = _rank_of_predictions(12)
+    at_true = _rank_of_predictions(2)
+    assert np.allclose(full, at_true, atol=1e-6)
+    # and truncating below the true rank must cost something, or the test proves nothing
+    assert not np.allclose(full, _rank_of_predictions(1), atol=1e-6)
