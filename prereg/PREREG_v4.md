@@ -632,6 +632,106 @@ or in any of four topology families, while a structureless low-rank surrogate re
 to within 1.7 percent on rank and 0.0008 on the leading-PC fraction. The restatement as an
 identifiability claim, which amendment A14 prepared for, is not needed.
 
+**Amendments A17 to A20, recorded 2026-08-22, before any of the work they govern.**
+
+The third review names four items. All four are recorded here before running, and A18 in
+particular carries a directional prediction that must be fixed in advance to be worth anything.
+
+---
+
+**A17. The generator sweep is replicated on six further modules.**
+
+Section 2.34 carries the decisive evidence for claim 2, and it rests on Cytokine_production
+alone. A load-bearing claim resting on one gene set is the same shape as the errors recorded in
+2.15 and 2.26, both of which were single-module findings that did not survive scaling.
+
+The six modules are named here before the sweep runs, and the selection is not revisited
+afterwards:
+
+| Module | Source | Linear beats own null | Reason for inclusion |
+|---|---|---|---|
+| coresponse_PIM1 | co-response | yes | Strongest co-response linear arm, 18 folds |
+| coresponse_HCCS | co-response | yes | Leading component carries little DE mass, 3.5 percent at k=1, so it should sit at the high-rank end |
+| coresponse_ACTR2 | co-response | yes, by 0.00023 | The marginal case, included so the sweep covers a module whose soundness is barely established |
+| TCR_signalosome | curated | yes | Highest leading-PC fraction of the curated set, the low-rank end |
+| CD4_lineage_TFs | curated | no | Included deliberately as a module the comparator cannot support, to check the sweep behaves the same way where prediction is uninformative |
+| regulon_STAT3 | regulon | yes | The third module source, otherwise unrepresented |
+
+Protocol is identical to 2.34: all families drawn at 48 edges, the same fitting, simulation and
+acceptance path, acceptance fixed at 15 percent relative on effective rank and 0.05 absolute on
+the leading-PC fraction, and the density sweep from 12 edges to three times the gene count.
+
+Confirmation is every module rejecting every causal family and accepting the low-rank
+surrogate. Any module that accepts a causal family is reported as such and claim 2 is narrowed
+to the modules where it holds, rather than the module being explained away.
+
+---
+
+**A18. A reduced-rank regression baseline, with the prediction recorded before the run.**
+
+Claim 2 currently rests on a property of the response matrix measured by singular value
+decomposition. If that property is real it should be visible in the prediction metric, which is
+a much harder thing to argue with than a diagnostic.
+
+**The prediction, fixed before running.** If the response matrix is effectively low rank, then
+a reduced-rank regression truncated near that rank recovers the full-rank ridge map's held-out
+performance. Stated operationally on the 13 modules where the linear arm beats its own random
+null:
+
+- The rank is set per fold from the training rows only, as k equal to the ceiling of the
+  effective rank of the training response matrix, so no fold's own response informs its own
+  rank. Fixed k of 3 and 4 are reported alongside as pre-specified alternatives.
+- Primary: using the paired statistic of section 1.2, the full ridge map clears the
+  reduced-rank map on **at most 4 of the 13 modules**.
+- Secondary: the median across the 13 modules of the ratio of reduced-rank to full-rank
+  held-out DE-overlap is **at least 0.90**.
+
+**Confirmed** if both hold. **Refuted** if the ridge clears the reduced-rank map on 5 or more
+modules, or if the median ratio falls below 0.90. Anything else is reported as mixed and claim
+2 is qualified accordingly.
+
+A refutation here is a problem for claim 2 and is to be reported as one. The point of fixing
+the rule now is that the outcome cannot be reinterpreted after it is seen. The full rank sweep
+from 1 to 8 is recorded as descriptive and is not part of the test.
+
+This also supplies a stronger non-structural comparator than the ridge map alone, which bears
+on the question Step 8 was scoped to answer.
+
+---
+
+**A19. The identifiability signature is measured on data this project did not generate.**
+
+Diagnostics only, with no model fitting and no comparator. Effective rank, leading-PC fraction
+and the perturbation-specific ratio are computed on the same column-centred
+perturbation-by-gene matrix, on:
+
+- the remaining states of the atlas used here, which are already in hand;
+- the Norman single perturbations, which exist in pseudobulk from the combinatorial work and
+  are a different cell type, a different laboratory and a gain-of-function rather than
+  loss-of-function screen.
+
+This does not test a hypothesis about those datasets. It establishes whether the signature that
+explains the result here is a property of this module set or a property of perturbation response
+matrices more generally, and it is reported as descriptive either way. A dataset that does not
+show the signature is as informative as one that does and is reported without adjustment.
+
+---
+
+**A20. The 13 sound modules are re-run with per-seed per-fold scores retained.**
+
+The effective sample size of 13 and the count of modules where the oracle clears a sound linear
+baseline are the numbers the argument turns on, and they currently rest on the seed maximum,
+which has been deprecated in favour of the seed median. Section 2.31 recorded that per-seed
+per-fold scores were never stored, which blocks an exact re-derivation on the median.
+
+Only the 13 modules where the linear arm beats its own random null are re-run, since the other
+14 cannot support the comparison and re-running them would not change any reported count. Every
+per-seed per-fold score is written out this time. The retention gap is closed for these modules
+and remains open for the other 14, which is stated rather than glossed.
+
+The expected outcome is that the count changes, since the median is lower than the maximum on
+18 of 25 modules already measured. Whatever it changes to is what gets reported.
+
 **The published Norman subtype labels do not exist in tabulated form, 2026-08-21. The supplement resolves the question and Step 4 is not testable in its pre-registered form.**
 
 The Norman 2019 supplementary material has been obtained and examined in full: tables S1
