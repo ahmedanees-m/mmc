@@ -350,15 +350,54 @@ informed only by the singles cannot reach it, because the pair-specific interact
 identifiable from single-perturbation marginals. A saturating logic gate imposes one particular
 non-additive extrapolation, which is not the true interaction.
 
-**A limitation specific to this section.** The pre-registered pair selection referred to
-published interaction subtype labels. Those labels were never tabulated in the source
-publication, and the groupings they come from were produced by a dimensionality reduction with
-a qualitatively chosen cluster count selected from 10,000 random-seed iterates, so no
-deterministic rule regenerates them. The selection reported here therefore uses a
-non-additivity measure recomputed from the pseudobulk, which is a stated deviation. The
-published quantitative interaction table is available and would allow the selection to be
-re-run on published quantities rather than a self-derived proxy; that is open work and is not
-claimed as done.
+### 6.1 A widely reused genetic-interaction stratification is not reproducible from the published record
+
+This began as a blocked step and is reported because the blockage is the finding.
+
+The pre-registered analysis referred to the published genetic-interaction subtypes of the
+source atlas, the categories named synergy, suppression, redundancy, neomorphism and epistasis.
+Those categories are reused downstream, including by later methods papers that benchmark on
+this dataset. They are not recoverable from the published record.
+
+**What was checked.** The categories are not in the GEO deposit, whose cell-identity table
+carries only barcode, guide identity, read and UMI counts, coverage and cell number. They are
+not in either loader of the standard perturbation-data package, nor anywhere in the
+distribution of the best-known method trained on this atlas, which ships no data files at all.
+They are not in the supplementary material: a byte-level search of every XML part of all nine
+supplementary workbooks for the five category names returns zero matches, and the supplementary
+text confirms those nine are the complete set. The supplementary PDF mentions the concepts only
+in prose and never as an assignment per gene pair.
+
+**What is published is the feature set, not the labels.** One supplementary table gives 125
+double perturbations with sixteen continuous columns: the fitness interaction score, the
+Theil-Sen coefficients for each single, their magnitude and asymmetry, differential-expression
+counts, and a family of distance correlations. Every column is numeric and none is categorical.
+
+**The categories also cannot be regenerated from a published rule.** The supplementary methods
+describe the grouping as an adaptation of a dimensionality-reduction method using UMAP over
+those features, in which the number of clusters was fixed by qualitative judgement, in the
+authors' description a tradeoff between interpretability and granularity, and the projection
+shown was selected from 10,000 random-seed iterates. A grouping produced by a seed-dependent
+embedding with a hand-chosen cluster count has no deterministic procedure behind it, so it
+cannot be reconstructed from the published data even in principle. The one fully specified
+numeric criterion in the methods, an asymmetry threshold combined with a minimum interaction
+score, orients arrows in a figure rather than assigning subtypes, and applied to the published
+table it selects 1 of 125 doubles.
+
+**Why this matters beyond one analysis.** A categorical stratification that is cited and reused
+is, in practice, whatever each downstream group re-derives. Counts quoted for these subtypes in
+the literature do not match any published table, and re-derivations following the same prose
+description need not agree with one another or with the original figure. The general point is
+that a stratification is part of a paper's evidence, and publishing the features it was derived
+from is not the same as publishing the stratification.
+
+**Consequence here, stated plainly.** The analysis in section 6 cannot be run against the
+published assignments, so its pair selection uses a non-additivity measure recomputed from the
+pseudobulk. That is a deviation from the pre-registration and it is recorded as one. No
+alternative label source was substituted, because deriving categories from the published
+coefficients would reproduce exactly the problem described above. The published quantitative
+table would allow the selection to be re-run on published quantities rather than a self-derived
+proxy, and that is open work rather than a result claimed here.
 
 ---
 
