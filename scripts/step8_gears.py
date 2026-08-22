@@ -44,6 +44,22 @@ def de_overlap(pred: np.ndarray, obs: np.ndarray, k: int = TOPK, seed: int = 0) 
     return float(inter / k)
 
 
+def mse(pred: np.ndarray, obs: np.ndarray) -> float:
+    """Mean squared error over all genes. Lower is better."""
+    return float(np.mean((pred - obs) ** 2))
+
+
+def mse_top_de(pred: np.ndarray, obs: np.ndarray, k: int = 20) -> float:
+    """Mean squared error over the k most-moved observed genes.
+
+    This is close to the quantity GEARS reports and trains toward, so it is the metric on
+    which the method should be seen at its best. Scoring only on DE-overlap would compare a
+    model against a target it never optimised.
+    """
+    idx = np.argsort(-np.abs(obs))[:k]
+    return float(np.mean((pred[idx] - obs[idx]) ** 2))
+
+
 def paired_delta(a: np.ndarray, b: np.ndarray, seed: int = 0) -> dict:
     """PREREG section 1.2: paired bootstrap over folds, advantage only if lo > 0."""
     a, b = np.asarray(a, float), np.asarray(b, float)
@@ -132,6 +148,12 @@ def main() -> None:
             "gears": de_overlap(gears_d, obs_d),
             "fitted_additive": de_overlap(add_d, obs_d),
             "mean_of_singles": de_overlap(mean_d, obs_d),
+            "gears_mse": mse(gears_d, obs_d),
+            "fitted_additive_mse": mse(add_d, obs_d),
+            "mean_of_singles_mse": mse(mean_d, obs_d),
+            "gears_mse_top20": mse_top_de(gears_d, obs_d),
+            "fitted_additive_mse_top20": mse_top_de(add_d, obs_d),
+            "mean_of_singles_mse_top20": mse_top_de(mean_d, obs_d),
         })
         print(f"  {cond:<24} na {na:.3f}  gears {rows[-1]['gears']:.3f}  "
               f"fitadd {rows[-1]['fitted_additive']:.3f}  "
@@ -158,6 +180,16 @@ def main() -> None:
             "gears_vs_fitted_additive": paired_delta(g, fa),
             "gears_vs_mean_of_singles": paired_delta(g, mo),
         }
+        # MSE is a loss, so the delta is written comparator minus GEARS: positive means
+        # GEARS is the better model, matching the sign convention of the DE-overlap arms
+        for tag in ("mse", "mse_top20"):
+            gm = np.array([r[f"gears_{tag}"] for r in rs], float)
+            fm = np.array([r[f"fitted_additive_{tag}"] for r in rs], float)
+            mm = np.array([r[f"mean_of_singles_{tag}"] for r in rs], float)
+            out["sets"][name][f"gears_{tag}_mean"] = float(np.nanmean(gm))
+            out["sets"][name][f"fitted_additive_{tag}_mean"] = float(np.nanmean(fm))
+            out["sets"][name][f"mean_of_singles_{tag}_mean"] = float(np.nanmean(mm))
+            out["sets"][name][f"gears_beats_fitted_additive_{tag}"] = paired_delta(fm, gm)
         s = out["sets"][name]
         print(f"\n{name}: n={s['n']}  non-additivity {s['non_additivity_mean']:.3f}")
         print(f"  gears {s['gears_mean']:.4f}  fitted-additive "
@@ -166,6 +198,13 @@ def main() -> None:
         d = s["gears_vs_fitted_additive"]
         print(f"  gears minus fitted-additive {d['delta']:+.4f} "
               f"[{d['lo']:+.4f}, {d['hi']:+.4f}]  advantage {d['advantage']}")
+        for tag, label in (("mse", "MSE all genes"), ("mse_top20", "MSE top-20 DE")):
+            print(f"  {label}: gears {s[f'gears_{tag}_mean']:.5f}  "
+                  f"fitted-additive {s[f'fitted_additive_{tag}_mean']:.5f}  "
+                  f"mean-of-singles {s[f'mean_of_singles_{tag}_mean']:.5f}")
+            e = s[f"gears_beats_fitted_additive_{tag}"]
+            print(f"    fitted-additive minus gears {e['delta']:+.5f} "
+                  f"[{e['lo']:+.5f}, {e['hi']:+.5f}]  gears better: {e['advantage']}")
     out["rows"] = rows
 
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
