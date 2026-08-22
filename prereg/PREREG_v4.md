@@ -632,6 +632,54 @@ or in any of four topology families, while a structureless low-rank surrogate re
 to within 1.7 percent on rank and 0.0008 on the leading-PC fraction. The restatement as an
 identifiability claim, which amendment A14 prepared for, is not needed.
 
+**The shrinkage confound proposed for A18 does not apply, checked 2026-08-22. One confound the review raises is real and is named.**
+
+The fourth review asks for a truncated-ridge decomposition to separate rank truncation from
+loss of shrinkage, on the reading that the reduced-rank arm was a reduced-rank regression fitted
+fresh and therefore unregularized where the ridge is not. That is not what was implemented, and
+the check confirms it.
+
+**The arm already is the truncated ridge.** `reconstruct_reduced_rank` computes the ridge
+solution, `W = (X'X + lambda I)^-1 X'Y`, at the same lambda of 1.0 as the full arm, and then
+projects that same `W` onto the leading right singular subspace of its own fitted values. No
+coefficient is re-estimated at reduced rank. The two arms differ by a rank-k projection applied
+to an identical estimator, so regularization is held fixed by construction rather than by
+argument.
+
+**The evidence that they are the same estimator.** At the highest rank swept, the truncated arm
+recovers the full ridge to a ratio of exactly 1.0000 on 10 of the 13 modules. Exact recovery is
+only possible if the two arms are the same fit. The three that fall short, TCR_signalosome at
+0.9394, coresponse_KIF20A at 0.9424 and regulon_AHR at 0.9706, are the modules whose highest
+swept rank is still below their full rank, 8 of 11, 16 of 20 and 32 of 40, so they are still
+truncated rather than disagreeing.
+
+The A18 refutation therefore measures rank truncation, not an estimator difference, and stands
+as recorded without the reinterpretation the review offered as a possibility. This is reported
+because the review's premise was checkable and checking it was cheaper than complying with it.
+
+**A confound the review raises that is real.** Module source and perturbation count are
+perfectly aligned in this set: every regulon module has 40 perturbations, every co-response
+module has 20. "The regulon modules fail" and "the 40-perturbation modules fail" are therefore
+the same statement, and nothing in this design separates them. That is the same confound
+recorded at 2.17 appearing in a new analysis, and it is now stated in the A18 entry rather than
+left implicit. Separating them needs regulon modules at other sizes, which the module generator
+can produce and which is not attempted here.
+
+**Three modules where truncation improves on the full ridge.** Folding these into a median hid
+them:
+
+| Module | Full ridge | Truncated at the adaptive rank | Ratio |
+|---|---|---|---|
+| TCR_signalosome | 0.3929 | 0.4365 | 1.111 |
+| coresponse_MOV10 | 0.1973 | 0.2057 | 1.043 |
+| Cytokine_production | 0.4451 | 0.4619 | 1.038 |
+
+On these three, discarding everything outside the leading few components of the ridge map makes
+held-out prediction better, not worse. That is the low-rank account appearing as a positive
+inside a prediction the same account failed, and the primary module is one of the three. It does
+not change the A18 verdict, which was fixed in advance on a median across all 13, and it belongs
+in the paper beside it.
+
 **coresponse_KIF20A examined, 2026-08-22. The one surviving positive rests on a comparator that a zero predictor beats, and the count is zero under a stricter soundness threshold.**
 
 The fourth review identified this module as the highest-information object left: it is the only
