@@ -632,6 +632,67 @@ or in any of four topology families, while a structureless low-rank surrogate re
 to within 1.7 percent on rank and 0.0008 on the leading-PC fraction. The restatement as an
 identifiability claim, which amendment A14 prepared for, is not needed.
 
+**coresponse_KIF20A examined, 2026-08-22. The one surviving positive rests on a comparator that a zero predictor beats, and the count is zero under a stricter soundness threshold.**
+
+The fourth review identified this module as the highest-information object left: it is the only
+one of the 13 where the oracle clears the linear map on both the seed maximum and the seed
+median, and the saturation curve shows it is the only one of those where the search converged,
+a fifth seed buying nothing.
+
+**The comparator does not hold up.**
+
+| Source | DE-overlap [95% CI] | vs linear |
+|---|---|---|
+| oracle | 0.2607 [0.1242, 0.4300] | +0.1611 |
+| zero | 0.1149 [0.0920, 0.1453] | **+0.0153** |
+| linear | 0.0996 [0.0421, 0.1654] | reference |
+| mean | 0.0554 [0.0048, 0.1166] | -0.0442 |
+
+Random null at the oracle's edge count: mean 0.0717, p95 0.0983, p99 0.1203.
+
+The linear arm clears the pre-registered soundness threshold, its own null's 95th percentile,
+by 0.0013. It sits *below* the 99th percentile, at -0.0207. And the zero predictor, which
+predicts no change at all, scores 0.1149 against linear's 0.0996. **A linear map that loses to
+predicting nothing is not a comparator that a structural advantage over it means anything
+against.**
+
+Across all 13 modules this is specific rather than systematic: KIF20A is the only module where
+zero beats linear. It is also the module carrying the only positive, which is the part that
+matters.
+
+**Sensitivity to the soundness threshold, reported as a check and not as a substitute.** The
+pre-registered rule is that linear must beat the 95th percentile of its own random null. Seven
+of the 13 modules have a linear arm below the 99th percentile, so the rule as written is
+lenient. Moving to the 99th percentile:
+
+| Soundness threshold | Modules | Oracle clears linear, seed median | Seed maximum |
+|---|---|---|---|
+| null p95, pre-registered | 13 | **1** | 5 |
+| null p99 | 6 | **0** | 1 |
+
+`coresponse_KIF20A` is not in the p99 set. The pre-registered number stays primary at 1 of 13,
+because changing the criterion after seeing which module it admits is exactly the move this
+project has refused elsewhere. The p99 column is reported beside it as a sensitivity, and the
+honest summary is that the single positive in the comparison does not survive any tightening of
+the bar its comparator had to clear.
+
+**The mechanistic hypothesis is not supported.** The review suggested a co-response module
+seeded on a mitotic kinesin might be a proliferation programme, which would be a plausible place
+for real specific structure. The module's 20 genes are AHR, ATF4, BRD8, C1D, CHD7, CSDE1,
+EPB41L3, FOXK1, GMEB1, KIF20A, MCTS1, MED24, NSD1, PAGR1, SLC35B1, TENT2, TRAF3, WDR59, YTHDF2
+and ZBED3: transcription factors, chromatin regulators and RNA-binding proteins, with KIF20A the
+only mitotic member. The oracle's selected edges are ATF4 to TRAF3, C1D to MCTS1, CHD7 to
+TRAF3, CSDE1 to MCTS1, CSDE1 to NSD1, MCTS1 to TRAF3, PAGR1 to NSD1 and one from WDR59. KIF20A
+appears in none of them. There is no proliferation programme here and no coherent annotated
+pathway; what the oracle found is a set of edges among stress, chromatin and translation genes
+that predicts a weak target better than a linear map that is itself barely above chance.
+
+**Consequence for claim 1.** The count is 1 of 13 by the pre-registered rule and 0 of 13 by any
+reading that requires the linear comparator to be meaningfully better than chance. Combined
+with the saturation result, which shows the maximum is not a supremum estimate on the modules
+that produce the larger count, the comparison contains no surviving case of a structure source
+beating a sound linear baseline.
+
 **Amendment A21, recorded 2026-08-22 before the run. The oracle search is extended to 20 seeds to decide whether its maximum estimates a supremum.**
 
 The fourth review argues that reporting both the seed maximum and the seed median leaves a
