@@ -632,6 +632,61 @@ or in any of four topology families, while a structureless low-rank surrogate re
 to within 1.7 percent on rank and 0.0008 on the leading-PC fraction. The restatement as an
 identifiability claim, which amendment A14 prepared for, is not needed.
 
+**Amendment A21, recorded 2026-08-22 before the run. The oracle search is extended to 20 seeds to decide whether its maximum estimates a supremum.**
+
+The fourth review argues that reporting both the seed maximum and the seed median leaves a
+measurable question to the reader. The two estimate different things: the maximum over k seeds
+is a downward-biased estimate of the true supremum whose bias shrinks with k, which is what the
+identifiability claim needs, while the median estimates the typical search outcome, which is a
+capability claim. Claim 1 as written is the identifiability claim.
+
+**The free check was run first, on the per-seed scores A20 retained.** For each module and each
+k from 1 to 5, the mean over all seed subsets of size k of the maximum within the subset:
+
+| Module | Seed spread | k=1 | k=2 | k=3 | k=4 | k=5 | Gain from the fifth |
+|---|---|---|---|---|---|---|---|
+| regulon_HIF1A | 0.3570 | 0.1906 | 0.2621 | 0.3266 | 0.3912 | 0.4558 | +0.0646 |
+| coresponse_CFAP298 | 0.2460 | 0.3133 | 0.3696 | 0.4005 | 0.4244 | 0.4477 | +0.0233 |
+| coresponse_ACTR2 | 0.1233 | 0.2580 | 0.2843 | 0.3037 | 0.3212 | 0.3388 | +0.0176 |
+| Cytokine_production | 0.1100 | 0.2269 | 0.2542 | 0.2708 | 0.2820 | 0.2920 | +0.0100 |
+| coresponse_MOV10 | 0.1360 | 0.2238 | 0.2599 | 0.2796 | 0.2905 | 0.2961 | +0.0056 |
+| coresponse_HCCS | 0.1240 | 0.2266 | 0.2583 | 0.2706 | 0.2761 | 0.2816 | +0.0055 |
+| TCR_signalosome | 0.1506 | 0.3836 | 0.4168 | 0.4248 | 0.4297 | 0.4336 | +0.0040 |
+| coresponse_PIM1 | 0.0956 | 0.3893 | 0.4150 | 0.4263 | 0.4308 | 0.4331 | +0.0023 |
+| regulon_NFE2L2 | 0.2739 | 0.2456 | 0.3131 | 0.3277 | 0.3297 | 0.3315 | +0.0019 |
+| regulon_YY1 | 0.0063 | 0.1701 | 0.1716 | 0.1728 | 0.1739 | 0.1749 | +0.0009 |
+| coresponse_KIF20A | 0.0489 | 0.2510 | 0.2607 | 0.2607 | 0.2607 | 0.2607 | +0.0000 |
+| regulon_AHR | 0.1455 | 0.2607 | 0.3043 | 0.3201 | 0.3214 | 0.3214 | +0.0000 |
+| regulon_STAT3 | 0.0000 | 0.2432 | 0.2432 | 0.2432 | 0.2432 | 0.2432 | +0.0000 |
+
+The curve is still climbing on 10 of 13, and the review's prior is confirmed exactly where it
+matters. `regulon_HIF1A` is close to linear in k, each seed adding about 0.065, which is a
+search that has not converged at all. Three of the four modules that clear the linear baseline
+on the maximum but not the median, HIF1A, CFAP298 and ACTR2, are among the least converged,
+with the fifth seed still buying 17 to 24 percent of their total climb from one seed. On those
+modules the maximum is tracking how many searches were run rather than estimating a bound.
+
+`coresponse_KIF20A`, the only module clearing on both summaries, is fully converged: a fifth
+seed buys nothing and the whole one-to-five climb is 0.0098.
+
+**What is being run.** The same 13 modules at 20 seeds, written to a separate output tree so the
+5-seed results stay intact and comparable. The saturation curve is then recomputed to k = 20.
+
+**The rule, fixed before the run.** If the mean gain from the twentieth seed is below 0.005 on a
+module, its maximum is treated as a supremum estimate and reported as a ceiling. Modules still
+climbing at k = 20 are reported as not having a ceiling estimate at all, and no maximum-based
+count is claimed for them. The corrected-advantage count is then reported at 20 seeds on both
+summaries, alongside the 5-seed values, and the difference between them is a fact about search
+convergence rather than about structure.
+
+**What follows if modules remain unconverged.** The word ceiling comes out of the paper for
+those modules and every claim built on them rescopes from "no structure predicts better than a
+linear map" to "no structure found by these sources and this search predicts better." That is
+narrower and defensible, and the annealing evidence does not rescue it: annealing gains of
+0.000 to 0.017 show the candidate pool is not the binding constraint, which is a different
+question from whether the search converged. The seed spread is the evidence on convergence and
+it is large.
+
 **Amendments A19 and A20 complete, and Step 8 has run, 2026-08-22. The count the argument turns on falls to 1 of 13, the identifiability signature does not hold outside this atlas, and GEARS loses to an additive baseline.**
 
 ---
