@@ -21,10 +21,26 @@ from __future__ import annotations
 
 import argparse
 import json
-from itertools import combinations
+from math import comb
 from pathlib import Path
 
 import numpy as np
+
+
+def expected_max(vals: list[float], k: int) -> float:
+    """Mean over all seed subsets of size k of the maximum within the subset.
+
+    Computed in closed form rather than by enumerating subsets, which at 20 seeds would be
+    a million of them. With the values sorted ascending, the i-th is the maximum of a
+    subset exactly when the other k-1 members come from the i-1 below it, so it carries
+    weight C(i-1, k-1) / C(n, k).
+    """
+    v = sorted(vals)
+    n = len(v)
+    if k >= n:
+        return float(v[-1])
+    denom = comb(n, k)
+    return float(sum(x * comb(i, k - 1) for i, x in enumerate(v)) / denom)
 
 
 def main() -> None:
@@ -42,9 +58,7 @@ def main() -> None:
         if len(vals) < 2:
             continue
         n = len(vals)
-        curve = []
-        for k in range(1, n + 1):
-            curve.append(float(np.mean([max(c) for c in combinations(vals, k)])))
+        curve = [expected_max(vals, k) for k in range(1, n + 1)]
         rows.append({
             "module": d.get("module") or p.stem.replace("step1_", ""),
             "n_seeds": n,
@@ -57,32 +71,35 @@ def main() -> None:
             "total_climb": round(curve[-1] - curve[0], 4),
         })
 
-    print(f"{'module':<24}{'spread':>8}  " +
-          "".join(f"{'k=' + str(k):>8}" for k in range(1, 6)) +
+    nmax = max(r["n_seeds"] for r in rows)
+    shown = [k for k in (1, 2, 3, 5, 10, 15, 20) if k <= nmax]
+    print(f"{'module':<24}{'seeds':>6}{'spread':>8}  " +
+          "".join(f"{'k=' + str(k):>8}" for k in shown) +
           f"{'last':>9}{'climb':>8}")
     for r in sorted(rows, key=lambda x: -x["last_gain"]):
-        c = r["curve"] + [None] * (5 - len(r["curve"]))
-        cells = "".join(f"{v:>8.4f}" if v is not None else f"{'-':>8}" for v in c)
-        print(f"{r['module']:<24}{r['spread']:>8.4f}  {cells}"
+        cells = "".join(f"{r['curve'][k - 1]:>8.4f}" if k <= r["n_seeds"] else f"{'-':>8}"
+                        for k in shown)
+        print(f"{r['module']:<24}{r['n_seeds']:>6}{r['spread']:>8.4f}  {cells}"
               f"{r['last_gain']:>+9.4f}{r['total_climb']:>8.4f}")
 
     last = [r["last_gain"] for r in rows]
     climb = [r["total_climb"] for r in rows]
-    # the share of the one-to-five climb that the fifth seed alone contributes; a converged
-    # search would be spending its last seed on nearly nothing
+    # what the final seed still buys, as a share of the whole climb from one seed. A
+    # converged search spends its last seed on almost nothing.
     share = [r["last_gain"] / r["total_climb"] for r in rows if r["total_climb"] > 0]
+    # the pre-registered A21 rule: below this, the maximum is treated as a supremum estimate
+    converged = [r for r in rows if r["last_gain"] < 0.005]
 
-    print(f"\nmodules: {len(rows)}")
-    print(f"gain from the fifth seed: median {np.median(last):+.4f}, "
-          f"max {max(last):+.4f}, still positive on {sum(x > 0 for x in last)} of {len(rows)}")
-    print(f"climb from one seed to five: median {np.median(climb):.4f}")
+    print(f"\nmodules: {len(rows)}, seeds {min(r['n_seeds'] for r in rows)} to {nmax}")
+    print(f"gain from the final seed: median {np.median(last):+.4f}, max {max(last):+.4f}")
+    print(f"climb from one seed to the last: median {np.median(climb):.4f}")
     if share:
-        print(f"share of that climb contributed by the fifth seed alone: "
-              f"median {np.median(share):.1%}")
-    print("\nA converged search spends its last seed on almost nothing. Read the last column "
-          "against\nthe climb column: if the fifth seed is still buying a material fraction of "
-          "the total,\nthe maximum is not an estimate of the supremum and 'ceiling' is the "
-          "wrong word.")
+        print(f"share of that climb bought by the final seed alone: median {np.median(share):.1%}")
+    print(f"\nconverged by the A21 rule, final-seed gain below 0.005: "
+          f"{len(converged)} of {len(rows)}")
+    for r in sorted(rows, key=lambda x: -x["last_gain"]):
+        flag = "converged" if r["last_gain"] < 0.005 else "STILL CLIMBING"
+        print(f"   {r['module']:<24} final-seed gain {r['last_gain']:+.4f}  {flag}")
 
     out = {"n_modules": len(rows), "rows": rows,
            "median_last_gain": float(np.median(last)),

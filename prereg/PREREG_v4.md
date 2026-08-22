@@ -632,6 +632,99 @@ or in any of four topology families, while a structureless low-rank surrogate re
 to within 1.7 percent on rank and 0.0008 on the leading-PC fraction. The restatement as an
 identifiability claim, which amendment A14 prepared for, is not needed.
 
+**Amendment A21 complete, 2026-08-22. The search does converge by 20 seeds, so the ceiling is earned; the count rises; and the claim moves from identifiability to discoverability.**
+
+All 13 modules ran at 20 seeds. The outcome contradicts the expectation stated in A21 and the
+review's prior, and is reported as it came out.
+
+**Every module converges by the pre-registered rule.** The rule was that a final-seed gain below
+0.005 makes the maximum a supremum estimate. The gain is below that on **13 of 13**, with a
+median of +0.0008 and a maximum of +0.0045. The final seed buys a median of 1.1 percent of the
+whole climb from one seed.
+
+`regulon_HIF1A` is the decisive case. At five seeds it was near-linear in k, gaining about 0.065
+per seed, which is what prompted the extension. Its full curve is 0.2373, 0.3121, 0.3619 at k=1
+to 3, 0.4177 at k=5, 0.4533 at k=10, and **0.4558 at both k=15 and k=20**, a final-seed gain of
+0.0000. The five-seed curve was in the linear part of a curve that flattens later. The lesson is
+that a saturation check on a short run can read as "no convergence" when it means "not yet".
+
+**The maximum is therefore the justified estimator for an identifiability claim, and it gives
+the weaker result.** The word ceiling stays in the paper.
+
+**The sound set changes.** With 20 seeds the random null is better estimated, and
+`coresponse_KIF20A` drops out: its linear arm is 0.0996 against a null 95th percentile that
+moves from 0.0983 at five seeds to 0.1073 at twenty. The module that carried the only positive
+in the five-seed analysis is not a sound comparison at all once its null is measured properly.
+That is independent of, and agrees with, the finding recorded separately that its linear arm is
+outscored by a zero predictor. The sound set is 12 modules.
+
+**The counts.**
+
+| Ceiling summary | Clears linear, sound set of 12 |
+|---|---|
+| seed maximum, the justified estimator | **5 of 12** |
+| seed median | **0 of 12** |
+
+At a p99 soundness threshold the sound set is 7 and the counts are 3 and 0.
+
+**The claim this supports is about discoverability, not identifiability.** The leaky oracle
+selects its structure using the folds it is then scored on. The nested honest variant runs the
+same search on an inner split and is scored on an outer split that selection never touched.
+Comparing them on the sound set separates whether the information exists from whether anything
+can find it.
+
+| | Exceeds the linear map | Exceeds its own random null |
+|---|---|---|
+| leaky oracle, converged at 20 seeds | **11 of 12** | 12 of 12 |
+| nested honest oracle | **5 of 12** | 7 of 12 |
+
+The median gap between them is 0.2077. So a converged search that is allowed to see the answer
+finds structure beating a regularized linear map almost everywhere, and the same search denied
+that sight beats linear on fewer than half the modules and barely separates from random
+structures of the same size.
+
+**Claim 1 is restated accordingly.** The old form, that no structure source predicts better than
+a linear map, is wrong as an identifiability statement: with a converged search the ceiling sits
+above linear on 11 of 12 modules by point estimate and clears it by the interval rule on 5. What
+survives, and is better supported than the old form, is that no honest procedure reaches that
+ceiling. The language model proposal, textbook structure, two causal-discovery methods and a
+nested oracle that never sees the scored fold all fail to beat a linear map, and the nested
+oracle is the strongest of them.
+
+This is a more useful result than the one it replaces. It locates the failure in structure
+discovery rather than in the data, and it does so with a measured separation rather than an
+assumption. It also means the negative cannot be attributed to there being nothing to find.
+
+**Step 8 at 60 epochs with mean squared error scoring, 2026-08-22. GEARS loses on the metric it optimises, including to a parameter-free baseline.**
+
+The third and fourth reviews both noted that scoring only on DE-overlap compares the method
+against a target it never optimises. It is now scored on mean squared error overall and on the
+top 20 differentially expressed genes, which is close to what it trains and reports on, and
+trained for 60 epochs rather than 20.
+
+| Metric, all 70 test doubles | GEARS | Fitted-additive | Mean-of-singles |
+|---|---|---|---|
+| DE-overlap, higher is better | 0.4426 | 0.7117 | 0.6949 |
+| MSE all genes, lower is better | 0.00504 | 0.00123 | 0.00275 |
+| MSE top-20 DE, lower is better | 0.28169 | 0.04593 | 0.21405 |
+
+Paired intervals against the fitted-additive arm: DE-overlap -0.2691 [-0.2989, -0.2377], MSE all
+genes -0.00381 [-0.00458, -0.00314], MSE top-20 -0.23576 [-0.28268, -0.19298]. None favours
+GEARS.
+
+The fitted-additive arm sees the observed double it is scored on, so its advantage is partly
+structural. The mean-of-singles arm does not: it is the unweighted average of the two single
+responses and has no fitted parameters at all. GEARS loses to that on every metric including
+both mean squared errors.
+
+**More training is not what was missing.** Validation MSE bottoms near 0.0030 to 0.0032 around
+epoch 20 and drifts to 0.0035 by epoch 42 while training error stays flat, which is ordinary
+overfitting. The 20-epoch run was not an undertrained strawman.
+
+The remaining caveat is hyperparameter tuning, which was not attempted, and the statement stays
+scoped to an untuned model at default settings. What is closed is the objection that the gap was
+an artefact of scoring on the wrong metric. It is not.
+
 **The shrinkage confound proposed for A18 does not apply, checked 2026-08-22. One confound the review raises is real and is named.**
 
 The fourth review asks for a truncated-ridge decomposition to separate rank truncation from
