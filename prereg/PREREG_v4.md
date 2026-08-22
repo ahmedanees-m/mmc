@@ -632,6 +632,111 @@ or in any of four topology families, while a structureless low-rank surrogate re
 to within 1.7 percent on rank and 0.0008 on the leading-PC fraction. The restatement as an
 identifiability claim, which amendment A14 prepared for, is not needed.
 
+**Amendments A19 and A20 complete, and Step 8 has run, 2026-08-22. The count the argument turns on falls to 1 of 13, the identifiability signature does not hold outside this atlas, and GEARS loses to an additive baseline.**
+
+---
+
+**A20. On the seed median the oracle clears a sound linear baseline on 1 of 13 modules.**
+
+All 13 modules were re-run at five seeds with per-seed per-fold scores retained, which closes
+the retention gap of 2.31 for this set. The sound set is stable: linear still exceeds the 95th
+percentile of its own random null on all 13 under the re-run, with `coresponse_ACTR2` marginal
+again at 0.1936 against 0.1934.
+
+| Module | Folds | Linear | Oracle, seed max | Oracle, seed median | Delta on median | Clears (max / median) |
+|---|---|---|---|---|---|---|
+| regulon_NFE2L2 | 8 | 0.0925 | 0.3315 | 0.3215 | +0.2290 | no / no |
+| coresponse_KIF20A | 19 | 0.0996 | 0.2607 | 0.2607 | +0.1611 | **yes / yes** |
+| coresponse_HCCS | 17 | 0.1284 | 0.2816 | 0.2642 | +0.1358 | no / no |
+| regulon_AHR | 9 | 0.1975 | 0.3214 | 0.2892 | +0.0917 | no / no |
+| coresponse_PIM1 | 18 | 0.3350 | 0.4331 | 0.4154 | +0.0804 | no / no |
+| regulon_STAT3 | 10 | 0.1726 | 0.2432 | 0.2432 | +0.0706 | no / no |
+| coresponse_MOV10 | 16 | 0.1973 | 0.2961 | 0.2623 | +0.0650 | yes / no |
+| regulon_YY1 | 12 | 0.1066 | 0.1748 | 0.1686 | +0.0619 | no / no |
+| coresponse_CFAP298 | 16 | 0.1618 | 0.4476 | 0.2093 | +0.0475 | yes / no |
+| regulon_HIF1A | 8 | 0.0857 | 0.4558 | 0.1328 | +0.0471 | yes / no |
+| coresponse_ACTR2 | 19 | 0.1936 | 0.3388 | 0.2243 | +0.0306 | yes / no |
+| TCR_signalosome | 7 | 0.3929 | 0.4336 | 0.4098 | +0.0170 | no / no |
+| Cytokine_production | 19 | 0.4451 | 0.2920 | 0.2294 | -0.2157 | no / no |
+
+**Seed maximum: 5 of 13. Seed median: 1 of 13.** The amendment predicted the count would change
+and committed to reporting whatever it changed to. The gap between the two summaries is the
+substance: on `regulon_HIF1A` the ceiling falls from 0.4558 to 0.1328 and on
+`coresponse_CFAP298` from 0.4476 to 0.2093, so the maximum over seeds was reporting the luckiest
+search rather than a ceiling. Three of the four modules that lose their advantage under the
+median lose it because of that spread alone.
+
+The surviving module is `coresponse_KIF20A`, where the two summaries agree at 0.2607 because its
+seeds barely differ. It is one module out of thirteen, against an oracle that selected its
+structure on the folds it was scored on, and it is reported as such rather than as a positive
+result. No multiplicity correction is applied: the rule of section 1.2 is an interval rule
+rather than a p-value, and these 13 are the whole sound set rather than a screen.
+
+`Cytokine_production` reproduces its recorded value exactly, oracle 0.2920 against linear
+0.4451, which is a check that the re-run did not change the pipeline underneath the numbers.
+
+---
+
+**A19. The identifiability signature holds across cell states and does not hold on a second atlas.**
+
+Across all 27 modules the diagnostics are stable across the three states of the atlas used
+here. The median normalised effective rank is 0.196 at Rest, 0.182 at Stim8hr and 0.184 at
+Stim48hr. Cell state does not move it.
+
+The external check does move it. Comparing whole matrices would have been meaningless, since
+the modules here are 11 to 40 genes and the Norman matrix is 105 perturbations by 20,421 genes,
+so Norman submatrices were drawn at the same shapes, with the readout set equal to the
+perturbed set exactly as the modules are built, 200 draws each.
+
+| Shape | Zhu, normalised effective rank | Zhu, leading PC | Norman, normalised effective rank | Norman, leading PC |
+|---|---|---|---|---|
+| 11 by 11 | 0.145 | 0.654 | 0.443 | 0.066 |
+| 20 by 20 | 0.190 | 0.208 | 0.407 | 0.055 |
+| 28 by 28 | 0.130 | 0.276 | 0.391 | 0.045 |
+| 40 by 40 | 0.145 | 0.159 | 0.368 | 0.038 |
+
+At every matched shape the Norman response matrix is two to three times higher in normalised
+effective rank and roughly a quarter of the leading-component fraction. **The signature is a
+property of this atlas, not of perturbation response matrices in general**, and A19 committed
+in advance to reporting that outcome without adjustment.
+
+This bounds claim 2 rather than breaking it. Claim 2 explains why sparse structure does not help
+*here*, and that explanation is measured on this data and confirmed across its cell states. It
+is not a general law about perturbation data, and the paper must not present it as one. A
+plausible mechanism, offered as interpretation rather than measurement, is that these are
+knockdowns, whose responses collapse onto a shared stress-like axis, while Norman is CRISPRa
+activation of transcription factors, where each activation drives a distinct programme.
+
+---
+
+**Step 8. GEARS runs, and loses to an additive baseline on every subset.**
+
+The environment the record twice described wrongly now exists: torch 2.1.0 on CUDA 12.1,
+torch_geometric 2.5.3 and cell-gears 0.1.2, trained 20 epochs on the GPU, reaching a validation
+overall MSE of 0.0030. Every arm is computed inside GEARS' own processed atlas and its own
+simulation split, because that release is not the pseudobulk section 6 was built from, so the
+comparison is internally consistent rather than pooled with section 6.
+
+| Set | n | Non-additivity | GEARS | Fitted-additive | Mean-of-singles | GEARS minus fitted-additive |
+|---|---|---|---|---|---|---|
+| additive control | 23 | 0.090 | 0.5130 | 0.7939 | 0.7696 | -0.2809 [-0.3409, -0.2243] |
+| non-additive | 23 | 0.292 | 0.3478 | 0.6304 | 0.6148 | -0.2826 [-0.3217, -0.2400] |
+| all test doubles | 70 | 0.181 | 0.4457 | 0.7117 | 0.6949 | -0.2660 [-0.2966, -0.2346] |
+
+The direction agrees with the published finding that additive baselines beat GEARS on this
+atlas, which is a check on the implementation rather than a novel result.
+
+**Two caveats belong with these numbers.** GEARS is trained to minimise mean squared error and
+is scored here on DE-overlap, a ranking metric it does not optimise; its own validation MSE is
+good. And it was run at 20 epochs on default hyperparameters with no tuning. The honest
+statement is that an untuned GEARS does not beat an additive baseline on this project's metric,
+not that GEARS is a weak model.
+
+**One consequence matters for the argument.** Norman is the atlas that does *not* show the
+low-rank signature, and an additive baseline still beats a graph-prior method there. So
+"simple baselines are hard to beat" is not downstream of low rank. The two findings are
+separate, and claim 2 explains claim 1 on this atlas without explaining the Norman result.
+
 **Amendments A17 and A18 complete, 2026-08-22. A18 is refuted by its own pre-registered rule, A17 narrows claim 2, and one supporting claim in the draft is withdrawn.**
 
 Both ran after the rule and the module selection were committed, and neither outcome is
