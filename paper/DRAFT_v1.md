@@ -2,10 +2,11 @@
 
 Anees Ahmed Mahaboob Ali
 
-*Draft v1, 2026-08-22. Pre-registered as `prereg/PREREG_v4.md`, with sixteen dated amendments.
+*Draft v2, 2026-08-22. Pre-registered as `prereg/PREREG_v4.md`, with twenty dated amendments.
 Every number below is drawn from the recorded outcomes; sections that no measurement supports
-are marked as open rather than filled in. Two planned comparators, GEARS and a second dataset,
-have not run, and section 8 states what that costs the argument.*
+are marked as open rather than filled in. The GEARS comparator has now run (section 6.1), and
+the identifiability diagnostics have been measured on a second atlas, where they do not hold
+(section 4.3).*
 
 ---
 
@@ -25,7 +26,9 @@ than a regularized linear map on any module where the linear baseline is itself 
 modules show an advantage that survives multiple-comparison correction, but eight of those ten
 are measured against a linear arm that does not beat its own random-structure null, which makes
 the comparison uninformative. On the thirteen modules where the linear baseline is worth
-beating, the leaky oracle clears it on two, one of them by 0.0002.
+beating, re-run at five seeds, the leaky oracle clears it on **one**. Summarising the ceiling by
+the best of five searches rather than their median would have returned five, and the difference
+between those two numbers is reported rather than resolved silently.
 
 The reason is a property of the data rather than of the model class. The perturbation-by-gene
 response matrix on the primary module has an effective rank of 3.64 out of 28 perturbations and
@@ -43,6 +46,14 @@ binding constraint, and that a proposer shown only gene names is not being teste
 interesting. The first two do not survive; the third is partly correct, and the arm added to
 address it shows that the proposer does condition on response data when the data is put in
 front of it, without becoming competitive with the linear baseline.
+
+Two results bound what any of this generalises to. The identifiability signature is stable
+across all three states of this atlas but is absent in a second one: matched shape for shape,
+a combinatorial CRISPRa atlas has two to three times the normalised effective rank. And on that
+same second atlas, where the low-rank account does not apply, an untuned graph-prior method
+still loses to a fitted-additive baseline by 0.27 in held-out DE-overlap. The difficulty of
+beating simple baselines is therefore not a consequence of low rank; the two findings are
+separate, and the low-rank account explains this atlas rather than the field.
 
 ---
 
@@ -145,11 +156,23 @@ linear arm beats its own random null shows that 8 of the 10 corrected advantages
 against a linear arm that does not. On those modules the linear baseline is performing below
 chance, so an apparent structural gain over it carries no information.
 
-The effective sample size is therefore 13, not 27. On the 13 modules where the linear baseline
-is worth beating, the leaky oracle clears it on 2. One of those is decided by a margin of
-0.0002. The other loses most of its margin when the ceiling statistic moves from the maximum
-across seeds to the median, which is the more defensible summary and is now primary; the median
-is lower on 18 of 25 modules, as expected of a maximum over seeds.
+The effective sample size is therefore 13, not 27. Those 13 were re-run at five seeds with
+per-seed per-fold scores retained, and all 13 remain sound under the re-run, one of them
+marginally: its linear arm exceeds the 95th percentile of its own null by 0.0002.
+
+**On the seed median the leaky oracle clears the linear map on 1 of the 13.** On the seed
+maximum it clears on 5. The ceiling is a search outcome, so the maximum over seeds reports the
+luckiest search rather than a bound, and the difference is not small: on one module the ceiling
+falls from 0.4558 to 0.1328 when the summary changes, and on another from 0.4476 to 0.2093.
+Three of the four modules that lose their advantage under the median lose it to that spread
+alone. The one module that survives does so because its five seeds barely differ, its two
+summaries agreeing at 0.2607.
+
+Both numbers are stated because the choice between them is a judgement about what a ceiling
+means, not a result. No multiplicity correction is applied to either count: the decision rule
+is an interval rule rather than a p-value, and these 13 are the whole sound set rather than a
+screen. The primary module reproduced its previously recorded values exactly under the re-run,
+which is the check that the pipeline did not move underneath the numbers.
 
 This cross-tabulation is the single most useful piece of methodology in the study, and it
 recurs. The same failure mode appears again in the residual analysis of section 5 and would
@@ -240,6 +263,42 @@ Fitting the training data equally well carries almost no information about predi
 responses. Across that class, 84 percent of the 50 distinct edges have a determined sign, and
 one edge appears activating in one search and repressing in another. The structure is not
 identified by the data, which is what the diagnostics predicted.
+
+### 4.3 The signature holds across cell state and does not hold on a second atlas
+
+If the account above is right, the diagnostics should be a stable property of the data rather
+than of one processing choice, and they should be measurable anywhere. Both were checked, and
+the second check limits the claim.
+
+**Across cell state, within this atlas, the signature is stable.** The same 27 modules measured
+in all three states give a median normalised effective rank of 0.196 at rest, 0.182 at eight
+hours of stimulation and 0.184 at forty-eight. Cell state does not move it.
+
+**Across atlases it is not.** Comparing whole matrices would say nothing, since the modules here
+are 11 to 40 genes while a combinatorial CRISPRa atlas is 105 perturbations by 20,421 genes, and
+effective rank is not comparable across shapes. Submatrices were therefore drawn from that atlas
+at the same shapes, with the readout set equal to the perturbed set exactly as the modules here
+are constructed, 200 draws at each size.
+
+| Shape | This atlas, normalised effective rank | Leading PC | Second atlas, normalised effective rank | Leading PC |
+|---|---|---|---|---|
+| 11 by 11 | 0.145 | 0.654 | 0.443 | 0.066 |
+| 20 by 20 | 0.190 | 0.208 | 0.407 | 0.055 |
+| 28 by 28 | 0.130 | 0.276 | 0.391 | 0.045 |
+| 40 by 40 | 0.145 | 0.159 | 0.368 | 0.038 |
+
+At every matched shape the second atlas has two to three times the normalised effective rank and
+roughly a quarter of the leading-component fraction. Its response matrix is not low rank in the
+sense that matters here.
+
+This bounds the claim rather than breaking it. The account in this section explains why sparse
+structure does not help *on this data*, it is measured rather than assumed, and it survives the
+one within-dataset generalisation available. It is not a general law about perturbation
+response matrices, and the diagnostic's value is that it can be computed on any new dataset
+before a model is fitted, not that its value is known in advance. A plausible mechanism for the
+difference, offered as interpretation and not as measurement, is that these are knockdowns,
+whose responses collapse onto a shared stress-like axis, while the second atlas activates
+transcription factors, each of which drives a distinct programme.
 
 ---
 
@@ -350,7 +409,39 @@ informed only by the singles cannot reach it, because the pair-specific interact
 identifiable from single-perturbation marginals. A saturating logic gate imposes one particular
 non-additive extrapolation, which is not the true interaction.
 
-### 6.1 A widely reused genetic-interaction stratification is not reproducible from the published record
+### 6.1 A graph-prior method does not beat an additive baseline either
+
+The structural grammar used throughout this paper has no way to represent an external
+gene-gene graph, and the obvious objection to section 3 is that a method carrying one would
+succeed where it fails. GEARS is that method for this atlas. It was trained for 20 epochs on a
+GPU, reaching a validation mean squared error of 0.0030.
+
+Every arm is computed inside GEARS' own processed atlas and its own simulation split, because
+that release is not the pseudobulk the rest of section 6 uses; the comparison is internally
+consistent rather than pooled with the table above.
+
+| Set | n | Non-additivity | GEARS | Fitted-additive | Mean-of-singles | GEARS minus fitted-additive |
+|---|---|---|---|---|---|---|
+| additive control | 23 | 0.090 | 0.5130 | 0.7939 | 0.7696 | -0.2809 [-0.3409, -0.2243] |
+| non-additive | 23 | 0.292 | 0.3478 | 0.6304 | 0.6148 | -0.2826 [-0.3217, -0.2400] |
+| all test doubles | 70 | 0.181 | 0.4457 | 0.7117 | 0.6949 | -0.2660 [-0.2966, -0.2346] |
+
+The direction agrees with the published finding that additive baselines beat this method on
+this atlas, which is a check on the implementation rather than a new result.
+
+**Two caveats belong with these numbers.** The method is trained to minimise mean squared error
+and is scored here on DE-overlap, a ranking metric it does not optimise, and its own validation
+error is good. It was also run untuned, at 20 epochs on default hyperparameters. The defensible
+statement is that an untuned graph-prior method does not beat an additive baseline on this
+paper's metric, not that the method is weak.
+
+**One consequence matters for the argument as a whole.** This is the atlas that does *not* show
+the low-rank signature, by section 4.3, and an additive baseline still wins on it. So the
+difficulty of beating simple baselines is not downstream of low rank. The two findings are
+separate: section 4 explains section 3 on this project's atlas, and it does not explain this
+result.
+
+### 6.2 A widely reused genetic-interaction stratification is not reproducible from the published record
 
 This began as a blocked step and is reported because the blockage is the finding.
 
@@ -427,17 +518,21 @@ harness, and section 5.3 addresses the harder question directly.
 
 ## 8. Limitations
 
-**One dataset and one cell type.** Every result rests on a single steady-state atlas. The
-identifiability account in section 4 is the claim most likely to generalise, since it is a
-property of a response matrix that can be computed on any perturbation dataset before a model
-is fitted, but it has not been computed on a second one here. A second dataset would also
-supply the second cell type the scale-up lacks.
+**The comparison itself rests on one atlas and one cell type.** Sections 3, 4 and 5 are all
+measured on a single steady-state atlas. The identifiability diagnostics have now been computed
+on a second one, and they do not hold there (section 4.3), so the low-rank account is
+established for this data rather than for perturbation data generally. What was not repeated on
+a second atlas is the structure-source comparison itself, which is the more expensive half:
+running the full seven-source table elsewhere is the natural next study and would establish
+whether claim 1 travels even where claim 2's explanation does not apply.
 
-**No foundation-model comparator.** GEARS was planned as a defensive comparator and has not
-run. It is the comparator a reader will most want against section 3, since it injects external
-pairwise priors that this grammar does not have. The environment it needs was never built, and
-building it is a genuine risk rather than a bounded task. This is a gap in the argument and is
-stated as one rather than argued away.
+**The graph-prior comparator is run but not tuned.** GEARS was trained for 20 epochs on default
+hyperparameters and scored on this paper's ranking metric, which it does not optimise, having
+been trained on mean squared error. It loses to a fitted-additive baseline by 0.27 (section
+6.1), in the same direction as the published result for that atlas. That is enough to answer
+the objection that a method with external pairwise priors would obviously succeed, and it is
+not enough to characterise the method's ceiling. A tuned comparison, and one scored on the
+metric the method optimises, is not attempted here.
 
 **Steady state.** Nothing here bears on time-resolved data, where a structural model has
 dynamics to exploit and the identifiability picture may differ.
@@ -447,25 +542,48 @@ bound within the bounded grammar and its optimizer budget. Annealing gains measu
 0.000 and 0.017 indicate the candidate pool was not silently capping the ceiling, but a
 different model class is a different question.
 
-**A retention gap.** Per-seed per-fold scores were not stored during the comparator runs, which
-blocks an exact re-derivation of the corrected-advantage count on the seed median. Later runs
-record them. The per-pair names in the combinatorial analysis were likewise not retained.
+**A retention gap, closed for the modules that matter and open elsewhere.** Per-seed per-fold
+scores were not stored during the original comparator runs. They are now retained, and the 13
+modules the headline count depends on have been re-run with them, which is what makes the seed
+median count in section 3.2 exact rather than reconstructed. The other 14 modules keep the gap,
+as do the per-pair names in the combinatorial analysis.
+
+**The ceiling is summarised by a median over five searches.** Five seeds is enough to show that
+the maximum was reporting search luck, and not enough to pin the median precisely on modules
+whose seeds disagree strongly. Two modules span more than 0.3 between their best and median
+search, and for those the ceiling should be read as poorly determined rather than as a value.
 
 ---
 
 ## 9. Pre-registration and deviations
 
-The study was pre-registered before the comparator runs and amended sixteen times, each
+The study was pre-registered before the comparator runs and amended twenty times, each
 amendment dated and recorded before the work it governs. The amendments that matter to the
 reading of this draft are: the paired advantage statistic replacing an interval-overlap check;
 the random tie-break in the differential-expression overlap metric; the substituted
 non-additivity measure in section 6 and its consequences; the residual decomposition; the
-topology generators; and the stratified data-aware arm with its advance prediction.
+topology generators; the stratified data-aware arm with its advance prediction; the replication
+of the generator sweep on six modules named in advance; the external diagnostics; and the
+re-run of the thirteen sound modules with per-seed per-fold scores retained.
+
+**One amendment carried a directional prediction and it was refuted.** If the response matrix
+is effectively low rank, a reduced-rank map truncated near that rank should recover the full
+ridge map's held-out score. The rule was fixed before the run: the ridge clears the reduced-rank
+map on at most 4 of the 13 sound modules, and the median ratio is at least 0.90. The first held
+completely, since the ridge clears on none of the 13, and the second failed at 0.865, so by the
+stated rule the prediction is refuted. Two faults in how that rule was written are recorded with
+it: the deciding criterion was a median of point estimates carrying no uncertainty, which was
+the weaker of the two, and the rule as written left its own stated middle category unreachable.
+The result is reported as refuted rather than reinterpreted, and its lesson is in section 4: the
+participation ratio measures how concentrated the variance is, while the metric ranks the top
+fifty genes, so the effective rank is not the number of components needed to predict.
 
 Corrections made during execution are recorded in full in the project record, including several
 where a figure was stated and then revised on further data. The most consequential were the
 discovery that eight of ten corrected advantages were vacuous, the withdrawal of the annotation
-inversion, and the replacement of three-seed held-out figures that proved to be noise.
+inversion, the replacement of three-seed held-out figures that proved to be noise, and the
+withdrawal of a mechanism for why concentrated network topologies fail, which held on the
+primary module and did not replicate.
 
 ---
 
@@ -480,11 +598,16 @@ section 6 are under `results/norman_supp/`.
 
 ## Open items in this draft
 
-- Section 4 would be materially stronger with the diagnostics computed on a second dataset.
-  This is in progress as a diagnostics-only measurement, with no comparator attached.
+- The structure-source comparison has not been repeated on a second atlas. The diagnostics have
+  been, and they do not carry over, which makes the repeat more interesting rather than less.
 - The two modules where a structural generator accepts deserve their own short treatment rather
   than a sentence, since they are the closest thing in this study to a positive result for
   sparse structure.
+- The one module where the oracle still clears the linear baseline on the seed median is
+  reported as a count and not examined. It should be, if only to say why it differs.
+- GEARS is scored only on this paper's metric. Scoring it on mean squared error as well would
+  separate "loses on the ranking metric" from "is a worse model", which the current table
+  cannot.
 - Section 8's GEARS gap is the most likely reviewer objection and has no measurement behind it.
 - Section 6's pair selection can be re-run on published quantities and has not been.
 - Figures are not yet drawn. The candidates are the calibration table as a two-panel scatter,
