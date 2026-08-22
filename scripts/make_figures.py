@@ -139,27 +139,45 @@ def fig2_scope(outdir: Path) -> None:
 
 def fig3_search(outdir: Path) -> None:
     """Left: saturation curves. Right: what the seed summary does to each module."""
-    sat = json.load(open("results/seed_saturation.json"))["rows"]
-    ver = {r["module"]: r for r in json.load(open("results/a20_verdict.json"))["rows"]}
+    sat = json.load(open("results/seed_saturation_20.json"))["rows"]
+    ver = {r["module"]: r for r in json.load(open("results/a21_verdict.json"))["rows"]}
 
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(10.8, 4.8))
 
+    # every module converges by twenty seeds, so colouring by the final gain would leave one
+    # empty class. The informative split is which modules a five-seed run would have called
+    # unconverged: those are the ones whose curve was still climbing at its fifth seed, and
+    # they are flat well before twenty.
     for r in sorted(sat, key=lambda x: -x["last_gain"]):
-        ks = range(1, len(r["curve"]) + 1)
-        climbing = r["last_gain"] >= 0.005
-        a1.plot(ks, r["curve"], marker="o", ms=3.2, lw=1.5 if climbing else 0.9,
-                color="#B04A3A" if climbing else "#9AA5B1",
-                alpha=0.95 if climbing else 0.7, zorder=3 if climbing else 2)
-    a1.plot([], [], color="#B04A3A", lw=1.5, label="still climbing at k=5")
-    a1.plot([], [], color="#9AA5B1", lw=0.9, label="converged")
+        c = r["curve"]
+        ks = range(1, len(c) + 1)
+        looked_climbing = len(c) > 4 and (c[4] - c[3]) >= 0.005
+        a1.plot(ks, c, marker="o", ms=3.2, lw=1.6 if looked_climbing else 0.9,
+                color="#B04A3A" if looked_climbing else "#9AA5B1",
+                alpha=0.95 if looked_climbing else 0.7,
+                zorder=3 if looked_climbing else 2)
+    a1.axvline(5, color="#3E5C76", ls=":", lw=1, zorder=1)
+    a1.text(5.3, a1.get_ylim()[0], "", fontsize=7)
+    a1.plot([], [], color="#B04A3A", lw=1.6, label="still climbing at the 5th seed")
+    a1.plot([], [], color="#9AA5B1", lw=0.9, label="already flat at the 5th seed")
     a1.set_xlabel("number of search seeds, k")
     a1.set_ylabel("mean best-of-k held-out DE-overlap")
-    a1.set_title("The oracle maximum is not a converged bound\n"
-                 "10 of 13 modules still climbing", fontsize=10)
-    a1.set_xticks(list(range(1, 6)))
+    a1.set_title("The search converges by 20 seeds\n"
+                 "final-seed gain below 0.005 on 13 of 13", fontsize=10)
+    a1.set_xticks([1, 5, 10, 15, 20])
     a1.legend(fontsize=8, frameon=False, loc="upper left")
     a1.grid(alpha=0.25, lw=0.5)
 
+    # the counts in the title are on the sound set, so the panel shows the sound set. A module
+    # whose linear arm does not clear its own null cannot support the comparison at all, and
+    # plotting it beside the others would invite reading it as a thirteenth data point.
+    sound = set()
+    for p in glob.glob("results/a21/step1_*.json"):
+        d = json.load(open(p))
+        lin = {r["source"]: r for r in d["table"]}["linear"]["de_overlap_mean"]
+        if lin > d["random_null"]["p95"]:
+            sound.add(d["module"])
+    ver = {m: r for m, r in ver.items() if m in sound}
     mods = sorted(ver, key=lambda m: ver[m]["oracle_seed_max"] - ver[m]["oracle_seed_median"])
     y = np.arange(len(mods))
     for i, m in enumerate(mods):
@@ -178,9 +196,10 @@ def fig3_search(outdir: Path) -> None:
     a2.set_yticklabels([m.replace("coresponse_", "co:").replace("regulon_", "reg:")
                         for m in mods], fontsize=8)
     a2.set_xlabel("held-out DE-overlap")
-    a2.set_title("Which summary is used decides the count\n"
-                 "1 of 13 on the median, 5 of 13 on the maximum", fontsize=10)
-    a2.legend(fontsize=8, frameon=False, loc="lower right")
+    a2.set_title("Converged ceiling against the linear map\n"
+                 "leaky exceeds linear on 11 of 12, nested honest on 5 of 12", fontsize=10)
+    a2.legend(fontsize=8, frameon=False, loc="upper left",
+              bbox_to_anchor=(0.02, 0.30))
     a2.grid(alpha=0.25, lw=0.5, axis="x")
 
     fig.tight_layout()

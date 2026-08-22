@@ -1,12 +1,16 @@
-# Low-rank response structure limits sparse mechanistic models on steady-state perturbation data
+# Structure discovery, not identifiability, limits mechanistic prediction of perturbation responses
 
 Anees Ahmed Mahaboob Ali
 
-*Draft v2, 2026-08-22. Pre-registered as `prereg/PREREG_v4.md`, with twenty dated amendments.
-Every number below is drawn from the recorded outcomes; sections that no measurement supports
-are marked as open rather than filled in. The GEARS comparator has now run (section 6.1), and
-the identifiability diagnostics have been measured on a second atlas, where they do not hold
-(section 4.3).*
+*Draft v3, 2026-08-22. Pre-registered as `prereg/PREREG_v4.md`, with twenty-one dated
+amendments. Every number below is drawn from the recorded outcomes; sections that no measurement
+supports are marked as open rather than filled in.*
+
+*The title changed at v3. Extending the structure search from five seeds to twenty showed that
+the ceiling it estimates sits above a regularized linear map on almost every module, which the
+five-seed run had understated. The negative therefore is not that structure cannot help. It is
+that nothing honest finds the structure that would. Section 3.2 carries the measurement and
+section 9 records why the earlier reading was wrong.*
 
 ---
 
@@ -21,18 +25,22 @@ proposed by a large language model, curated textbook structures, two algorithmic
 methods, random structures at matched edge count, and an oracle permitted to select its
 structure using the held-out responses it is then scored on.
 
-Across 27 gene modules, no structure source predicts held-out perturbation responses better
-than a regularized linear map on any module where the linear baseline is itself sound. Ten
-modules show an advantage that survives multiple-comparison correction, but eight of those ten
-are measured against a linear arm that does not beat its own random-structure null, which makes
-the comparison uninformative. On the thirteen modules where the linear baseline is worth
-beating, re-run at five seeds, the leaky oracle clears it on **one**. Summarising the ceiling by
-the best of five searches rather than their median would have returned five, and the difference
-between those two numbers is reported rather than resolved silently.
+Across 27 gene modules, most comparisons are uninformative: on 14 the linear arm does not beat
+its own random-structure null, and a structural advantage over a baseline performing at chance
+means nothing. Twelve modules support the comparison.
 
-The reason is a property of the data rather than of the model class. The perturbation-by-gene
-response matrix on the primary module has an effective rank of 3.64 out of 28 perturbations and
-a leading-principal-component fraction of 0.276. Across seven modules, no purely structural
+On those twelve, with the search extended to twenty seeds and verified to have converged, the
+oracle ceiling exceeds the linear map on **11 of 12** by point estimate and clears it under a
+paired interval rule on 5. The information a structural model would need is therefore present in
+the data. No honest procedure recovers it: the nested variant of the same search, scored only on
+folds its selection never touched, exceeds the linear map on 5 of 12 and exceeds its own
+random-structure null on 7 of 12, a median of 0.21 below the leaky arm. Language-model
+proposals, textbook structure and two causal-discovery methods all fall further behind, and none
+beats the linear map on any sound module.
+
+One reason the honest search fails is a property of the data rather than of the model class. The
+perturbation-by-gene response matrix on the primary module has an effective rank of 3.64 out of
+28 perturbations and a leading-principal-component fraction of 0.276. Across seven modules, no purely structural
 generator reproduces that signature at any edge density or in any of four topology families
 including hub, scale-free and modular, while a structureless low-rank surrogate reproduces it
 on every module, to within 1.7 percent on effective rank and 0.0008 on the leading-component
@@ -72,11 +80,18 @@ and scored on the same leave-one-perturbation-out folds. The only quantity that 
 rows of any comparison table is where the edges came from. A source that proposes better
 structure should show up as a better held-out score, and nothing else can explain a difference.
 
-The design includes an upper bound. The oracle source runs a greedy forward-backward search
-followed by simulated annealing over the full edge space, selecting its structure using the
-held-out responses it is subsequently scored on. It is deliberately leaky. If a structure
-selected with access to the answer does not beat a linear map, no honest structure-discovery
-procedure in this grammar will.
+The design includes a paired upper bound, and the pairing is what makes the result
+interpretable. The oracle source runs a greedy forward-backward search followed by simulated
+annealing over the full edge space. In its leaky form it selects its structure using the
+held-out responses it is subsequently scored on, which measures what structure exists in the
+grammar rather than what can be found. In its nested form the identical search selects on an
+inner split and is scored on an outer split that selection never touched, which measures what
+can be found. Same grammar, same budget, same folds; the only difference is access to the answer.
+
+The gap between those two arms is the paper's main quantity. If the leaky arm fails, no honest
+procedure in this grammar could succeed and the limitation is the model class. If the leaky arm
+succeeds and the nested arm does not, the structure exists and the limitation is discovery. The
+second is what happens.
 
 The proposer under test is a large language model asked to propose regulatory edges within a
 gene module. That is the practically interesting source, since it is the one being adopted, but
@@ -148,35 +163,51 @@ far below a linear map. Textbook immunology compiled into this grammar reaches 0
 null of 0.1082, which is to say it predicts held-out responses no better than a random
 structure of the same size.
 
-### 3.2 At scale, and why the effective N is smaller than it looks
+### 3.2 At scale: a reachable ceiling that nothing honest reaches
 
-Across 27 modules, 14 show a nominal advantage of the leaky oracle over the linear map and 10
-survive Benjamini-Hochberg correction. Cross-tabulating those outcomes against whether the
-linear arm beats its own random null shows that 8 of the 10 corrected advantages are measured
-against a linear arm that does not. On those modules the linear baseline is performing below
-chance, so an apparent structural gain over it carries no information.
+Across 27 modules, 14 have a linear arm that does not beat its own random-structure null. On
+those the linear baseline is performing at chance, and a structural advantage over it carries no
+information, so they cannot support the comparison. A thirteenth module drops out once its null
+is estimated from twenty searches rather than five, its linear arm falling from just above the
+null's 95th percentile to just below. **Twelve modules remain.**
 
-The effective sample size is therefore 13, not 27. Those 13 were re-run at five seeds with
-per-seed per-fold scores retained, and all 13 remain sound under the re-run, one of them
-marginally: its linear arm exceeds the 95th percentile of its own null by 0.0002.
+**The search converges, which has to be shown rather than assumed.** The oracle ceiling is the
+maximum over independent searches, and a maximum over k searches estimates a supremum only once
+adding searches stops raising it. For each module and each k, the mean over all seed subsets of
+size k of the maximum within the subset gives a saturation curve. At twenty seeds every module
+has flattened: the twentieth seed raises the estimate by a median of 0.0008, and by at most
+0.0045, buying a median 1.1 percent of the whole climb from a single seed. One module illustrates
+why the check matters. Its curve reads 0.2373, 0.3121, 0.3619 at one to three seeds and 0.4177 at
+five, an almost straight line that suggested no convergence at all; it then reaches 0.4533 at ten
+and 0.4558 at both fifteen and twenty. A five-seed window had sat in the linear stretch of a
+curve that flattens later.
 
-**On the seed median the leaky oracle clears the linear map on 1 of the 13.** On the seed
-maximum it clears on 5. The ceiling is a search outcome, so the maximum over seeds reports the
-luckiest search rather than a bound, and the difference is not small: on one module the ceiling
-falls from 0.4558 to 0.1328 when the summary changes, and on another from 0.4476 to 0.2093.
-Three of the four modules that lose their advantage under the median lose it to that spread
-alone. The one module that survives does so because its five seeds barely differ, its two
-summaries agreeing at 0.2607.
+**The ceiling sits above the linear map.**
 
-Both numbers are stated because the choice between them is a judgement about what a ceiling
-means, not a result. No multiplicity correction is applied to either count: the decision rule
-is an interval rule rather than a p-value, and these 13 are the whole sound set rather than a
-screen. The primary module reproduced its previously recorded values exactly under the re-run,
-which is the check that the pipeline did not move underneath the numbers.
+| | Exceeds the linear map | Exceeds its own random null |
+|---|---|---|
+| oracle, selection sees the scored folds | **11 of 12** | 12 of 12 |
+| oracle, nested so selection never sees them | **5 of 12** | 7 of 12 |
 
-This cross-tabulation is the single most useful piece of methodology in the study, and it
-recurs. The same failure mode appears again in the residual analysis of section 5 and would
-have produced a spurious positive there.
+Under the paired interval rule the leaky arm clears the linear map on 5 of 12 and the nested arm
+on none. The median gap between the two arms is 0.2077.
+
+This is the paper's central measurement and it separates two questions the usual framing runs
+together. Whether a structure exists in this grammar that predicts held-out responses better than
+a linear map: yes, on almost every module. Whether any procedure that is not allowed to see the
+answer finds it: no. The leaky arm and the nested arm are the same search under the same budget
+on the same folds, differing only in whether selection may use the responses it is scored on, so
+the gap between them is attributable to that and nothing else.
+
+Every other source falls further behind the nested arm. On no sound module does a language-model
+proposal, a textbook structure, GRNBoost2 or a mean-difference method beat the linear map.
+
+**A note on summary statistics.** Reporting the ceiling as a median over searches rather than a
+maximum gives 0 of 12 instead of 5. The maximum is the right statistic here because the claim
+concerns what structure exists rather than what a typical search returns, and it is defensible
+only because convergence was checked. An earlier version of this work reported the median-based
+figure from a five-seed run, which understated the ceiling on exactly the modules where the
+search had not yet converged; section 9 records the correction.
 
 ---
 
@@ -257,8 +288,12 @@ DE-overlap ranks the top 50 genes, and a component carrying little variance can 
 which genes enter that ranking. The effective rank is therefore not the number of components
 needed to predict, and this paper does not claim it is.
 
-**Consistency with the model-level result.** Within the near-optimal class of structures, 107
-lie within 5 percent of the best training loss, and their held-out scores span 0.188 to 0.304.
+**Consistency with the discovery result.** This is what makes section 3.2's gap expected rather
+than surprising: if many structures fit the training data equally well while predicting held-out
+responses very differently, then a search scored on training loss has no way to choose among
+them, and only a search allowed to see the held-out answer can. Within the near-optimal class of
+structures, 107 lie within 5 percent of the best training loss, and their held-out scores span
+0.188 to 0.304.
 Fitting the training data equally well carries almost no information about predicting held-out
 responses. Across that class, 84 percent of the 50 distinct edges have a determined sign, and
 one edge appears activating in one search and repressing in another. The structure is not
@@ -429,11 +464,26 @@ consistent rather than pooled with the table above.
 The direction agrees with the published finding that additive baselines beat this method on
 this atlas, which is a check on the implementation rather than a new result.
 
-**Two caveats belong with these numbers.** The method is trained to minimise mean squared error
-and is scored here on DE-overlap, a ranking metric it does not optimise, and its own validation
-error is good. It was also run untuned, at 20 epochs on default hyperparameters. The defensible
-statement is that an untuned graph-prior method does not beat an additive baseline on this
-paper's metric, not that the method is weak.
+**It also loses on the metric it optimises.** Scoring only on DE-overlap would compare the
+method against a target it never trains toward, so it was rescored on mean squared error, and
+retrained for 60 epochs, across all 70 test doubles.
+
+| Metric | GEARS | Fitted-additive | Mean-of-singles |
+|---|---|---|---|
+| DE-overlap, higher is better | 0.4426 | 0.7117 | 0.6949 |
+| MSE, all genes, lower is better | 0.00504 | 0.00123 | 0.00275 |
+| MSE, top-20 DE genes, lower is better | 0.28169 | 0.04593 | 0.21405 |
+
+Against the fitted-additive arm the paired intervals are -0.2691 [-0.2989, -0.2377] on
+DE-overlap, -0.00381 [-0.00458, -0.00314] on overall MSE and -0.23576 [-0.28268, -0.19298] on
+top-20 MSE. The fitted-additive arm sees the double it is scored on; the mean-of-singles arm does
+not, has no fitted parameters at all, and still wins on every metric. Validation error bottoms
+near epoch 20 and drifts upward by epoch 42 while training error stays flat, so more training was
+not what was missing.
+
+The remaining caveat is hyperparameter tuning, which was not attempted, so the statement is
+scoped to an untuned model at default settings. What is closed is the objection that the gap was
+an artefact of scoring on the wrong metric.
 
 **One consequence matters for the argument as a whole.** This is the atlas that does *not* show
 the low-rank signature, by section 4.3, and an additive baseline still wins on it. So the
@@ -548,10 +598,19 @@ modules the headline count depends on have been re-run with them, which is what 
 median count in section 3.2 exact rather than reconstructed. The other 14 modules keep the gap,
 as do the per-pair names in the combinatorial analysis.
 
-**The ceiling is summarised by a median over five searches.** Five seeds is enough to show that
-the maximum was reporting search luck, and not enough to pin the median precisely on modules
-whose seeds disagree strongly. Two modules span more than 0.3 between their best and median
-search, and for those the ceiling should be read as poorly determined rather than as a value.
+**The ceiling is a supremum over one grammar and one search budget.** Convergence is
+established within that budget: twenty seeds, a 120-pair candidate pool ranked by marginal
+association, and simulated annealing drawing moves from the whole edge space. Annealing gains of
+0.000 to 0.017 indicate the pool was not capping the result, and the saturation curves indicate
+the seed count was not either. Neither rules out that a different grammar, or a search of a
+different kind, would find more. The claim is bounded to what was searched.
+
+**The honest arm is one honest procedure, not all of them.** The nested oracle is the strongest
+structure-discovery method tested here and it is still a greedy search with annealing under a
+particular split. That it fails to reach the ceiling is evidence about this class of procedure
+on this data, not a proof that no procedure could. What makes it informative is that it is the
+same search as the leaky arm under the same budget, so the comparison isolates access to the
+answer rather than confounding method with capability.
 
 ---
 
@@ -565,6 +624,19 @@ non-additivity measure in section 6 and its consequences; the residual decomposi
 topology generators; the stratified data-aware arm with its advance prediction; the replication
 of the generator sweep on six modules named in advance; the external diagnostics; and the
 re-run of the thirteen sound modules with per-seed per-fold scores retained.
+
+**One amendment reversed a conclusion this work had already drawn, and the reversal is the
+reason the paper's title changed.** A saturation check on the five-seed data showed the oracle
+maximum still climbing on 10 of 13 modules, with one module near-linear in seed count. Read on
+its own that says the search never converged and no ceiling was estimated, which would have
+forced every claim to rescope to the structures actually searched. Rather than rescope on an
+inference from a short run, the search was extended to twenty seeds with the reading rule fixed
+in advance: a final-seed gain below 0.005 makes the maximum a supremum estimate. All 13 modules
+cleared it. The module that had looked worst reaches the same value at fifteen and twenty seeds.
+The five-seed window had been sitting in the linear stretch of a curve that flattens later, so
+the apparent non-convergence was an artefact of the range examined. The corrected reading raises
+the count and moves the paper's central claim from identifiability to discoverability, which is
+a stronger result than the one it replaced.
 
 **One amendment carried a directional prediction and it was refuted.** If the response matrix
 is effectively low rank, a reduced-rank map truncated near that rank should recover the full
@@ -603,11 +675,11 @@ section 6 are under `results/norman_supp/`.
 - The two modules where a structural generator accepts deserve their own short treatment rather
   than a sentence, since they are the closest thing in this study to a positive result for
   sparse structure.
-- The one module where the oracle still clears the linear baseline on the seed median is
-  reported as a count and not examined. It should be, if only to say why it differs.
-- GEARS is scored only on this paper's metric. Scoring it on mean squared error as well would
-  separate "loses on the ranking metric" from "is a worse model", which the current table
-  cannot.
+- The five modules where the converged ceiling clears the linear map are reported as a count and
+  not examined. What structure the search found there, and whether any of it is annotated, is the
+  obvious next question and the one most likely to say something biological.
+- The nested honest arm exceeds its own random null on only 7 of 12 modules. Whether that is the
+  split costing it power or the search genuinely finding little is not separated here.
 - Section 8's GEARS gap is the most likely reviewer objection and has no measurement behind it.
 - Section 6's pair selection can be re-run on published quantities and has not been.
 - Figures are not yet drawn. The candidates are the calibration table as a two-panel scatter,
