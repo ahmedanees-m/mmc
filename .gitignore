@@ -1,0 +1,32 @@
+# data and large artifacts. MMC queries the existing store; it does not duplicate it.
+*.h5ad
+*.h5mu
+*.parquet
+*.duckdb
+data_store/
+# keep any small committed test fixture
+!tests/fixtures/*.parquet
+# secrets
+.env
+*.key
+.mmc.env
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+*.egg-info/
+build/
+dist/
+# Results are committed. They are 6 MB of JSON, PNG and published CSV, and without them a
+# fresh clone cannot run check_claims.py, make_supplement.py or make_figures.py, which is most
+# of what makes the paper checkable. Intermediates and anything large stay out.
+results/**/*.tmp.json
+results/**/*.h5ad
+results/**/*.npz
+.DS_Store
+.ipynb_checkpoints/

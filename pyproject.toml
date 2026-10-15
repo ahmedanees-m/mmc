@@ -1,0 +1,58 @@
+[project]
+name = "mmc"
+version = "0.9.0"
+description = "A mechanistic discovery loop that proposes, fits, and held-out-evaluates interpretable models of gene-regulatory circuits."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "duckdb>=1.0",
+    "polars>=1.0",
+    "pandas>=2.0",
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "pydantic>=2.6",
+    "cma>=3.3",
+    "anthropic>=0.116",
+    "matplotlib>=3.8",
+    "scikit-learn>=1.3",
+]
+
+[project.optional-dependencies]
+diffrax = ["diffrax>=0.5", "jax>=0.4", "optax>=0.2"]
+dev = ["pytest>=8.0", "pytest-cov>=5.0", "ruff>=0.4"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["mmc*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP", "B"]
+ignore = ["E501", "B905"]
+
+[tool.coverage.run]
+source = ["mmc"]
+# Coverage targets the offline-testable core. The modules below require external resources not
+# available in the offline CI environment: the differential-expression store, the model API, or
+# the JAX backend (JAX is not a test dependency).
+omit = [
+    "tests/*",
+    "mmc/shared/llm.py",
+    "mmc/shared/store.py",
+    "mmc/data/slice_zhu.py",
+    "mmc/loop/run.py",
+    "mmc/compile/structural_jax.py",
+    "mmc/fit/fit_structural.py",
+    "mmc/baselines/foundation.py",
+]

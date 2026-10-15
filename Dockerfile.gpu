@@ -1,0 +1,35 @@
+# CUDA build of the MMC environment, for the workloads that are actually GPU-shaped:
+# the deep perturbation comparators (GEARS, DCDI, Bicycle, AVICI) and the unbounded
+# expressivity control.
+#
+# The structural backend runs here too but should not be run here. Measured on the
+# cytokine module, one leave-one-out pass over 28 folds:
+#
+#                       CPU (one process)    GPU (RTX A4000)
+#   cheap fit budget          16.1 s             25.5 s
+#   reported fit budget       82.6 s            155.6 s
+#   sustained throughput   224 struct/hr      120 struct/hr
+#
+# The card sat at roughly 22 percent utilisation throughout. The fixed-point solve over
+# 28 genes is far too small to fill it, and scipy L-BFGS-B drives the optimisation from
+# the host, so every step pays a round trip. The comparator also runs twelve of these
+# processes at once, which one card cannot be shared across, so in aggregate the CPU
+# build is around twenty times faster for the search. Batching many candidate structures
+# into a single vmapped solve would suit the GPU, but it needs a JAX optimizer in place
+# of L-BFGS-B, which would change every fitted number and break comparability with the
+# existing record. Not worth it for the structure search; use the CPU image there.
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir \
+    "duckdb>=1.0" "polars>=1.0" "pandas>=2.0" "numpy>=1.26" "scipy>=1.11" \
+    "pydantic>=2.6" "cma>=3.3" "anthropic>=0.116" "matplotlib>=3.8" "pytest>=8.0" \
+    "scikit-learn>=1.3" \
+    && pip install --no-cache-dir "jax[cuda12]>=0.4.30"
+
+ENV PYTHONPATH=/app
+# Do not let JAX reserve the whole card; the host shares it with other projects.
+ENV XLA_PYTHON_CLIENT_PREALLOCATE=false
+ENV XLA_PYTHON_CLIENT_MEM_FRACTION=0.5
+CMD ["pytest", "-q"]
